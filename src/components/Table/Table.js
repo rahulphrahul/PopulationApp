@@ -1,6 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core components
+import Edit from "@material-ui/icons/Edit";
+import Close from "@material-ui/icons/Close";
+import Button from "components/CustomButtons/Button.js";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -14,6 +18,24 @@ const useStyles = makeStyles(styles);
 
 export default function CustomTable(props) {
   const classes = useStyles();
+
+  const simpleButtons = [
+    { color: "success", icon: Edit, link: "/" },
+    { color: "danger", icon: Close, link: "/" },
+  ].map((prop, key) => {
+    return (
+      <Button
+        href={prop.link}
+        simple
+        justIcon
+        size="sm"
+        color={prop.color}
+        key={key}
+      >
+        <prop.icon />
+      </Button>
+    );
+  });
   const { tableHead, tableData, tableHeaderColor } = props;
   return (
     <div className={classes.tableResponsive}>
@@ -45,6 +67,7 @@ export default function CustomTable(props) {
                     </TableCell>
                   );
                 })}
+                {simpleButtons}
               </TableRow>
             );
           })}
