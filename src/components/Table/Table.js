@@ -37,6 +37,7 @@ export default function CustomTable(props) {
     );
   });
   const { tableHead, tableData, tableHeaderColor } = props;
+
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
@@ -60,7 +61,7 @@ export default function CustomTable(props) {
           {tableData.map((prop, key) => {
             return (
               <TableRow key={key} className={classes.tableBodyRow}>
-                {prop.map((prop, key) => {
+                {Object.values(prop).map((prop, key) => {
                   return (
                     <TableCell className={classes.tableCell} key={key}>
                       {prop}
