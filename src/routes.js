@@ -14,6 +14,12 @@ import Events from "views/Events/Events";
 import Gallery from "views/Gallery/Gallery";
 import Courses from "views/Courses/Courses";
 import Testimonials from "views/Testimonials/Testimonials";
+import Students from "views/Students/Students";
+import Publications from "views/Publications/Publications";
+import Subjects from "views/Subjects/Subjects";
+import Semester from "views/Semester/Semester";
+import InternalMarks from "views/InternalMarks/InternalMarks";
+import InternalsNotification from "views/InternalsNotification/InternalsNotification";
 // core components/views for RTL layout
 
 const dashboardRoutes = [
@@ -60,17 +66,58 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/notifications",
+    path: "/subjects",
+    name: "Subjects",
+    icon: Notifications,
+    component: Subjects,
+    layout: "/admin",
+  },
+  {
+    path: "/courses",
     name: "Courses",
     icon: Notifications,
     component: Courses,
     layout: "/admin",
   },
-
+  {
+    path: "/semester",
+    name: "Semester",
+    icon: Notifications,
+    component: Semester,
+    layout: "/admin",
+  },
   {
     path: "/upgrade-to-pro",
     name: "Logout",
     icon: Unarchive,
+    layout: "/admin",
+  },
+  {
+    path: "/students",
+    name: "Students",
+    icon: Notifications,
+    component: Students,
+    layout: "/admin",
+  },
+  {
+    path: "/publications",
+    name: "Publications",
+    icon: Notifications,
+    component: Publications,
+    layout: "/admin",
+  },
+  {
+    path: "/Internalsnotification",
+    name: "Internals Notification",
+    icon: Notifications,
+    component: InternalsNotification,
+    layout: "/admin",
+  },
+  {
+    path: "/internals",
+    name: "Internal Marks",
+    icon: Notifications,
+    component: InternalMarks,
     layout: "/admin",
   },
 ];

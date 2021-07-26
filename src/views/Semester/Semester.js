@@ -15,10 +15,6 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
-import AttachFile from "@material-ui/icons/AttachFile";
-import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
-
-// import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -51,7 +47,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Courses() {
+export default function Semester() {
   const classes = useStyles();
   const [bc, setBC] = React.useState(false);
   const showNotification = () => {
@@ -64,15 +60,12 @@ export default function Courses() {
   };
   const [data, setData] = React.useState({
     Id: 0,
+    SemesterNo: "",
+    CourseId: "",
     CourseName: "",
-    CourseCode: "",
-    CourseDuration: "",
-    Status: "",
+    SemesterDuration: "",
+    Status: "Created",
     Image: "",
-    Description: "",
-    Eligibility: "",
-    Syllabus: "",
-    Semesters: "",
   });
   function HandleData(e) {
     const newData = { ...data };
@@ -83,7 +76,7 @@ export default function Courses() {
   const [inserted, setInserted] = React.useState("");
   function HandleSave() {
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateCourses/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateSemester/",
       {
         method: "POST",
         headers: {
@@ -99,15 +92,12 @@ export default function Courses() {
         setInserted(json.Success);
         setData({
           Id: 0,
-          CourseId: "",
-          SemesterId: "",
-          CourseName: "",
           SemesterNo: "",
-          SubjectName: "",
-          SubjectCode: "",
-          Status: "Created",
+          CourseId: "",
+          CourseName: "",
+          SemesterDuration: "",
+          Status: "",
           Image: "",
-          Description: "",
         });
         showNotification();
       });
@@ -117,7 +107,7 @@ export default function Courses() {
     PageSize: 0,
   };
   const [subjects, setSubjects] = React.useState([]);
-  fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/", {
+  fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSemester/", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -160,39 +150,15 @@ export default function Courses() {
                   <GridItem xs={12} sm={12} md={5}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.SubjectName}
-                      labelText="Subject Name"
-                      id="SubjectName"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.SubjectCode}
-                      labelText="Subject Code"
-                      id="SubjectCode"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
                       value={data.SemesterNo}
-                      labelText="Semester No"
+                      labelText="Semester Number"
                       id="SemesterNo"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
+                  <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.CourseName}
@@ -203,69 +169,16 @@ export default function Courses() {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.SubjectCode}
-                      labelText="SubjectCode"
-                      id="SubjectCode"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.SemesterNo}
-                      labelText="SemesterNo"
-                      id="SemesterNo"
+                      value={data.SemesterDuration}
+                      labelText="Semester Duration"
+                      id="SemesterDuration"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
-                  </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the Subject.."
-                      id="Description"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={5} md={5}>
-                    {" "}
-                    <CustomFileInput
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        placeholder: "Click here to upload an image",
-                      }}
-                      endButton={{
-                        buttonProps: {
-                          round: true,
-                          color: "info",
-                          justIcon: true,
-                          fileButton: true,
-                        },
-                        icon: <AttachFile />,
-                      }}
-                    />
-                    {/* <ImageUpload
-                      addButtonProps={{ round: true }}
-                      changeButtonProps={{ round: true }}
-                      removeButtonProps={{ round: true, color: "danger" }}
-                    /> */}
                   </GridItem>
                 </GridContainer>
               </CardBody>
@@ -293,22 +206,18 @@ export default function Courses() {
               <Table
                 tableHead={[
                   "ID",
+                  "Semester",
                   "Course Name",
-                  "Course Code",
-                  "Duration",
+                  "Duration(Years)",
                   "Status",
                   "Image",
-                  "Description",
-                  "Eligibility",
-                  "Syllabus",
-                  "Semesters",
                   "Created By",
                   "Created Date",
                   "Modified By",
                   "Modified Date",
-                  "Deteled By",
+                  "Deleted By",
                   "Deleted Date",
-                  "Actions",
+                  "Course ID",
                 ]}
                 tableData={subjects}
               />

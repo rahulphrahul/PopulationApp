@@ -51,7 +51,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Courses() {
+export default function Subjects() {
   const classes = useStyles();
   const [bc, setBC] = React.useState(false);
   const showNotification = () => {
@@ -64,15 +64,15 @@ export default function Courses() {
   };
   const [data, setData] = React.useState({
     Id: 0,
+    CourseId: 1,
+    SemesterId: 1,
     CourseName: "",
-    CourseCode: "",
-    CourseDuration: "",
-    Status: "",
-    Image: "",
+    SemesterNo: "",
+    SubjectName: "",
+    SubjectCode: "",
+    Status: "Created",
+    Image: "url",
     Description: "",
-    Eligibility: "",
-    Syllabus: "",
-    Semesters: "",
   });
   function HandleData(e) {
     const newData = { ...data };
@@ -83,7 +83,7 @@ export default function Courses() {
   const [inserted, setInserted] = React.useState("");
   function HandleSave() {
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateCourses/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateSubjects/",
       {
         method: "POST",
         headers: {
@@ -114,10 +114,10 @@ export default function Courses() {
   }
   let passData = {
     PageIndex: 0,
-    PageSize: 0,
+    PageSize: 2,
   };
   const [subjects, setSubjects] = React.useState([]);
-  fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/", {
+  fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSubjects/", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -293,22 +293,18 @@ export default function Courses() {
               <Table
                 tableHead={[
                   "ID",
-                  "Course Name",
-                  "Course Code",
-                  "Duration",
+                  "SubjectName",
+                  "SubjectCode",
+                  "SemesterNo",
                   "Status",
                   "Image",
                   "Description",
-                  "Eligibility",
-                  "Syllabus",
-                  "Semesters",
                   "Created By",
-                  "Created Date",
+                  "Created SemesterNo",
                   "Modified By",
-                  "Modified Date",
+                  "Modified SemesterNo",
                   "Deteled By",
-                  "Deleted Date",
-                  "Actions",
+                  "Deleted SemesterNo",
                 ]}
                 tableData={subjects}
               />

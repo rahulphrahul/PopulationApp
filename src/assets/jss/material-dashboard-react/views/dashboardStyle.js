@@ -49,6 +49,7 @@ const dashboardStyle = {
     marginTop: "0",
     marginBottom: "0",
   },
+
   cardTitle: {
     color: grayColor[2],
     marginTop: "0px",

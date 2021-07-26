@@ -53,7 +53,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Slideshow() {
+export default function InternalMarks() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -104,7 +104,7 @@ export default function Slideshow() {
     Id: deletee,
     DeletedBy: 2,
   };
-  //PassData for getting Slideshow by id
+  //PassData for getting event by id
   let passEdit = {
     Id: edit,
   };
@@ -142,25 +142,29 @@ export default function Slideshow() {
   }
   //function to upload image
   function UploadImage() {
-    let form_data = new FormData();
-    form_data.append("File", files[0]);
-    let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
-    axios
-      .post(url, form_data, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        if (res.data.Success) {
-          data.Image = res.data.Data[0];
-          setUploaded(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    return true;
+    if (files != null) {
+      setValidated(true);
+      let form_data = new FormData();
+      form_data.append("File", files[0]);
+      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
+      axios
+        .post(url, form_data, {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          if (res.data.Success) {
+            data.Image = res.data.Data[0];
+            setUploaded(true);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setValidated(false);
+    }
   }
 
   //Function to save Data
@@ -246,7 +250,7 @@ export default function Slideshow() {
         });
     }
 
-    //API call to get Slideshow By ID to edit a row
+    //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
         "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetEventsById/",
@@ -277,7 +281,7 @@ export default function Slideshow() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Slideshow Saved Successfully"
+        message="Event Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -286,7 +290,7 @@ export default function Slideshow() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Slideshow Deleted Successfully"
+        message="Event Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -296,9 +300,9 @@ export default function Slideshow() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Slideshow</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Slideshow details below and hit Save
+                  Enter the Event details below and hit Save
                 </p>
               </CardHeader>
 
@@ -308,7 +312,7 @@ export default function Slideshow() {
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Name}
-                      labelText="Slideshow Name"
+                      labelText="Event Name"
                       id="Name"
                       formControlProps={{
                         fullWidth: true,
@@ -344,7 +348,7 @@ export default function Slideshow() {
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Description}
-                      labelText="Enter a description about the Slideshow.."
+                      labelText="Enter a description about the event.."
                       id="Description"
                       formControlProps={{
                         fullWidth: true,

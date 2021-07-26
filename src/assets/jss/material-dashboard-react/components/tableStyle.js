@@ -23,6 +23,7 @@ const tableStyle = (theme) => ({
     color: successColor[0],
   },
   infoTableHeader: {
+    backgroundColor: grayColor[10],
     color: infoColor[0],
   },
   roseTableHeader: {
@@ -52,6 +53,7 @@ const tableStyle = (theme) => ({
     padding: "12px 8px",
     verticalAlign: "middle",
     fontSize: "0.8125rem",
+    maxWidth: "50px",
   },
   tableResponsive: {
     width: "100%",

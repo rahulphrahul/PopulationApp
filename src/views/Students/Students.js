@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -13,8 +13,6 @@ import Button from "components/CustomButtons/Button.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-import axios from "axios";
-import Danger from "components/Typography/Danger";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
 import AttachFile from "@material-ui/icons/AttachFile";
@@ -53,223 +51,76 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Slideshow() {
+export default function Students() {
   const classes = useStyles();
-  const [saved, setSaved] = React.useState(false);
-  const [deleted, setDeleted] = React.useState(false);
-  const [edit, setEdit] = React.useState([]);
-  const [deletee, setDelete] = React.useState([]);
-  const [events, setEvents] = React.useState([]);
-  const [files, setFiles] = React.useState(null);
-  const [validated, setValidated] = React.useState(true);
-  const [uploaded, setUploaded] = React.useState(false);
-
-  //Saved Notification trigger
-  const showSavedNotification = () => {
-    if (!saved) {
-      setSaved(true);
+  const [bc, setBC] = React.useState(false);
+  const showNotification = () => {
+    if (!bc) {
+      setBC(true);
       setTimeout(function () {
-        setSaved(false);
+        setBC(false);
       }, 3000);
     }
   };
-  //Deleted Notification Trigger
-  const showDeletedNotification = () => {
-    if (!deleted) {
-      setDeleted(true);
-      setTimeout(function () {
-        setDeleted(false);
-      }, 3000);
-    }
-  };
-  //Form Data
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
     Venue: "",
     Date: "",
     Status: "Created",
-    Image: "",
+    Image: "url",
     Description: "",
   });
-
-  //PassData for getAll API
-  let passData = {
-    PageIndex: 0,
-    PageSize: 10,
-  };
-
-  //PaddData for Delete a Row
-  let passDelete = {
-    Id: deletee,
-    DeletedBy: 2,
-  };
-  //PassData for getting Slideshow by id
-  let passEdit = {
-    Id: edit,
-  };
-  //Function to handle Data input
   function HandleData(e) {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
     setData(newData);
     console.log(newData);
   }
-  function HandleClear() {
-    setData({
-      Id: 0,
-      Name: "",
-      Venue: "",
-      Date: "",
-      Status: "Created",
-      Image: "",
-      Description: "",
-    });
-  }
-  //Function for Validating fields
-  function ValidateFields() {
-    if (data.Name == "") {
-      return false;
-    } else if (data.Venue == "") {
-      return false;
-    } else if (data.Date == "") {
-      return false;
-    } else if (data.Image == "") {
-      return false;
-    } else if (data.Description == "") {
-      return false;
-    } else return true;
-  }
-  //function to upload image
-  function UploadImage() {
-    let form_data = new FormData();
-    form_data.append("File", files[0]);
-    let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
-    axios
-      .post(url, form_data, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        if (res.data.Success) {
-          data.Image = res.data.Data[0];
-          setUploaded(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    return true;
-  }
-
-  //Function to save Data
+  const [inserted, setInserted] = React.useState("");
   function HandleSave() {
-    UploadImage();
-    if (uploaded) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEvents/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
-
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                Venue: "",
-                Date: "",
-                Status: "Created",
-                Image: "",
-                Description: "",
-              });
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
-    }
-  }
-  useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
-
-    //API call for get latest 10 elements
-    fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllEvents/", {
+    fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEvents/", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(passData),
+      body: JSON.stringify(data),
     })
       .then((response) => response.json())
 
       .then((json) => {
-        setEvents(json.Data);
+        setInserted(json.Success);
+        setData({
+          Id: 0,
+          Name: "",
+          Venue: "",
+          Date: "",
+          Status: "Created",
+          Image: "url",
+          Description: "",
+        });
+        showNotification();
       });
+  }
+  let passData = {
+    PageIndex: 0,
+    PageSize: 10,
+  };
+  const [events, setEvents] = React.useState([]);
+  fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllEvents/", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(passData),
+  })
+    .then((response) => response.json())
 
-    //API call for Delete a row
-    if (deletee.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteEvents/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
-        .then((response) => response.json())
-
-        .then((json) => {
-          if (json.Success) {
-            setDelete([]);
-            showDeletedNotification();
-          }
-        });
-    }
-
-    //API call to get Slideshow By ID to edit a row
-    if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetEventsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
-        .then((response) => response.json())
-
-        .then((json) => {
-          if (json.Success) {
-            setEdit([]);
-            setData(json.Data);
-            console.log(json.Data);
-          }
-        });
-    }
-  }, [deletee, edit, saved]);
+    .then((json) => {
+      setEvents(json.Data);
+    });
 
   return (
     <>
@@ -277,18 +128,9 @@ export default function Slideshow() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Slideshow Saved Successfully"
-        open={saved}
-        closeNotification={() => setSaved(false)}
-        close
-      />
-      <Snackbar
-        place="bc"
-        color="danger"
-        icon={AddAlert}
-        message="Slideshow Deleted Successfully"
-        open={deleted}
-        closeNotification={() => setDeleted(false)}
+        message="Event Saved Successfully"
+        open={bc}
+        closeNotification={() => setBC(false)}
         close
       />
       <GridContainer>
@@ -296,9 +138,9 @@ export default function Slideshow() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Slideshow</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Slideshow details below and hit Save
+                  Enter the Event details below and hit Save
                 </p>
               </CardHeader>
 
@@ -308,7 +150,7 @@ export default function Slideshow() {
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Name}
-                      labelText="Slideshow Name"
+                      labelText="Event Name"
                       id="Name"
                       formControlProps={{
                         fullWidth: true,
@@ -344,7 +186,7 @@ export default function Slideshow() {
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Description}
-                      labelText="Enter a description about the Slideshow.."
+                      labelText="Enter a description about the event.."
                       id="Description"
                       formControlProps={{
                         fullWidth: true,
@@ -358,8 +200,6 @@ export default function Slideshow() {
                   <GridItem xs={12} sm={5} md={5}>
                     {" "}
                     <CustomFileInput
-                      setFiles={setFiles}
-                      saved={uploaded}
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -376,18 +216,15 @@ export default function Slideshow() {
                         icon: <AttachFile />,
                       }}
                     />
-                    {validated ? (
-                      <></>
-                    ) : (
-                      <Danger>Please enter all the details to save</Danger>
-                    )}
+                    {/* <ImageUpload
+                      addButtonProps={{ round: true }}
+                      changeButtonProps={{ round: true }}
+                      removeButtonProps={{ round: true, color: "danger" }}
+                    /> */}
                   </GridItem>
                 </GridContainer>
               </CardBody>
               <CardFooter>
-                <Button onClick={HandleClear} color="defualt">
-                  Clear
-                </Button>
                 <Button onClick={HandleSave} color="info">
                   Save
                 </Button>
@@ -407,7 +244,6 @@ export default function Slideshow() {
             </CardHeader>
             <CardBody>
               <Table
-                tableHeaderColor="info"
                 tableHead={[
                   "ID",
                   "Name",
@@ -422,15 +258,13 @@ export default function Slideshow() {
                   "Modified Date",
                   "Deteled By",
                   "Deleted Date",
-                  "Actions",
                 ]}
                 tableData={events}
-                setEdit={setEdit}
-                setDelete={setDelete}
               />
             </CardBody>
           </Card>
         </GridItem>
+        inserted :{inserted}
       </GridContainer>
     </>
   );
