@@ -144,7 +144,7 @@ export default function Events() {
       return false;
     } else return true;
   }
-  //function to upload image
+  //function to upload
   function UploadImage() {
     if (files != null) {
       setValidated(true);
