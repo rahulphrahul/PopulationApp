@@ -368,7 +368,7 @@ export default function Semester() {
                           round: true,
                           color: "info",
                           justIcon: true,
-                          fileButton: true,
+                          filebutton: true,
                         },
                         icon: <AttachFile />,
                       }}

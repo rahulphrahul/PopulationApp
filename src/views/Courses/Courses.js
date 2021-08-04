@@ -91,12 +91,12 @@ export default function Courses() {
     Id: 0,
     CourseName: "",
     Description: "",
-    Duration: "",
+    CourseDuration: "",
     Image: "",
-    SemesterNo: "",
+    Semesters: "",
     Eligibility: "",
     Syllabus: "",
-    Coursecode: "",
+    CourseCode: "",
     Status: "Created",
   });
 
@@ -127,12 +127,12 @@ export default function Courses() {
       Id: 0,
       CourseName: "",
       Description: "",
-      Duration: "",
+      CourseDuration: "",
       Image: "",
-      SemesterNo: "",
+      Semesters: "",
       Eligibility: "",
       Syllabus: "",
-      Coursecode: "",
+      CourseCode: "",
       Status: "Created",
     });
   }
@@ -165,66 +165,62 @@ export default function Courses() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            return true;
+            HandleSave();
           } else {
             setUploaded(false);
-            return false;
           }
         })
         .catch((err) => {
           console.log(err);
           setUploaded(false);
-          return false;
         });
     } else {
       setValidated(false);
-      return false;
     }
   }
 
   //Function to save Data
   function HandleSave() {
-    if (UploadImage()) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateCourses/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateCourses/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                CourseName: "",
-                Description: "",
-                Duration: "",
-                Image: "",
-                SemesterNo: "",
-                Eligibility: "",
-                Syllabus: "",
-                Coursecode: "",
-                Status: "Created",
-              });
-              setEmpty(false);
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          console.log(json);
+          if (json.Success) {
+            setData({
+              Id: 0,
+              CourseName: "",
+              Description: "",
+              CourseDuration: "",
+              Image: "",
+              Semesters: "",
+              Eligibility: "",
+              Syllabus: "",
+              CourseCode: "",
+              Status: "Created",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log("Error in insertion");
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -347,9 +343,9 @@ export default function Courses() {
                   <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Duration}
-                      labelText="Duration"
-                      id="Duration"
+                      value={data.CourseDuration}
+                      labelText="CourseDuration"
+                      id="CourseDuration"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -358,9 +354,9 @@ export default function Courses() {
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.SemesterNo}
-                      labelText="Semester No"
-                      id="SemesterNo"
+                      value={data.Semesters}
+                      labelText="Semesters"
+                      id="Semesters"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -393,9 +389,9 @@ export default function Courses() {
                   <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Coursecode}
+                      value={data.CourseCode}
                       labelText="Course code"
-                      id="Coursecode"
+                      id="CourseCode"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -434,7 +430,7 @@ export default function Courses() {
                           round: true,
                           color: "info",
                           justIcon: true,
-                          fileButton: true,
+                          filebutton: true,
                         },
                         icon: <AttachFile />,
                       }}
@@ -451,7 +447,7 @@ export default function Courses() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -478,8 +474,8 @@ export default function Courses() {
                     tableHead={[
                       "ID",
                       "CourseName",
-                      "Coursecode",
-                      "CourseDuration",
+                      "CourseCode",
+                      "CourseCourseDuration",
                       "Status",
                       "Image",
                       "Description",

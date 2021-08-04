@@ -388,7 +388,7 @@ export default function Slideshow() {
                           round: true,
                           color: "info",
                           justIcon: true,
-                          fileButton: true,
+                          filebutton: true,
                         },
                         icon: <AttachFile />,
                       }}

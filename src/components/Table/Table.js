@@ -71,7 +71,7 @@ export default function CustomTable({
                     onClick={() => setEdit(prop.Id)}
                     simple
                     justIcon
-                    size="md"
+                    size="lg"
                     color="success"
                   >
                     <Edit />
@@ -80,7 +80,7 @@ export default function CustomTable({
                     onClick={() => setDelete(prop.Id)}
                     simple
                     justIcon
-                    size="md"
+                    size="lg"
                     color="danger"
                   >
                     <Close />

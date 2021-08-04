@@ -82,7 +82,7 @@ export default function LoginPage({ setLoggedin, setNotification }) {
         .then((response) => response.json())
 
         .then((json) => {
-          console.log(json.Success);
+          console.log(json);
           setData({
             Id: 0,
             Username: "",

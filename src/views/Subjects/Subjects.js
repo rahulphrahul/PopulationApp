@@ -17,6 +17,8 @@ import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
@@ -67,7 +69,18 @@ export default function Subjects() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
+  const [CourseSelect, setCourseSelect] = React.useState("-1");
+  const [Courses, setCourses] = React.useState([]);
+  const [SelectedCourse, setSelectedCourse] = React.useState("");
+  const [SelectedCourseId, setSelectedCourseId] = React.useState(null);
 
+  const SelectCourse = (event) => {
+    setCourseSelect(event.target.value);
+    setSelectedCourse(event.target.value);
+    console.log("course:", SelectedCourse);
+    setSelectedCourseId(event.target);
+    console.log("Id:", SelectedCourseId);
+  };
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -89,10 +102,14 @@ export default function Subjects() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
+    CourseId: null,
+    SemesterId: null,
+    CourseName: "",
+    SemesterNo: "",
     SubjectName: "",
     SubjectCode: "",
     Status: "Created",
-    Image: "url",
+    Image: "",
     Description: "",
   });
 
@@ -121,10 +138,14 @@ export default function Subjects() {
   function HandleClear() {
     setData({
       Id: 0,
+      CourseId: "",
+      SemesterId: "",
+      CourseName: "",
+      SemesterNo: "",
       SubjectName: "",
       SubjectCode: "",
       Status: "Created",
-      Image: "url",
+      Image: "",
       Description: "",
     });
   }
@@ -192,10 +213,14 @@ export default function Subjects() {
           if (json.Success) {
             setData({
               Id: 0,
+              CourseId: "",
+              SemesterId: "",
+              CourseName: "",
+              SemesterNo: "",
               SubjectName: "",
               SubjectCode: "",
               Status: "Created",
-              Image: "url",
+              Image: "",
               Description: "",
             });
             setEmpty(false);
@@ -210,9 +235,23 @@ export default function Subjects() {
     setUploaded(false);
   }
   useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
+    //API call for get all course names to dropedown
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData),
+      }
+    )
+      .then((response) => response.json())
 
+      .then((json) => {
+        setCourses(json.Data);
+      });
     //API call for get latest 10 elements
     fetch(
       "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSubjects/",
@@ -317,6 +356,41 @@ export default function Subjects() {
               <CardBody>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={5}>
+                    <Select
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      value={CourseSelect}
+                      onChange={SelectCourse}
+                      inputProps={{
+                        name: "CourseSelect",
+                        id: "Course-select",
+                      }}
+                    >
+                      <MenuItem disabled value="-1">
+                        Select any Course
+                      </MenuItem>
+
+                      {Courses &&
+                        Courses.map((val) => (
+                          <MenuItem value={val.CourseName} key={val.Id}>
+                            {val.CourseName}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={5}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Semester}
+                      labelText="Select Semester"
+                      id="Semester"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={5}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.SubjectName}
@@ -373,7 +447,7 @@ export default function Subjects() {
                           round: true,
                           color: "info",
                           justIcon: true,
-                          fileButton: true,
+                          filebutton: true,
                         },
                         icon: <AttachFile />,
                       }}
@@ -416,7 +490,9 @@ export default function Subjects() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "SubjectName",
+                      "Corse Name",
+                      "Semester No",
+                      "Subject Name",
                       "SubjectCode",
                       "Status",
                       "Image",
@@ -427,6 +503,8 @@ export default function Subjects() {
                       "Modified Date",
                       "Deteled By",
                       "Deleted Date",
+                      "Course ID",
+                      "Semester ID",
                       "Actions",
                     ]}
                     tableData={events}
