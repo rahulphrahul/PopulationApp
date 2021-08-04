@@ -15,6 +15,7 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 import axios from "axios";
 import Danger from "components/Typography/Danger";
+import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
 import AttachFile from "@material-ui/icons/AttachFile";
@@ -63,6 +64,9 @@ export default function InternalMarks() {
   const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
   const [uploaded, setUploaded] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [deleting, setDeleting] = React.useState(false);
+  const [empty, setEmpty] = React.useState(false);
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -85,11 +89,18 @@ export default function InternalMarks() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    Name: "",
-    Venue: "",
+    CourseId: null,
     Date: "",
+    StudentId: "",
+    SemesterId: null,
+    CourseCode: "",
+    SemesterNo: null,
+    Note: "",
+    ClassNo: null,
+    StudentName: "",
+    MarkList: "",
     Status: "Created",
-    Image: "",
+    Files: "",
     Description: "",
   });
 
@@ -118,29 +129,50 @@ export default function InternalMarks() {
   function HandleClear() {
     setData({
       Id: 0,
-      Name: "",
-      Venue: "",
+      CourseId: "",
       Date: "",
+      StudentId: "",
+      SemesterId: "",
+      CourseCode: "",
+      SemesterNo: "",
+      Note: "",
+      ClassNo: "",
+      StudentName: "",
+      MarkList: "",
       Status: "Created",
-      Image: "",
+      Files: "",
       Description: "",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
-      return false;
-    } else if (data.Venue == "") {
+    if (data.CourseId == "") {
       return false;
     } else if (data.Date == "") {
       return false;
-    } else if (data.Image == "") {
+    } else if (data.Files == "") {
       return false;
     } else if (data.Description == "") {
       return false;
+    } else if (data.StudentId == "") {
+      return false;
+    } else if (data.SemesterId == "") {
+      return false;
+    } else if (data.CourseCode == "") {
+      return false;
+    } else if (data.SemesterNo == "") {
+      return false;
+    } else if (data.Note == "") {
+      return false;
+    } else if (data.ClassNo == "") {
+      return false;
+    } else if (data.StudentName == "") {
+      return false;
+    } else if (data.MarkList == "") {
+      return false;
     } else return true;
   }
-  //function to upload image
+  //function to upload
   function UploadImage() {
     if (files != null) {
       setValidated(true);
@@ -155,12 +187,16 @@ export default function InternalMarks() {
         })
         .then((res) => {
           if (res.data.Success) {
-            data.Image = res.data.Data[0];
+            data.Files = res.data.Data[0];
             setUploaded(true);
+            HandleSave();
+          } else {
+            setUploaded(false);
           }
         })
         .catch((err) => {
           console.log(err);
+          setUploaded(false);
         });
     } else {
       setValidated(false);
@@ -169,68 +205,79 @@ export default function InternalMarks() {
 
   //Function to save Data
   function HandleSave() {
-    UploadImage();
-    if (uploaded) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEvents/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateInternal/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                Venue: "",
-                Date: "",
-                Status: "Created",
-                Image: "",
-                Description: "",
-              });
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          if (json.Success) {
+            setData({
+              Id: 0,
+              CourseId: "",
+              Date: "",
+              StudentId: "",
+              SemesterId: "",
+              CourseCode: "",
+              SemesterNo: "",
+              Note: "",
+              ClassNo: "",
+              StudentName: "",
+              MarkList: "",
+              Status: "Created",
+              Files: "",
+              Description: "",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log("Error in insertion");
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
     console.log("Detele" + deletee + " edit" + edit);
 
     //API call for get latest 10 elements
-    fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllEvents/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(passData),
-    })
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAllInternal/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData),
+      }
+    )
       .then((response) => response.json())
 
       .then((json) => {
         setEvents(json.Data);
+        if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
       });
 
     //API call for Delete a row
     if (deletee.length != 0) {
+      setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteEvents/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/DeleteInternal/",
         {
           method: "POST",
           headers: {
@@ -246,6 +293,7 @@ export default function InternalMarks() {
           if (json.Success) {
             setDelete([]);
             showDeletedNotification();
+            setDeleting(false);
           }
         });
     }
@@ -253,7 +301,7 @@ export default function InternalMarks() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetEventsById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetInternalById/",
         {
           method: "POST",
           headers: {
@@ -308,23 +356,12 @@ export default function InternalMarks() {
 
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
+                  <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Name}
-                      labelText="Event Name"
-                      id="Name"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Venue}
-                      labelText="Venue"
-                      id="Venue"
+                      value={data.Date}
+                      labelText="Select Exam Date"
+                      id="Date"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -333,9 +370,97 @@ export default function InternalMarks() {
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Date}
-                      labelText="Date"
-                      id="Date"
+                      value={data.CourseId}
+                      labelText="Select Course"
+                      id="CourseId"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.StudentId}
+                      labelText="Student ID"
+                      id="StudentId"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.SemesterId}
+                      labelText="Select Semester"
+                      id="SemesterId"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.CourseCode}
+                      labelText="CourseCode"
+                      id="CourseCode"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.SemesterNo}
+                      labelText="Semester Number"
+                      id="SemesterNo"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Notes}
+                      labelText="Notes"
+                      id="Notes"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.ClassNo}
+                      labelText="Class Number"
+                      id="ClassNo"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.StudentName}
+                      labelText="StudentName"
+                      id="StudentName"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.MarkList}
+                      labelText="MarkList"
+                      id="MarkList"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -392,7 +517,7 @@ export default function InternalMarks() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -410,28 +535,35 @@ export default function InternalMarks() {
               </p>
             </CardHeader>
             <CardBody>
-              <Table
-                tableHeaderColor="info"
-                tableHead={[
-                  "ID",
-                  "Name",
-                  "Venue",
-                  "Date",
-                  "Status",
-                  "Image",
-                  "Description",
-                  "Created By",
-                  "Created Date",
-                  "Modified By",
-                  "Modified Date",
-                  "Deteled By",
-                  "Deleted Date",
-                  "Actions",
-                ]}
-                tableData={events}
-                setEdit={setEdit}
-                setDelete={setDelete}
-              />
+              <LoadingOverlay active={deleting} spinner text="Please Wait..">
+                {empty ? (
+                  <p>empty</p>
+                ) : (
+                  <Table
+                    tableHeaderColor="info"
+                    tableHead={[
+                      "ID",
+                      "Name",
+                      "Venue",
+                      "Date",
+                      "Status",
+                      "Image",
+                      "Description",
+                      "Created By",
+                      "Created Date",
+                      "Modified By",
+                      "Modified Date",
+                      "Deteled By",
+                      "Deleted Date",
+                      "Actions",
+                    ]}
+                    tableData={events}
+                    setEdit={setEdit}
+                    setDelete={setDelete}
+                    loading={loading}
+                  />
+                )}
+              </LoadingOverlay>
             </CardBody>
           </Card>
         </GridItem>

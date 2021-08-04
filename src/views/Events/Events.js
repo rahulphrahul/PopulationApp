@@ -90,7 +90,6 @@ export default function Events() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Venue: "",
     Date: "",
     Status: "Created",
     Image: "",
@@ -123,7 +122,6 @@ export default function Events() {
     setData({
       Id: 0,
       Name: "",
-      Venue: "",
       Date: "",
       Status: "Created",
       Image: "",
@@ -133,8 +131,6 @@ export default function Events() {
   //Function for Validating fields
   function ValidateFields() {
     if (data.Name == "") {
-      return false;
-    } else if (data.Venue == "") {
       return false;
     } else if (data.Date == "") {
       return false;
@@ -161,62 +157,57 @@ export default function Events() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            return true;
+            HandleSave();
           } else {
             setUploaded(false);
-            return false;
           }
         })
         .catch((err) => {
           console.log(err);
           setUploaded(false);
-          return false;
         });
     } else {
       setValidated(false);
-      return false;
     }
   }
 
   //Function to save Data
   function HandleSave() {
-    if (UploadImage()) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEvents/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEvents/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                Venue: "",
-                Date: "",
-                Status: "Created",
-                Image: "",
-                Description: "",
-              });
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          if (json.Success) {
+            setData({
+              Id: 0,
+              Name: "",
+              Date: "",
+              Status: "Created",
+              Image: "",
+              Description: "",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log("Error in insertion");
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -322,23 +313,12 @@ export default function Events() {
 
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
+                  <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Name}
                       labelText="Event Name"
                       id="Name"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Venue}
-                      labelText="Venue"
-                      id="Venue"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -406,7 +386,7 @@ export default function Events() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>

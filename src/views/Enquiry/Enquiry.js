@@ -54,7 +54,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Events() {
+export default function Enquiry() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -90,11 +90,10 @@ export default function Events() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Venue: "",
+    Email: "",
+    Message: "",
     Date: "",
     Status: "Created",
-    Image: "",
-    Description: "",
   });
 
   //PassData for getAll API
@@ -123,24 +122,21 @@ export default function Events() {
     setData({
       Id: 0,
       Name: "",
-      Venue: "",
+      Email: "",
+      Message: "",
       Date: "",
       Status: "Created",
-      Image: "",
-      Description: "",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
     if (data.Name == "") {
       return false;
-    } else if (data.Venue == "") {
+    } else if (data.Email == "") {
       return false;
     } else if (data.Date == "") {
       return false;
-    } else if (data.Image == "") {
-      return false;
-    } else if (data.Description == "") {
+    } else if (data.Message == "") {
       return false;
     } else return true;
   }
@@ -161,58 +157,62 @@ export default function Events() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            HandleSave();
+            return true;
           } else {
             setUploaded(false);
+            return false;
           }
         })
         .catch((err) => {
           console.log(err);
           setUploaded(false);
+          return false;
         });
     } else {
       setValidated(false);
+      return false;
     }
   }
 
   //Function to save Data
   function HandleSave() {
-    if (ValidateFields()) {
-      setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreatePublications/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
-        .then((response) => response.json())
-
-        .then((json) => {
-          if (json.Success) {
-            setData({
-              Id: 0,
-              Name: "",
-              Venue: "",
-              Date: "",
-              Status: "Created",
-              Image: "",
-              Description: "",
-            });
-            setEmpty(false);
-            showSavedNotification();
-          } else {
-            console.log("Error in insertion");
+    if (UploadImage()) {
+      if (ValidateFields()) {
+        setValidated(true);
+        fetch(
+          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEnquiry/",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
           }
-        });
-    } else {
-      setValidated(false);
+        )
+          .then((response) => response.json())
+
+          .then((json) => {
+            if (json.Success) {
+              setData({
+                Id: 0,
+                Name: "",
+                Email: "",
+                Message: "",
+                Date: "",
+                Status: "Created",
+              });
+              setEmpty(false);
+              showSavedNotification();
+            } else {
+              console.log("Error in insertion");
+            }
+          });
+      } else {
+        setValidated(false);
+      }
+      setUploaded(false);
     }
-    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -220,7 +220,7 @@ export default function Events() {
 
     //API call for get latest 10 elements
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllPublications/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllEnquiry/",
       {
         method: "POST",
         headers: {
@@ -242,7 +242,7 @@ export default function Events() {
     if (deletee.length != 0) {
       setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeletePublications/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteEnquiry/",
         {
           method: "POST",
           headers: {
@@ -266,7 +266,7 @@ export default function Events() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetPublicationsById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetEnquiryById/",
         {
           method: "POST",
           headers: {
@@ -294,7 +294,7 @@ export default function Events() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Enquiry Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -303,7 +303,7 @@ export default function Events() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Enquiry Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -313,9 +313,9 @@ export default function Events() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Enquiry</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
+                  Enter the Enquiry details below and hit Save
                 </p>
               </CardHeader>
 
@@ -325,15 +325,42 @@ export default function Events() {
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Name}
-                      labelText="Name"
+                      labelText="Student Name"
                       id="Name"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Email}
+                      labelText="Email"
+                      id="Email"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
 
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Message}
+                      labelText="Enter the Message.."
+                      id="Message"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        multiline: true,
+                        rows: 5,
+                      }}
+                    />
+                  </GridItem>
+
+                  <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Date}
@@ -344,24 +371,8 @@ export default function Events() {
                       }}
                     />
                   </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the event.."
-                      id="Description"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={5} md={6}>
+
+                  <GridItem xs={12} sm={5} md={5}>
                     {" "}
                     <CustomFileInput
                       setFiles={setFiles}
@@ -394,7 +405,7 @@ export default function Events() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={UploadImage} color="info">
+                <Button onClick={HandleSave} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -406,9 +417,9 @@ export default function Events() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>List Of All Enquirys</h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All Enquirys are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
@@ -421,6 +432,7 @@ export default function Events() {
                     tableHead={[
                       "ID",
                       "Name",
+                      "Venue",
                       "Date",
                       "Status",
                       "Image",

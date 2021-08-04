@@ -5,7 +5,6 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
-import Unarchive from "@material-ui/icons/Unarchive";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
@@ -20,6 +19,11 @@ import Subjects from "views/Subjects/Subjects";
 import Semester from "views/Semester/Semester";
 import InternalMarks from "views/InternalMarks/InternalMarks";
 import InternalsNotification from "views/InternalsNotification/InternalsNotification";
+import Placements from "views/Placements/Placements";
+import Enquiry from "views/Enquiry/Enquiry";
+import Departments from "views/Departments/Departments";
+import Admin from "views/Admin/Admin";
+import Admission from "views/Admission/Admission";
 // core components/views for RTL layout
 
 const dashboardRoutes = [
@@ -42,6 +46,20 @@ const dashboardRoutes = [
     name: "SlideShow",
     icon: "content_paste",
     component: Slideshow,
+    layout: "/admin",
+  },
+  {
+    path: "/admission",
+    name: "Admission",
+    icon: "content_paste",
+    component: Admission,
+    layout: "/admin",
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    icon: LibraryBooks,
+    component: Admin,
     layout: "/admin",
   },
   {
@@ -86,12 +104,7 @@ const dashboardRoutes = [
     component: Semester,
     layout: "/admin",
   },
-  {
-    path: "/upgrade-to-pro",
-    name: "Logout",
-    icon: Unarchive,
-    layout: "/admin",
-  },
+
   {
     path: "/students",
     name: "Students",
@@ -118,6 +131,27 @@ const dashboardRoutes = [
     name: "Internal Marks",
     icon: Notifications,
     component: InternalMarks,
+    layout: "/admin",
+  },
+  {
+    path: "/placements",
+    name: "Placements",
+    icon: Notifications,
+    component: Placements,
+    layout: "/admin",
+  },
+  {
+    path: "/enquiry",
+    name: "Enquiry",
+    icon: Notifications,
+    component: Enquiry,
+    layout: "/admin",
+  },
+  {
+    path: "/departments",
+    name: "Departments",
+    icon: Notifications,
+    component: Departments,
     layout: "/admin",
   },
 ];

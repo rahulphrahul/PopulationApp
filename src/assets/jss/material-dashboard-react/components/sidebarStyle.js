@@ -129,6 +129,7 @@ const sidebarStyle = (theme) => ({
     },
   },
   list: {
+    overflow: "auto",
     marginTop: "20px",
     paddingLeft: "0",
     paddingTop: "0",

@@ -54,7 +54,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Events() {
+export default function Admin() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -89,12 +89,11 @@ export default function Events() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    Name: "",
-    Venue: "",
-    Date: "",
+    FullName: "",
+    Email: "",
     Status: "Created",
     Image: "",
-    Description: "",
+    Password: "",
   });
 
   //PassData for getAll API
@@ -122,25 +121,29 @@ export default function Events() {
   function HandleClear() {
     setData({
       Id: 0,
-      Name: "",
-      Venue: "",
-      Date: "",
+      FullName: "",
+      Email: "",
       Status: "Created",
       Image: "",
-      Description: "",
+      Password: "",
+      Mobile: "",
+      Gender: "",
+      DOB: "",
+      Address: "",
+      AreaOfInterest: "",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
+    if (data.FullName == "") {
       return false;
-    } else if (data.Venue == "") {
+    } else if (data.Email == "") {
       return false;
-    } else if (data.Date == "") {
+    } else if (data.Status == "") {
       return false;
     } else if (data.Image == "") {
       return false;
-    } else if (data.Description == "") {
+    } else if (data.Password == "") {
       return false;
     } else return true;
   }
@@ -180,7 +183,7 @@ export default function Events() {
     if (ValidateFields()) {
       setValidated(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreatePublications/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateAdminDetails/",
         {
           method: "POST",
           headers: {
@@ -196,12 +199,11 @@ export default function Events() {
           if (json.Success) {
             setData({
               Id: 0,
-              Name: "",
-              Venue: "",
-              Date: "",
+              FullName: "",
+              Email: "",
               Status: "Created",
               Image: "",
-              Description: "",
+              Password: "",
             });
             setEmpty(false);
             showSavedNotification();
@@ -220,7 +222,7 @@ export default function Events() {
 
     //API call for get latest 10 elements
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllPublications/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllAdminDetails/",
       {
         method: "POST",
         headers: {
@@ -242,7 +244,7 @@ export default function Events() {
     if (deletee.length != 0) {
       setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeletePublications/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteAdminDetails/",
         {
           method: "POST",
           headers: {
@@ -266,7 +268,7 @@ export default function Events() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetPublicationsById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAdminDetailsById/",
         {
           method: "POST",
           headers: {
@@ -313,10 +315,8 @@ export default function Events() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
-                <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
-                </p>
+                <h4 className={classes.cardTitleWhite}>Admin</h4>
+                <p className={classes.cardCategoryWhite}>Details</p>
               </CardHeader>
 
               <CardBody>
@@ -324,44 +324,40 @@ export default function Events() {
                   <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Name}
-                      labelText="Name"
-                      id="Name"
+                      value={data.FullName}
+                      labelText="FullName"
+                      id="FullName"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
-
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Date}
-                      labelText="Date"
-                      id="Date"
+                      value={data.Email}
+                      labelText="Email"
+                      id="Email"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
                 </GridContainer>
+
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
+                  <GridItem xs={12} sm={12} md={5}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the event.."
-                      id="Description"
+                      value={data.Password}
+                      labelText="Password"
+                      id="Password"
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
-                      }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={5} md={6}>
+                  <GridItem xs={12} sm={5} md={5}>
                     {" "}
                     <CustomFileInput
                       setFiles={setFiles}
@@ -420,7 +416,8 @@ export default function Events() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "Name",
+                      "FullName",
+                      "Venue",
                       "Date",
                       "Status",
                       "Image",

@@ -15,6 +15,7 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 import axios from "axios";
 import Danger from "components/Typography/Danger";
+import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
 import AttachFile from "@material-ui/icons/AttachFile";
@@ -63,6 +64,9 @@ export default function Slideshow() {
   const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
   const [uploaded, setUploaded] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [deleting, setDeleting] = React.useState(false);
+  const [empty, setEmpty] = React.useState(false);
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -104,7 +108,7 @@ export default function Slideshow() {
     Id: deletee,
     DeletedBy: 2,
   };
-  //PassData for getting Slideshow by id
+  //PassData for getting event by id
   let passEdit = {
     Id: edit,
   };
@@ -140,93 +144,105 @@ export default function Slideshow() {
       return false;
     } else return true;
   }
-  //function to upload image
+  //function to upload
   function UploadImage() {
-    let form_data = new FormData();
-    form_data.append("File", files[0]);
-    let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
-    axios
-      .post(url, form_data, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        if (res.data.Success) {
-          data.Image = res.data.Data[0];
-          setUploaded(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    return true;
+    if (files != null) {
+      setValidated(true);
+      let form_data = new FormData();
+      form_data.append("File", files[0]);
+      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
+      axios
+        .post(url, form_data, {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          if (res.data.Success) {
+            data.Image = res.data.Data[0];
+            setUploaded(true);
+            HandleSave();
+          } else {
+            setUploaded(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setUploaded(false);
+        });
+    } else {
+      setValidated(false);
+    }
   }
 
   //Function to save Data
   function HandleSave() {
-    UploadImage();
-    if (uploaded) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEvents/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateSlideshow/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                Venue: "",
-                Date: "",
-                Status: "Created",
-                Image: "",
-                Description: "",
-              });
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          if (json.Success) {
+            setData({
+              Id: 0,
+              Name: "",
+              Venue: "",
+              Date: "",
+              Status: "Created",
+              Image: "",
+              Description: "",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log("Error in insertion");
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
     console.log("Detele" + deletee + " edit" + edit);
 
     //API call for get latest 10 elements
-    fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllEvents/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(passData),
-    })
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSlideshow/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData),
+      }
+    )
       .then((response) => response.json())
 
       .then((json) => {
         setEvents(json.Data);
+        if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
       });
 
     //API call for Delete a row
     if (deletee.length != 0) {
+      setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteEvents/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteSLideshow/",
         {
           method: "POST",
           headers: {
@@ -242,14 +258,15 @@ export default function Slideshow() {
           if (json.Success) {
             setDelete([]);
             showDeletedNotification();
+            setDeleting(false);
           }
         });
     }
 
-    //API call to get Slideshow By ID to edit a row
+    //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetEventsById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetSlideshowById/",
         {
           method: "POST",
           headers: {
@@ -277,7 +294,7 @@ export default function Slideshow() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Slideshow Saved Successfully"
+        message="Event Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -286,7 +303,7 @@ export default function Slideshow() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Slideshow Deleted Successfully"
+        message="Event Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -388,7 +405,7 @@ export default function Slideshow() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -400,34 +417,41 @@ export default function Slideshow() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>List Of All slideshow</h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All slideshow are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
-              <Table
-                tableHeaderColor="info"
-                tableHead={[
-                  "ID",
-                  "Name",
-                  "Venue",
-                  "Date",
-                  "Status",
-                  "Image",
-                  "Description",
-                  "Created By",
-                  "Created Date",
-                  "Modified By",
-                  "Modified Date",
-                  "Deteled By",
-                  "Deleted Date",
-                  "Actions",
-                ]}
-                tableData={events}
-                setEdit={setEdit}
-                setDelete={setDelete}
-              />
+              <LoadingOverlay active={deleting} spinner text="Please Wait..">
+                {empty ? (
+                  <p>empty</p>
+                ) : (
+                  <Table
+                    tableHeaderColor="info"
+                    tableHead={[
+                      "ID",
+                      "Name",
+                      "Venue",
+                      "Date",
+                      "Status",
+                      "Image",
+                      "Description",
+                      "Created By",
+                      "Created Date",
+                      "Modified By",
+                      "Modified Date",
+                      "Deteled By",
+                      "Deleted Date",
+                      "Actions",
+                    ]}
+                    tableData={events}
+                    setEdit={setEdit}
+                    setDelete={setDelete}
+                    loading={loading}
+                  />
+                )}
+              </LoadingOverlay>
             </CardBody>
           </Card>
         </GridItem>

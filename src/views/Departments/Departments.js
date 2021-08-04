@@ -54,7 +54,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Events() {
+export default function Departments() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -90,8 +90,7 @@ export default function Events() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Venue: "",
-    Date: "",
+    HOD: "",
     Status: "Created",
     Image: "",
     Description: "",
@@ -123,8 +122,7 @@ export default function Events() {
     setData({
       Id: 0,
       Name: "",
-      Venue: "",
-      Date: "",
+      HOD: "",
       Status: "Created",
       Image: "",
       Description: "",
@@ -134,9 +132,9 @@ export default function Events() {
   function ValidateFields() {
     if (data.Name == "") {
       return false;
-    } else if (data.Venue == "") {
+    } else if (data.HOD == "") {
       return false;
-    } else if (data.Date == "") {
+    } else if (data.Status == "") {
       return false;
     } else if (data.Image == "") {
       return false;
@@ -161,58 +159,62 @@ export default function Events() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            HandleSave();
+            return true;
           } else {
             setUploaded(false);
+            return false;
           }
         })
         .catch((err) => {
           console.log(err);
           setUploaded(false);
+          return false;
         });
     } else {
       setValidated(false);
+      return false;
     }
   }
 
   //Function to save Data
   function HandleSave() {
-    if (ValidateFields()) {
-      setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreatePublications/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
-        .then((response) => response.json())
-
-        .then((json) => {
-          if (json.Success) {
-            setData({
-              Id: 0,
-              Name: "",
-              Venue: "",
-              Date: "",
-              Status: "Created",
-              Image: "",
-              Description: "",
-            });
-            setEmpty(false);
-            showSavedNotification();
-          } else {
-            console.log("Error in insertion");
+    if (UploadImage()) {
+      if (ValidateFields()) {
+        setValidated(true);
+        fetch(
+          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateDepartments/",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
           }
-        });
-    } else {
-      setValidated(false);
+        )
+          .then((response) => response.json())
+
+          .then((json) => {
+            if (json.Success) {
+              setData({
+                Id: 0,
+                Name: "",
+                HOD: "",
+                Status: "Created",
+                Image: "",
+                Description: "",
+              });
+              setEmpty(false);
+              showSavedNotification();
+            } else {
+              console.log("Error in insertion");
+            }
+          });
+      } else {
+        setValidated(false);
+      }
+      setUploaded(false);
     }
-    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -220,7 +222,7 @@ export default function Events() {
 
     //API call for get latest 10 elements
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllPublications/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllDepartments/",
       {
         method: "POST",
         headers: {
@@ -242,7 +244,7 @@ export default function Events() {
     if (deletee.length != 0) {
       setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeletePublications/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteDepartments/",
         {
           method: "POST",
           headers: {
@@ -266,7 +268,7 @@ export default function Events() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetPublicationsById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetDepartmentsById/",
         {
           method: "POST",
           headers: {
@@ -313,9 +315,9 @@ export default function Events() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Departments</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
+                  Enter the Department details below and hit Save
                 </p>
               </CardHeader>
 
@@ -325,32 +327,32 @@ export default function Events() {
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Name}
-                      labelText="Name"
+                      labelText="Department Name"
                       id="Name"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
-
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Date}
-                      labelText="Date"
-                      id="Date"
+                      value={data.HOD}
+                      labelText="HOD Name"
+                      id="HOD"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
                 </GridContainer>
+
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Description}
-                      labelText="Enter a description about the event.."
+                      labelText="Enter a description about the Department.."
                       id="Description"
                       formControlProps={{
                         fullWidth: true,
@@ -361,7 +363,7 @@ export default function Events() {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={5} md={6}>
+                  <GridItem xs={12} sm={5} md={5}>
                     {" "}
                     <CustomFileInput
                       setFiles={setFiles}
@@ -394,7 +396,7 @@ export default function Events() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={UploadImage} color="info">
+                <Button onClick={HandleSave} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -421,6 +423,7 @@ export default function Events() {
                     tableHead={[
                       "ID",
                       "Name",
+                      "Venue",
                       "Date",
                       "Status",
                       "Image",

@@ -54,7 +54,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Events() {
+export default function Admission() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -89,12 +89,17 @@ export default function Events() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    Name: "",
-    Venue: "",
-    Date: "",
+    FName: "",
+    LName: "",
+    Mobile: "",
+    Email: "",
+    Gender: "",
+    DOB: "",
+    Pwd: "",
+    Gur_Name: "",
+    Gur_Mobile: "",
     Status: "Created",
     Image: "",
-    Description: "",
   });
 
   //PassData for getAll API
@@ -122,25 +127,40 @@ export default function Events() {
   function HandleClear() {
     setData({
       Id: 0,
-      Name: "",
-      Venue: "",
-      Date: "",
+      FName: "",
+      LName: "",
+      Mobile: "",
+      Email: "",
+      Gender: "",
+      DOB: "",
+      Pwd: "",
+      Gur_Name: "",
+      Gur_Mobile: "",
       Status: "Created",
       Image: "",
-      Description: "",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
+    if (data.FName == "") {
       return false;
-    } else if (data.Venue == "") {
+    } else if (data.LName == "") {
       return false;
-    } else if (data.Date == "") {
+    } else if (data.Mobile == "") {
+      return false;
+    } else if (data.Email == "") {
+      return false;
+    } else if (data.Gender == "") {
+      return false;
+    } else if (data.DOB == "") {
+      return false;
+    } else if (data.Pwd == "") {
+      return false;
+    } else if (data.Gur_Name == "") {
+      return false;
+    } else if (data.Gur_Mobile == "") {
       return false;
     } else if (data.Image == "") {
-      return false;
-    } else if (data.Description == "") {
       return false;
     } else return true;
   }
@@ -161,58 +181,68 @@ export default function Events() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            HandleSave();
+            return true;
           } else {
             setUploaded(false);
+            return false;
           }
         })
         .catch((err) => {
           console.log(err);
           setUploaded(false);
+          return false;
         });
     } else {
       setValidated(false);
+      return false;
     }
   }
 
   //Function to save Data
   function HandleSave() {
-    if (ValidateFields()) {
-      setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreatePublications/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
-        .then((response) => response.json())
-
-        .then((json) => {
-          if (json.Success) {
-            setData({
-              Id: 0,
-              Name: "",
-              Venue: "",
-              Date: "",
-              Status: "Created",
-              Image: "",
-              Description: "",
-            });
-            setEmpty(false);
-            showSavedNotification();
-          } else {
-            console.log("Error in insertion");
+    if (UploadImage()) {
+      if (ValidateFields()) {
+        setValidated(true);
+        fetch(
+          "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
           }
-        });
-    } else {
-      setValidated(false);
+        )
+          .then((response) => response.json())
+
+          .then((json) => {
+            if (json.Success) {
+              setData({
+                Id: 0,
+                FName: "",
+                LName: "",
+                Mobile: "",
+                Email: "",
+                Gender: "",
+                DOB: "",
+                Pwd: "",
+                Gur_Name: "",
+                Gur_Mobile: "",
+                Status: "Created",
+                Image: "",
+              });
+              setEmpty(false);
+              showSavedNotification();
+            } else {
+              console.log("Error in insertion");
+            }
+          });
+      } else {
+        setValidated(false);
+      }
+      setUploaded(false);
     }
-    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -220,7 +250,7 @@ export default function Events() {
 
     //API call for get latest 10 elements
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllPublications/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAllAdmissionDetails/",
       {
         method: "POST",
         headers: {
@@ -242,7 +272,7 @@ export default function Events() {
     if (deletee.length != 0) {
       setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeletePublications/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/DeleteAdmissionDetails/",
         {
           method: "POST",
           headers: {
@@ -266,7 +296,7 @@ export default function Events() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetPublicationsById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsById/",
         {
           method: "POST",
           headers: {
@@ -313,32 +343,89 @@ export default function Events() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Admission</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
+                  Enter the Admission details below and hit Save
                 </p>
               </CardHeader>
 
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Name}
-                      labelText="Name"
-                      id="Name"
+                      value={data.FName}
+                      labelText="First Name"
+                      id="FName"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.LName}
+                      labelText="Last Name"
+                      id="LName"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Mobile}
+                      labelText="Mobile"
+                      id="Mobile"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                </GridContainer>
 
+                <GridContainer>
                   <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Date}
-                      labelText="Date"
-                      id="Date"
+                      value={data.Email}
+                      labelText="Email ID"
+                      id="Email"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Gender}
+                      labelText="Gender"
+                      id="Gender"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.DOB}
+                      labelText="DOB"
+                      id="DOB"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Pwd}
+                      labelText="Pwd"
+                      id="Pwd"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -349,19 +436,28 @@ export default function Events() {
                   <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the event.."
-                      id="Description"
+                      value={data.Gur_Name}
+                      labelText="Guardian Name"
+                      id="Gur_Name"
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
+                    />
+                  </GridItem>
+
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Gur_Mobile}
+                      labelText="Guardian Mobile"
+                      id="Gur_Mobile"
+                      formControlProps={{
+                        fullWidth: true,
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={5} md={6}>
+
+                  <GridItem xs={12} sm={5} md={5}>
                     {" "}
                     <CustomFileInput
                       setFiles={setFiles}
@@ -394,7 +490,7 @@ export default function Events() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={UploadImage} color="info">
+                <Button onClick={HandleSave} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -406,9 +502,9 @@ export default function Events() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>List Of All Admission</h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All Admissions are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
@@ -419,12 +515,18 @@ export default function Events() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
-                      "ID",
-                      "Name",
-                      "Date",
+                      "Id",
+                      "FName",
+                      "LName",
+                      "Mobile",
+                      "Email",
+                      "Gender",
+                      "DOB",
+                      "Pwd",
+                      "Gur_Name",
+                      "Gur_Mobile",
                       "Status",
                       "Image",
-                      "Description",
                       "Created By",
                       "Created Date",
                       "Modified By",

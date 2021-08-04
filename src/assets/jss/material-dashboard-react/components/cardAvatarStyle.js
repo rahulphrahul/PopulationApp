@@ -7,6 +7,7 @@ const cardAvatarStyle = {
       height: "auto",
     },
   },
+
   cardAvatarProfile: {
     maxWidth: "130px",
     maxHeight: "130px",

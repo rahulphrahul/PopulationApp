@@ -15,6 +15,7 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 import axios from "axios";
 import Danger from "components/Typography/Danger";
+import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
 import AttachFile from "@material-ui/icons/AttachFile";
@@ -63,6 +64,9 @@ export default function InternalsNotification() {
   const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
   const [uploaded, setUploaded] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [deleting, setDeleting] = React.useState(false);
+  const [empty, setEmpty] = React.useState(false);
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -85,11 +89,14 @@ export default function InternalsNotification() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    Name: "",
-    Venue: "",
     Date: "",
-    Status: "Created",
-    Image: "",
+    CourseId: null,
+    SemesterId: null,
+    CourseCode: "",
+    SemesterNo: null,
+    Note: "",
+    Status: "Active",
+    Files: "",
     Description: "",
   });
 
@@ -118,29 +125,38 @@ export default function InternalsNotification() {
   function HandleClear() {
     setData({
       Id: 0,
-      Name: "",
-      Venue: "",
       Date: "",
-      Status: "Created",
-      Image: "",
+      CourseId: "",
+      SemesterId: "",
+      CourseCode: "",
+      SemesterNo: "",
+      Note: "",
+      Status: "Active",
+      Files: "",
       Description: "",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
-      return false;
-    } else if (data.Venue == "") {
+    if (data.CourseId == null) {
       return false;
     } else if (data.Date == "") {
       return false;
-    } else if (data.Image == "") {
+    } else if (data.SemesterId == null) {
+      return false;
+    } else if (data.CourseCode == "") {
+      return false;
+    } else if (data.SemesterNo == null) {
+      return false;
+    } else if (data.Note == "") {
+      return false;
+    } else if (data.Files == "") {
       return false;
     } else if (data.Description == "") {
       return false;
     } else return true;
   }
-  //function to upload image
+  //function to upload
   function UploadImage() {
     if (files != null) {
       setValidated(true);
@@ -157,10 +173,14 @@ export default function InternalsNotification() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
+            HandleSave();
+          } else {
+            setUploaded(false);
           }
         })
         .catch((err) => {
           console.log(err);
+          setUploaded(false);
         });
     } else {
       setValidated(false);
@@ -169,68 +189,75 @@ export default function InternalsNotification() {
 
   //Function to save Data
   function HandleSave() {
-    UploadImage();
-    if (uploaded) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEvents/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateInternalNotification/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                Venue: "",
-                Date: "",
-                Status: "Created",
-                Image: "",
-                Description: "",
-              });
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          if (json.Success) {
+            setData({
+              Id: 0,
+              Date: "",
+              CourseId: "",
+              SemesterId: "",
+              CourseCode: "",
+              SemesterNo: "",
+              Note: "",
+              Status: "Active",
+              Files: "",
+              Description: "",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log(json);
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
     console.log("Detele" + deletee + " edit" + edit);
 
     //API call for get latest 10 elements
-    fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllEvents/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(passData),
-    })
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAllInternalNotification/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData),
+      }
+    )
       .then((response) => response.json())
 
       .then((json) => {
         setEvents(json.Data);
+        if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
       });
 
     //API call for Delete a row
     if (deletee.length != 0) {
+      setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteEvents/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/DeleteInternalNotification/",
         {
           method: "POST",
           headers: {
@@ -246,6 +273,7 @@ export default function InternalsNotification() {
           if (json.Success) {
             setDelete([]);
             showDeletedNotification();
+            setDeleting(false);
           }
         });
     }
@@ -253,7 +281,7 @@ export default function InternalsNotification() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetEventsById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetInternalNotificationById/",
         {
           method: "POST",
           headers: {
@@ -308,23 +336,56 @@ export default function InternalsNotification() {
 
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Name}
-                      labelText="Event Name"
-                      id="Name"
+                      value={data.CourseId}
+                      labelText="Course Id"
+                      id="CourseId"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Venue}
-                      labelText="Venue"
-                      id="Venue"
+                      value={data.SemesterId}
+                      labelText="Semester Id"
+                      id="SemesterId"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.CourseCode}
+                      labelText="Course Code"
+                      id="CourseCode"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.SemesterNo}
+                      labelText="Semester No"
+                      id="SemesterNo"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Note}
+                      labelText="Note"
+                      id="Note"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -359,7 +420,7 @@ export default function InternalsNotification() {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={5} md={5}>
+                  <GridItem xs={12} sm={5} md={6}>
                     {" "}
                     <CustomFileInput
                       setFiles={setFiles}
@@ -392,7 +453,7 @@ export default function InternalsNotification() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -410,28 +471,35 @@ export default function InternalsNotification() {
               </p>
             </CardHeader>
             <CardBody>
-              <Table
-                tableHeaderColor="info"
-                tableHead={[
-                  "ID",
-                  "Name",
-                  "Venue",
-                  "Date",
-                  "Status",
-                  "Image",
-                  "Description",
-                  "Created By",
-                  "Created Date",
-                  "Modified By",
-                  "Modified Date",
-                  "Deteled By",
-                  "Deleted Date",
-                  "Actions",
-                ]}
-                tableData={events}
-                setEdit={setEdit}
-                setDelete={setDelete}
-              />
+              <LoadingOverlay active={deleting} spinner text="Please Wait..">
+                {empty ? (
+                  <p>empty</p>
+                ) : (
+                  <Table
+                    tableHeaderColor="info"
+                    tableHead={[
+                      "ID",
+                      "CourseId",
+                      "Venue",
+                      "Date",
+                      "Status",
+                      "Image",
+                      "Description",
+                      "Created By",
+                      "Created Date",
+                      "Modified By",
+                      "Modified Date",
+                      "Deteled By",
+                      "Deleted Date",
+                      "Actions",
+                    ]}
+                    tableData={events}
+                    setEdit={setEdit}
+                    setDelete={setDelete}
+                    loading={loading}
+                  />
+                )}
+              </LoadingOverlay>
             </CardBody>
           </Card>
         </GridItem>

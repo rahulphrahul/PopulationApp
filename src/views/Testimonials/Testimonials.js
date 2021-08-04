@@ -15,6 +15,7 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 import axios from "axios";
 import Danger from "components/Typography/Danger";
+import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
 import AttachFile from "@material-ui/icons/AttachFile";
@@ -53,16 +54,19 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Testimonials() {
+export default function Events() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
   const [edit, setEdit] = React.useState([]);
   const [deletee, setDelete] = React.useState([]);
-  const [testimonial, setTestimonial] = React.useState([]);
+  const [events, setEvents] = React.useState([]);
   const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
   const [uploaded, setUploaded] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [deleting, setDeleting] = React.useState(false);
+  const [empty, setEmpty] = React.useState(false);
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -104,7 +108,7 @@ export default function Testimonials() {
     Id: deletee,
     DeletedBy: 2,
   };
-  //PassData for getting Testimonial by id
+  //PassData for getting event by id
   let passEdit = {
     Id: edit,
   };
@@ -130,8 +134,6 @@ export default function Testimonials() {
   function ValidateFields() {
     if (data.Name == "") {
       return false;
-    } else if (data.Message == "") {
-      return false;
     } else if (data.Date == "") {
       return false;
     } else if (data.Image == "") {
@@ -140,7 +142,7 @@ export default function Testimonials() {
       return false;
     } else return true;
   }
-  //function to upload image
+  //function to upload
   function UploadImage() {
     if (files != null) {
       setValidated(true);
@@ -157,12 +159,11 @@ export default function Testimonials() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
+            HandleSave();
+          } else {
+            setUploaded(false);
           }
-        })
-        .catch((err) => {
-          console.log(err);
         });
-      return true;
     } else {
       setValidated(false);
     }
@@ -170,44 +171,42 @@ export default function Testimonials() {
 
   //Function to save Data
   function HandleSave() {
-    UploadImage();
-    if (uploaded) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateTestimonials/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateTestimonials/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                Message: "",
-                Date: "",
-                Status: "Created",
-                Image: "",
-                Description: "",
-              });
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          if (json.Success) {
+            setData({
+              Id: 0,
+              Name: "",
+              Message: "",
+              Date: "",
+              Status: "Created",
+              Image: "",
+              Description: "",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log("Error in insertion");
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -228,11 +227,14 @@ export default function Testimonials() {
       .then((response) => response.json())
 
       .then((json) => {
-        setTestimonial(json.Data);
+        setEvents(json.Data);
+        if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
       });
 
     //API call for Delete a row
     if (deletee.length != 0) {
+      setDeleting(true);
       fetch(
         "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteTestimonials/",
         {
@@ -250,11 +252,12 @@ export default function Testimonials() {
           if (json.Success) {
             setDelete([]);
             showDeletedNotification();
+            setDeleting(false);
           }
         });
     }
 
-    //API call to get Testimonial By ID to edit a row
+    //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
         "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetTestimonialsById/",
@@ -285,7 +288,7 @@ export default function Testimonials() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Testimonial Saved Successfully"
+        message="Event Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -294,7 +297,7 @@ export default function Testimonials() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Testimonial Deleted Successfully"
+        message="Event Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -304,9 +307,9 @@ export default function Testimonials() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Testimonial</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Testimonials</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Testimonial details below and hit Save
+                  Enter the Testimonials details below and hit Save
                 </p>
               </CardHeader>
 
@@ -363,6 +366,7 @@ export default function Testimonials() {
                       }}
                     />
                   </GridItem>
+
                   <GridItem xs={12} sm={5} md={5}>
                     {" "}
                     <CustomFileInput
@@ -396,7 +400,7 @@ export default function Testimonials() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -408,34 +412,43 @@ export default function Testimonials() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>
+                List Of All Testimonials
+              </h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All Testimonials are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
-              <Table
-                tableHeaderColor="info"
-                tableHead={[
-                  "ID",
-                  "Name",
-                  "Message",
-                  "Date",
-                  "Status",
-                  "Image",
-                  "Description",
-                  "Created By",
-                  "Created Date",
-                  "Modified By",
-                  "Modified Date",
-                  "Deteled By",
-                  "Deleted Date",
-                  "Actions",
-                ]}
-                tableData={testimonial}
-                setEdit={setEdit}
-                setDelete={setDelete}
-              />
+              <LoadingOverlay active={deleting} spinner text="Please Wait..">
+                {empty ? (
+                  <p>empty</p>
+                ) : (
+                  <Table
+                    tableHeaderColor="info"
+                    tableHead={[
+                      "ID",
+                      "Name",
+                      "Venue",
+                      "Date",
+                      "Status",
+                      "Image",
+                      "Description",
+                      "Created By",
+                      "Created Date",
+                      "Modified By",
+                      "Modified Date",
+                      "Deteled By",
+                      "Deleted Date",
+                      "Actions",
+                    ]}
+                    tableData={events}
+                    setEdit={setEdit}
+                    setDelete={setDelete}
+                    loading={loading}
+                  />
+                )}
+              </LoadingOverlay>
             </CardBody>
           </Card>
         </GridItem>
