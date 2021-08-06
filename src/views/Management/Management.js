@@ -20,7 +20,6 @@ import LoadingOverlay from "react-loading-overlay";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
-import SingleSelect from "components/SingleSelect";
 
 // import { data } from "./data.json";
 const styles = {
@@ -55,7 +54,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Semester() {
+export default function Management() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -68,15 +67,6 @@ export default function Semester() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
-  const [Courses, setCourses] = React.useState([]);
-  // const [courseName, setCourseName] = React.useState("");
-  // const [courseId, setCourseId] = React.useState(null);
-
-  //Converting json response to passdata for react select
-  const CourseList = Courses.map((d) => ({
-    value: d.Id,
-    label: d.CourseName,
-  }));
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -99,26 +89,19 @@ export default function Semester() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    SemesterNo: "",
-    CourseId: null,
-    CourseName: "",
-    SemesterDuration: "",
+    Name: "",
+    Post: "",
+    Image: "1",
     Status: "Created",
-    Image: "",
+    Description: "",
   });
-
-  console.log(data.CourseName, data.CourseId);
 
   //PassData for getAll API
   let passData = {
     PageIndex: 0,
     PageSize: 10,
   };
-  //PassData for get all semesters and courses for dropdown
-  let passData1 = {
-    PageIndex: 0,
-    PageSize: 0,
-  };
+
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -138,22 +121,22 @@ export default function Semester() {
   function HandleClear() {
     setData({
       Id: 0,
-      SemesterNo: "",
-      CourseName: "",
-      SemesterDuration: "",
-      Status: "Created",
+      Name: "",
+      Post: "",
       Image: "",
+      Status: "Created",
+      Description: "",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.SemesterNo == "") {
+    if (data.Name == "") {
       return false;
-    } else if (data.CourseDuration == "") {
+    } else if (data.Post == "") {
       return false;
     } else if (data.Image == "") {
       return false;
-    } else if (data.CourseName == "") {
+    } else if (data.Description == "") {
       return false;
     } else return true;
   }
@@ -174,7 +157,6 @@ export default function Semester() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            console.log(data);
             HandleSave();
           } else {
             setUploaded(false);
@@ -194,7 +176,7 @@ export default function Semester() {
     if (ValidateFields()) {
       setValidated(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateSemester/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateManagement/",
         {
           method: "POST",
           headers: {
@@ -207,17 +189,14 @@ export default function Semester() {
         .then((response) => response.json())
 
         .then((json) => {
-          console.log(json);
-          console.log("data:", data);
           if (json.Success) {
             setData({
               Id: 0,
-              SemesterNo: "",
-              CourseId: "",
-              CourseName: "",
-              SemesterDuration: "",
+              Name: "",
+              Post: "",
+              Image: "1",
               Status: "Created",
-              Image: "",
+              Description: "",
             });
             setEmpty(false);
             showSavedNotification();
@@ -231,27 +210,12 @@ export default function Semester() {
     setUploaded(false);
   }
   useEffect(() => {
-    //API call for get all course names to dropedown
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData1),
-      }
-    )
-      .then((response) => response.json())
-
-      .then((json) => {
-        if (json.Data.length != 0) setCourses(json.Data);
-      });
+    console.log("componentDidMount");
+    console.log("Detele" + deletee + " edit" + edit);
 
     //API call for get latest 10 elements
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSemester/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllManagement/",
       {
         method: "POST",
         headers: {
@@ -273,7 +237,7 @@ export default function Semester() {
     if (deletee.length != 0) {
       setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteSemester/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteManagement/",
         {
           method: "POST",
           headers: {
@@ -297,7 +261,7 @@ export default function Semester() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetSemesterById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetManagementById/",
         {
           method: "POST",
           headers: {
@@ -325,7 +289,7 @@ export default function Semester() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Semester Saved Successfully"
+        message="Management Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -334,7 +298,7 @@ export default function Semester() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Semester Deleted Successfully"
+        message="Management Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -344,46 +308,54 @@ export default function Semester() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Semester</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Management</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Semester details below and hit Save
+                  Enter the Management details below and hit Save
                 </p>
               </CardHeader>
 
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
+                  <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.SemesterNo}
-                      labelText="Semester Number"
-                      id="SemesterNo"
+                      value={data.Name}
+                      labelText="Name"
+                      id="Name"
                       formControlProps={{
                         fullWidth: true,
                       }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <SingleSelect
-                      noOptionsMessage="Create any course first"
-                      placeholder="Select Course"
-                      Options={CourseList}
-                      setLabel={setData}
-                      setValue={setData}
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.SemesterDuration}
-                      labelText="Semester Duration"
-                      id="SemesterDuration"
+                      value={data.Post}
+                      labelText="Post"
+                      id="Post"
                       formControlProps={{
                         fullWidth: true,
                       }}
                     />
                   </GridItem>
+                </GridContainer>
 
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Description}
+                      labelText="Enter a description about the management.."
+                      id="Description"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        multiline: true,
+                        rows: 5,
+                      }}
+                    />
+                  </GridItem>
                   <GridItem xs={12} sm={5} md={5}>
                     {" "}
                     <CustomFileInput
@@ -429,9 +401,11 @@ export default function Semester() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All semester</h4>
+              <h4 className={classes.cardTitleWhite}>
+                List Of All Managements
+              </h4>
               <p className={classes.cardCategoryWhite}>
-                All Semester are listed below, you can delete or edit them.
+                All managements are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
@@ -442,19 +416,18 @@ export default function Semester() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
-                      "ID",
-                      "SemesterNo",
-                      "CourseName",
-                      "SemesterDuration",
+                      "Id",
+                      "Name",
+                      "Post",
                       "Status",
                       "Image",
+                      "Description",
                       "Created By",
                       "Created Date",
                       "Modified By",
                       "Modified Date",
                       "Deteled By",
                       "Deleted Date",
-                      "CourseId",
                       "Actions",
                     ]}
                     tableData={events}

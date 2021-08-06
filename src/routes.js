@@ -24,6 +24,9 @@ import Enquiry from "views/Enquiry/Enquiry";
 import Departments from "views/Departments/Departments";
 import Admin from "views/Admin/Admin";
 import Admission from "views/Admission/Admission";
+import Clubs from "views/Clubs/Clubs";
+import Facilities from "views/Facilities/Facilities";
+import Management from "views/Management/Management";
 // core components/views for RTL layout
 
 const dashboardRoutes = [
@@ -83,13 +86,7 @@ const dashboardRoutes = [
     component: Gallery,
     layout: "/admin",
   },
-  {
-    path: "/subjects",
-    name: "Subjects",
-    icon: Notifications,
-    component: Subjects,
-    layout: "/admin",
-  },
+
   {
     path: "/courses",
     name: "Courses",
@@ -104,12 +101,39 @@ const dashboardRoutes = [
     component: Semester,
     layout: "/admin",
   },
-
+  {
+    path: "/subjects",
+    name: "Subjects",
+    icon: Notifications,
+    component: Subjects,
+    layout: "/admin",
+  },
   {
     path: "/students",
     name: "Students",
     icon: Notifications,
     component: Students,
+    layout: "/admin",
+  },
+  {
+    path: "/clubs",
+    name: "Clubs",
+    icon: Notifications,
+    component: Clubs,
+    layout: "/admin",
+  },
+  {
+    path: "/facilities",
+    name: "Facilities",
+    icon: Notifications,
+    component: Facilities,
+    layout: "/admin",
+  },
+  {
+    path: "/management",
+    name: "Management",
+    icon: Notifications,
+    component: Management,
     layout: "/admin",
   },
   {

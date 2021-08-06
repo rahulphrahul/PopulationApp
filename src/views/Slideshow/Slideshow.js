@@ -90,11 +90,11 @@ export default function Slideshow() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Venue: "",
-    Date: "",
+    Quote: "",
     Status: "Created",
     Image: "",
-    Description: "",
+    ButtonLink: "",
+    ButtonText: "",
   });
 
   //PassData for getAll API
@@ -123,24 +123,24 @@ export default function Slideshow() {
     setData({
       Id: 0,
       Name: "",
-      Venue: "",
-      Date: "",
+      Quote: "",
       Status: "Created",
       Image: "",
-      Description: "",
+      ButtonLink: "",
+      ButtonText: "",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
     if (data.Name == "") {
       return false;
-    } else if (data.Venue == "") {
-      return false;
-    } else if (data.Date == "") {
+    } else if (data.Quote == "") {
       return false;
     } else if (data.Image == "") {
       return false;
-    } else if (data.Description == "") {
+    } else if (data.ButtonLink == "") {
+      return false;
+    } else if (data.ButtonText == "") {
       return false;
     } else return true;
   }
@@ -180,7 +180,7 @@ export default function Slideshow() {
     if (ValidateFields()) {
       setValidated(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateSlideshow/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Master/CreateCorousal/",
         {
           method: "POST",
           headers: {
@@ -197,11 +197,11 @@ export default function Slideshow() {
             setData({
               Id: 0,
               Name: "",
-              Venue: "",
-              Date: "",
+              Quote: "",
               Status: "Created",
               Image: "",
-              Description: "",
+              ButtonLink: "",
+              ButtonText: "",
             });
             setEmpty(false);
             showSavedNotification();
@@ -220,7 +220,7 @@ export default function Slideshow() {
 
     //API call for get latest 10 elements
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSlideshow/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Master/GetAllCorousal/",
       {
         method: "POST",
         headers: {
@@ -242,7 +242,7 @@ export default function Slideshow() {
     if (deletee.length != 0) {
       setDeleting(true);
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteSLideshow/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Master/DeleteCorousal/",
         {
           method: "POST",
           headers: {
@@ -266,7 +266,7 @@ export default function Slideshow() {
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
       fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetSlideshowById/",
+        "https://rahulrajrahu33.pythonanywhere.com/api/Master/GetCorousalById/",
         {
           method: "POST",
           headers: {
@@ -294,7 +294,7 @@ export default function Slideshow() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Slideshow Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -303,7 +303,7 @@ export default function Slideshow() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Slideshow Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -315,29 +315,18 @@ export default function Slideshow() {
               <CardHeader color="info">
                 <h4 className={classes.cardTitleWhite}>Add New Slideshow</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Slideshow details below and hit Save
+                  Enter the slideshow details below and hit Save
                 </p>
               </CardHeader>
 
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
+                  <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Name}
-                      labelText="Slideshow Name"
+                      labelText="Name"
                       id="Name"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Venue}
-                      labelText="Venue"
-                      id="Venue"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -346,9 +335,9 @@ export default function Slideshow() {
                   <GridItem xs={12} sm={12} md={4}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Date}
-                      labelText="Date"
-                      id="Date"
+                      value={data.Quote}
+                      labelText="Quote"
+                      id="Quote"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -357,22 +346,29 @@ export default function Slideshow() {
                 </GridContainer>
 
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
+                  <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the Slideshow.."
-                      id="Description"
+                      value={data.ButtonLink}
+                      labelText="ButtonLink"
+                      id="ButtonLink"
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.ButtonText}
+                      labelText="ButtonText"
+                      id="ButtonText"
+                      formControlProps={{
+                        fullWidth: true,
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={5} md={5}>
+                  <GridItem xs={12} sm={5} md={4}>
                     {" "}
                     <CustomFileInput
                       setFiles={setFiles}
@@ -417,7 +413,7 @@ export default function Slideshow() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All slideshow</h4>
+              <h4 className={classes.cardTitleWhite}>List Of All Slideshows</h4>
               <p className={classes.cardCategoryWhite}>
                 All slideshow are listed below, you can delete or edit them.
               </p>
@@ -432,11 +428,11 @@ export default function Slideshow() {
                     tableHead={[
                       "ID",
                       "Name",
-                      "Venue",
-                      "Date",
+                      "Quote",
                       "Status",
                       "Image",
-                      "Description",
+                      "ButtonLink",
+                      "ButtonText",
                       "Created By",
                       "Created Date",
                       "Modified By",

@@ -69,7 +69,15 @@ export default function Subjects() {
   const [empty, setEmpty] = React.useState(false);
   const [Courses, setCourses] = React.useState([]);
   const [semesters, setSemesters] = React.useState([]);
-
+  const [saving, setSaving] = React.useState(false);
+  const [CourseValues, setCourseValues] = React.useState({
+    Id: null,
+    label: "",
+  });
+  const [SemesterValues, setSemesterValues] = React.useState({
+    Id: null,
+    label: "",
+  });
   //Converting json response to passdata for react select
   const CourseList = Courses.map((d) => ({
     value: d.Id,
@@ -121,6 +129,9 @@ export default function Subjects() {
     PageIndex: 0,
     PageSize: 0,
   };
+  let passCourseId = {
+    CourseId: data.CourseId,
+  };
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -138,6 +149,7 @@ export default function Subjects() {
     console.log(newData);
   }
   function HandleClear() {
+    setValidated(true);
     setData({
       Id: 0,
       CourseId: "",
@@ -153,11 +165,17 @@ export default function Subjects() {
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
+    if (data.CourseId == "" || data.CourseId == null) {
       return false;
-    } else if (data.Date == "") {
+    } else if (data.SemesterId == "" || data.SemesterId == null) {
       return false;
-    } else if (data.Image == "") {
+    } else if (data.CourseName == "") {
+      return false;
+    } else if (data.SemesterNo == "") {
+      return false;
+    } else if (data.SubjectName == "") {
+      return false;
+    } else if (data.SubjectCode == "") {
       return false;
     } else if (data.Description == "") {
       return false;
@@ -167,6 +185,7 @@ export default function Subjects() {
   function UploadImage() {
     if (files != null) {
       setValidated(true);
+      setSaving(true);
       let form_data = new FormData();
       form_data.append("File", files[0]);
       let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
@@ -193,7 +212,24 @@ export default function Subjects() {
       setValidated(false);
     }
   }
+  //API call to get all semesters from the database to dropdown list
+  fetch(
+    "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetSemesterByCourseId/",
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passCourseId),
+    }
+  )
+    .then((response) => response.json())
 
+    .then((json) => {
+      if (json.Data.length != 0) setSemesters(json.Data);
+      else setSemesters([]);
+    });
   //Function to save Data
   function HandleSave() {
     if (ValidateFields()) {
@@ -227,6 +263,7 @@ export default function Subjects() {
             });
             setEmpty(false);
             showSavedNotification();
+            setSaving(false);
           } else {
             console.log(json, "Error in insertion");
           }
@@ -236,7 +273,15 @@ export default function Subjects() {
     }
     setUploaded(false);
   }
+  //==============================UseEffect======================================
   useEffect(() => {
+    setData((data) => ({
+      ...data,
+      CourseId: CourseValues.Id,
+      CourseName: CourseValues.Label,
+      SemesterId: SemesterValues.Id,
+      SemesterNo: SemesterValues.Label,
+    }));
     //API call for get all course names to dropedown
     fetch(
       "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/",
@@ -254,23 +299,7 @@ export default function Subjects() {
       .then((json) => {
         if (json.Data.length != 0) setCourses(json.Data);
       });
-    //API call to get all semesters from the database to dropdown list
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSemester/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData1),
-      }
-    )
-      .then((response) => response.json())
 
-      .then((json) => {
-        if (json.Data.length != 0) setSemesters(json.Data);
-      });
     //API call for get latest 10 elements
     fetch(
       "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSubjects/",
@@ -339,7 +368,7 @@ export default function Subjects() {
           }
         });
     }
-  }, [deletee, edit, saved]);
+  }, [deletee, edit, saved, CourseValues.Id, SemesterValues.Id]);
 
   return (
     <>
@@ -347,7 +376,7 @@ export default function Subjects() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Subject Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -356,122 +385,124 @@ export default function Subjects() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Subject Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
       />
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <form>
-              <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Subject</h4>
-                <p className={classes.cardCategoryWhite}>
-                  Enter the Subject details below and hit Save
-                </p>
-              </CardHeader>
+      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <form>
+                <CardHeader color="info">
+                  <h4 className={classes.cardTitleWhite}>Add New Subject</h4>
+                  <p className={classes.cardCategoryWhite}>
+                    Enter the Subject details below and hit Save
+                  </p>
+                </CardHeader>
 
-              <CardBody>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
-                    <SingleSelect
-                      noOptionsMessage="Create any course first"
-                      placeholder="Select Course"
-                      Options={CourseList}
-                      setValue={setData}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={5}>
-                    <SingleSelect
-                      noOptionsMessage="Create Semester first"
-                      placeholder="Select Semester"
-                      Options={SemesterList}
-                      setValue={setData}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={5}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.SubjectName}
-                      labelText="Subject Name"
-                      id="SubjectName"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.SubjectCode}
-                      labelText="Subject Code"
-                      id="SubjectCode"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                </GridContainer>
+                <CardBody>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={5}>
+                      <SingleSelect
+                        noOptionMessage="Create any Course first"
+                        placeholder="Select Course"
+                        Options={CourseList}
+                        setValue={setCourseValues}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={5}>
+                      <SingleSelect
+                        noOptionMessage="Select Course First"
+                        placeholder="Select Semester"
+                        Options={SemesterList}
+                        setValue={setSemesterValues}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={5}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.SubjectName}
+                        labelText="Subject Name"
+                        id="SubjectName"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.SubjectCode}
+                        labelText="Subject Code"
+                        id="SubjectCode"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                  </GridContainer>
 
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the Subject.."
-                      id="Description"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
-                      }}
-                    />
-                  </GridItem>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Description}
+                        labelText="Enter a description about the Subject.."
+                        id="Description"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          multiline: true,
+                          rows: 5,
+                        }}
+                      />
+                    </GridItem>
 
-                  <GridItem xs={12} sm={5} md={5}>
-                    {" "}
-                    <CustomFileInput
-                      setFiles={setFiles}
-                      saved={uploaded}
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        placeholder: "Click here to upload an image",
-                      }}
-                      endButton={{
-                        buttonProps: {
-                          round: true,
-                          color: "info",
-                          justIcon: true,
-                          filebutton: true,
-                        },
-                        icon: <AttachFile />,
-                      }}
-                    />
-                    {validated ? (
-                      <></>
-                    ) : (
-                      <Danger>Please enter all the details to save</Danger>
-                    )}
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter>
-                <Button onClick={HandleClear} color="defualt">
-                  Clear
-                </Button>
-                <Button onClick={UploadImage} color="info">
-                  Save
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </GridItem>
-      </GridContainer>
+                    <GridItem xs={12} sm={5} md={5}>
+                      {" "}
+                      <CustomFileInput
+                        setFiles={setFiles}
+                        saved={uploaded}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          placeholder: "Click here to upload an image",
+                        }}
+                        endButton={{
+                          buttonProps: {
+                            round: true,
+                            color: "info",
+                            justIcon: true,
+                            filebutton: true,
+                          },
+                          icon: <AttachFile />,
+                        }}
+                      />
+                      {validated ? (
+                        <></>
+                      ) : (
+                        <Danger>Please enter all the details to save</Danger>
+                      )}
+                    </GridItem>
+                  </GridContainer>
+                </CardBody>
+                <CardFooter>
+                  <Button onClick={HandleClear} color="defualt">
+                    Clear
+                  </Button>
+                  <Button onClick={UploadImage} color="info">
+                    Save
+                  </Button>
+                </CardFooter>
+              </form>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </LoadingOverlay>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>

@@ -90,6 +90,7 @@ export default function Events() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
+    Venue: "",
     Date: "",
     Status: "Created",
     Image: "",
@@ -122,6 +123,7 @@ export default function Events() {
     setData({
       Id: 0,
       Name: "",
+      Venue: "",
       Date: "",
       Status: "Created",
       Image: "",
@@ -131,6 +133,8 @@ export default function Events() {
   //Function for Validating fields
   function ValidateFields() {
     if (data.Name == "") {
+      return false;
+    } else if (data.Venue == "") {
       return false;
     } else if (data.Date == "") {
       return false;
@@ -193,6 +197,7 @@ export default function Events() {
             setData({
               Id: 0,
               Name: "",
+              Venue: "",
               Date: "",
               Status: "Created",
               Image: "",
@@ -313,7 +318,7 @@ export default function Events() {
 
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
+                  <GridItem xs={12} sm={12} md={5}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Name}
@@ -324,7 +329,18 @@ export default function Events() {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Venue}
+                      labelText="Venue"
+                      id="Venue"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
                       value={data.Date}
