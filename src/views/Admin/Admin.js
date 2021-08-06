@@ -126,11 +126,6 @@ export default function Admin() {
       Status: "Created",
       Image: "",
       Password: "",
-      Mobile: "",
-      Gender: "",
-      DOB: "",
-      Address: "",
-      AreaOfInterest: "",
     });
   }
   //Function for Validating fields
@@ -296,7 +291,7 @@ export default function Admin() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Admin Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -305,7 +300,7 @@ export default function Admin() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Admin Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -402,9 +397,9 @@ export default function Admin() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>List Of All Admin</h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All Admins are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
@@ -415,13 +410,18 @@ export default function Admin() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
-                      "ID",
+                      "Id",
                       "FullName",
-                      "Venue",
-                      "Date",
+                      "Mobile",
+                      "Email",
+                      "Gender",
+                      "DOB",
+                      "Address",
+                      "Usertype",
+                      "AreaOfInterest",
+                      "Password",
                       "Status",
                       "Image",
-                      "Description",
                       "Created By",
                       "Created Date",
                       "Modified By",

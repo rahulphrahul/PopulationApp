@@ -20,6 +20,7 @@ import LoadingOverlay from "react-loading-overlay";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
+import SingleSelect from "components/SingleSelect";
 
 // import { data } from "./data.json";
 const styles = {
@@ -67,6 +68,15 @@ export default function Semester() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
+  const [Courses, setCourses] = React.useState([]);
+  // const [courseName, setCourseName] = React.useState("");
+  // const [courseId, setCourseId] = React.useState(null);
+
+  //Converting json response to passdata for react select
+  const CourseList = Courses.map((d) => ({
+    value: d.Id,
+    label: d.CourseName,
+  }));
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -90,19 +100,25 @@ export default function Semester() {
   const [data, setData] = React.useState({
     Id: 0,
     SemesterNo: "",
-    CourseId: "",
+    CourseId: null,
     CourseName: "",
     SemesterDuration: "",
     Status: "Created",
     Image: "",
   });
 
+  console.log(data.CourseName, data.CourseId);
+
   //PassData for getAll API
   let passData = {
     PageIndex: 0,
     PageSize: 10,
   };
-
+  //PassData for get all semesters and courses for dropdown
+  let passData1 = {
+    PageIndex: 0,
+    PageSize: 0,
+  };
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -158,6 +174,7 @@ export default function Semester() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
+            console.log(data);
             HandleSave();
           } else {
             setUploaded(false);
@@ -212,8 +229,23 @@ export default function Semester() {
     setUploaded(false);
   }
   useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
+    //API call for get all course names to dropedown
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData1),
+      }
+    )
+      .then((response) => response.json())
+
+      .then((json) => {
+        if (json.Data.length != 0) setCourses(json.Data);
+      });
 
     //API call for get latest 10 elements
     fetch(
@@ -291,7 +323,7 @@ export default function Semester() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Semester Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -300,7 +332,7 @@ export default function Semester() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Semester Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -330,14 +362,12 @@ export default function Semester() {
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.CourseName}
-                      labelText="Course"
-                      id="CourseName"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
+                    <SingleSelect
+                      noOptionsMessage="Create any course first"
+                      placeholder="Select Course"
+                      Options={CourseList}
+                      setLabel={setData}
+                      setValue={setData}
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={4}>
@@ -422,6 +452,7 @@ export default function Semester() {
                       "Modified Date",
                       "Deteled By",
                       "Deleted Date",
+                      "CourseId",
                       "Actions",
                     ]}
                     tableData={events}

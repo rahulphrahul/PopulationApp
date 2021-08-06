@@ -319,7 +319,7 @@ export default function Students() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Student Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -328,7 +328,7 @@ export default function Students() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Student Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -511,15 +511,20 @@ export default function Students() {
                     tableHeaderColor="info"
                     tableHead={[
                       "Id",
-                      "FName",
-                      "LName",
+                      "FullName",
+                      "Registration No",
+                      "ClassNo",
+                      "AdmissionNo",
                       "Mobile",
                       "Email",
+                      "Course",
+                      "Coursecode",
                       "Gender",
                       "DOB",
-                      "Pwd",
+                      "Password",
                       "Gur_Name",
                       "Gur_Mobile",
+                      "Gur_Relation",
                       "Status",
                       "Image",
                       "Created By",
@@ -528,6 +533,7 @@ export default function Students() {
                       "Modified Date",
                       "Deteled By",
                       "Deleted Date",
+                      "CourseId",
                       "Actions",
                     ]}
                     tableData={events}

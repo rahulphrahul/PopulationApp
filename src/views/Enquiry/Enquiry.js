@@ -157,62 +157,57 @@ export default function Enquiry() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            return true;
+            HandleSave();
           } else {
             setUploaded(false);
-            return false;
           }
         })
         .catch((err) => {
           console.log(err);
           setUploaded(false);
-          return false;
         });
     } else {
       setValidated(false);
-      return false;
     }
   }
 
   //Function to save Data
   function HandleSave() {
-    if (UploadImage()) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEnquiry/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEnquiry/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                Email: "",
-                Message: "",
-                Date: "",
-                Status: "Created",
-              });
-              setEmpty(false);
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          if (json.Success) {
+            setData({
+              Id: 0,
+              Name: "",
+              Email: "",
+              Message: "",
+              Date: "",
+              Status: "Created",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log("Error in insertion");
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -405,7 +400,7 @@ export default function Enquiry() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -432,8 +427,7 @@ export default function Enquiry() {
                     tableHead={[
                       "ID",
                       "Name",
-                      "Venue",
-                      "Date",
+                      "Mobile",
                       "Status",
                       "Image",
                       "Description",

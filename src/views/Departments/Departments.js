@@ -159,62 +159,57 @@ export default function Departments() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
-            return true;
+            HandleSave();
           } else {
             setUploaded(false);
-            return false;
           }
         })
         .catch((err) => {
           console.log(err);
           setUploaded(false);
-          return false;
         });
     } else {
       setValidated(false);
-      return false;
     }
   }
 
   //Function to save Data
   function HandleSave() {
-    if (UploadImage()) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateDepartments/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
+    if (ValidateFields()) {
+      setValidated(true);
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateDepartments/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
 
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                Name: "",
-                HOD: "",
-                Status: "Created",
-                Image: "",
-                Description: "",
-              });
-              setEmpty(false);
-              showSavedNotification();
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
+        .then((json) => {
+          if (json.Success) {
+            setData({
+              Id: 0,
+              Name: "",
+              HOD: "",
+              Status: "Created",
+              Image: "",
+              Description: "",
+            });
+            setEmpty(false);
+            showSavedNotification();
+          } else {
+            console.log("Error in insertion");
+          }
+        });
+    } else {
+      setValidated(false);
     }
+    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -296,7 +291,7 @@ export default function Departments() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Department Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -305,7 +300,7 @@ export default function Departments() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Department Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -396,7 +391,7 @@ export default function Departments() {
                 <Button onClick={HandleClear} color="defualt">
                   Clear
                 </Button>
-                <Button onClick={HandleSave} color="info">
+                <Button onClick={UploadImage} color="info">
                   Save
                 </Button>
               </CardFooter>
@@ -408,9 +403,11 @@ export default function Departments() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>
+                List Of All Departments
+              </h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All Departments are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
@@ -422,9 +419,8 @@ export default function Departments() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "Name",
-                      "Venue",
-                      "Date",
+                      "DepartmentName",
+                      "HeadName",
                       "Status",
                       "Image",
                       "Description",

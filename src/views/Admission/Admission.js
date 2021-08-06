@@ -324,7 +324,7 @@ export default function Admission() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Admission Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -333,7 +333,7 @@ export default function Admission() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Admission Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close

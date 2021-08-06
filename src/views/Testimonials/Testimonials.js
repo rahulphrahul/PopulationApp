@@ -288,7 +288,7 @@ export default function Events() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Testimonials Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -297,7 +297,7 @@ export default function Events() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Testimonials Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -429,7 +429,7 @@ export default function Events() {
                     tableHead={[
                       "ID",
                       "Name",
-                      "Venue",
+                      "Message",
                       "Date",
                       "Status",
                       "Image",

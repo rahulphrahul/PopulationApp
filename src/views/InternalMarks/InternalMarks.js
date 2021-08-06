@@ -329,7 +329,7 @@ export default function InternalMarks() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Internal Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -338,7 +338,7 @@ export default function InternalMarks() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Internal Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -348,9 +348,11 @@ export default function InternalMarks() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
+                <h4 className={classes.cardTitleWhite}>
+                  Add New InternalMarks
+                </h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
+                  Enter the InternalMarks details below and hit Save
                 </p>
               </CardHeader>
 
@@ -543,18 +545,25 @@ export default function InternalMarks() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "Name",
-                      "Venue",
                       "Date",
+                      "CourseName",
+                      "SemesterNo",
+                      "ClassNo",
+                      "Note",
                       "Status",
-                      "Image",
+                      "Files",
+                      "StudentName",
                       "Description",
+                      "Marklist",
                       "Created By",
                       "Created Date",
                       "Modified By",
                       "Modified Date",
                       "Deteled By",
                       "Deleted Date",
+                      "CourseId",
+                      "SemesterId",
+                      "StudentId",
                       "Actions",
                     ]}
                     tableData={events}

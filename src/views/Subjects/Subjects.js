@@ -17,9 +17,7 @@ import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-
+import SingleSelect from "components/SingleSelect";
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 
@@ -69,18 +67,18 @@ export default function Subjects() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
-  const [CourseSelect, setCourseSelect] = React.useState("-1");
   const [Courses, setCourses] = React.useState([]);
-  const [SelectedCourse, setSelectedCourse] = React.useState("");
-  const [SelectedCourseId, setSelectedCourseId] = React.useState(null);
+  const [semesters, setSemesters] = React.useState([]);
 
-  const SelectCourse = (event) => {
-    setCourseSelect(event.target.value);
-    setSelectedCourse(event.target.value);
-    console.log("course:", SelectedCourse);
-    setSelectedCourseId(event.target);
-    console.log("Id:", SelectedCourseId);
-  };
+  //Converting json response to passdata for react select
+  const CourseList = Courses.map((d) => ({
+    value: d.Id,
+    label: d.CourseName,
+  }));
+  const SemesterList = semesters.map((d) => ({
+    value: d.Id,
+    label: d.SemesterNo,
+  }));
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -118,7 +116,11 @@ export default function Subjects() {
     PageIndex: 0,
     PageSize: 10,
   };
-
+  //PassData for get all semesters and courses for dropdown
+  let passData1 = {
+    PageIndex: 0,
+    PageSize: 0,
+  };
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -226,7 +228,7 @@ export default function Subjects() {
             setEmpty(false);
             showSavedNotification();
           } else {
-            console.log("Error in insertion");
+            console.log(json, "Error in insertion");
           }
         });
     } else {
@@ -244,13 +246,30 @@ export default function Subjects() {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(passData),
+        body: JSON.stringify(passData1),
       }
     )
       .then((response) => response.json())
 
       .then((json) => {
-        setCourses(json.Data);
+        if (json.Data.length != 0) setCourses(json.Data);
+      });
+    //API call to get all semesters from the database to dropdown list
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSemester/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData1),
+      }
+    )
+      .then((response) => response.json())
+
+      .then((json) => {
+        if (json.Data.length != 0) setSemesters(json.Data);
       });
     //API call for get latest 10 elements
     fetch(
@@ -356,38 +375,19 @@ export default function Subjects() {
               <CardBody>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={5}>
-                    <Select
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      value={CourseSelect}
-                      onChange={SelectCourse}
-                      inputProps={{
-                        name: "CourseSelect",
-                        id: "Course-select",
-                      }}
-                    >
-                      <MenuItem disabled value="-1">
-                        Select any Course
-                      </MenuItem>
-
-                      {Courses &&
-                        Courses.map((val) => (
-                          <MenuItem value={val.CourseName} key={val.Id}>
-                            {val.CourseName}
-                          </MenuItem>
-                        ))}
-                    </Select>
+                    <SingleSelect
+                      noOptionsMessage="Create any course first"
+                      placeholder="Select Course"
+                      Options={CourseList}
+                      setValue={setData}
+                    />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={5}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Semester}
-                      labelText="Select Semester"
-                      id="Semester"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
+                    <SingleSelect
+                      noOptionsMessage="Create Semester first"
+                      placeholder="Select Semester"
+                      Options={SemesterList}
+                      setValue={setData}
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={5}>

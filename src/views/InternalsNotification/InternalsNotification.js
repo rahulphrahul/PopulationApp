@@ -309,7 +309,7 @@ export default function InternalsNotification() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="InternalNotification Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -318,7 +318,7 @@ export default function InternalsNotification() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="InternalNotification Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -328,9 +328,11 @@ export default function InternalsNotification() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
+                <h4 className={classes.cardTitleWhite}>
+                  Add New InternalNotification
+                </h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
+                  Enter the InternalNotification details below and hit Save
                 </p>
               </CardHeader>
 
@@ -465,9 +467,12 @@ export default function InternalsNotification() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>
+                List Of All InternalNotification
+              </h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All InternalNotification are listed below, you can delete or
+                edit them.
               </p>
             </CardHeader>
             <CardBody>
@@ -479,11 +484,12 @@ export default function InternalsNotification() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "CourseId",
-                      "Venue",
                       "Date",
+                      "Coursecode",
+                      "SemesterNo",
+                      "Note",
                       "Status",
-                      "Image",
+                      "Files",
                       "Description",
                       "Created By",
                       "Created Date",
@@ -491,6 +497,8 @@ export default function InternalsNotification() {
                       "Modified Date",
                       "Deteled By",
                       "Deleted Date",
+                      "CourseId",
+                      "SemesterId",
                       "Actions",
                     ]}
                     tableData={events}

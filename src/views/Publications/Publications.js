@@ -294,7 +294,7 @@ export default function Events() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Publications Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -303,7 +303,7 @@ export default function Events() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Publications Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -313,9 +313,9 @@ export default function Events() {
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Event</h4>
+                <h4 className={classes.cardTitleWhite}>Add New Publications</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
+                  Enter the Publication details below and hit Save
                 </p>
               </CardHeader>
 
@@ -421,7 +421,8 @@ export default function Events() {
                     tableHead={[
                       "ID",
                       "Name",
-                      "Date",
+                      "Published By",
+                      "Published Date",
                       "Status",
                       "Image",
                       "Description",

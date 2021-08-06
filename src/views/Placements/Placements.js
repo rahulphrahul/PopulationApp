@@ -291,7 +291,7 @@ export default function Placements() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Placements Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -300,7 +300,7 @@ export default function Placements() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Placement Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -312,7 +312,7 @@ export default function Placements() {
               <CardHeader color="info">
                 <h4 className={classes.cardTitleWhite}>Add Placements</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Enter the Event details below and hit Save
+                  Enter the Placement details below and hit Save
                 </p>
               </CardHeader>
 
@@ -418,10 +418,10 @@ export default function Placements() {
                     tableHead={[
                       "ID",
                       "Name",
-                      "Venue",
-                      "Date",
+                      "Company",
                       "Status",
                       "Image",
+                      "Course",
                       "Description",
                       "Created By",
                       "Created Date",
