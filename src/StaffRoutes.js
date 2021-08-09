@@ -2,8 +2,7 @@
 import Dashboard from "@material-ui/icons/Dashboard";
 import Notifications from "@material-ui/icons/Notifications";
 import ViewCarouselIcon from "@material-ui/icons/ViewCarousel";
-import LockIcon from "@material-ui/icons/Lock";
-import PeopleIcon from "@material-ui/icons/People";
+
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import CommentIcon from "@material-ui/icons/Comment";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
@@ -17,8 +16,6 @@ import BusinessCenterIcon from "@material-ui/icons/BusinessCenter";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import VerticalSplitIcon from "@material-ui/icons/VerticalSplit";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import EmailIcon from "@material-ui/icons/Email";
-import ClearAllIcon from "@material-ui/icons/ClearAll";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import Slideshow from "views/Slideshow/Slideshow";
@@ -33,14 +30,10 @@ import Semester from "views/Semester/Semester";
 import InternalMarks from "views/InternalMarks/InternalMarks";
 import InternalsNotification from "views/InternalsNotification/InternalsNotification";
 import Placements from "views/Placements/Placements";
-import Enquiry from "views/Enquiry/Enquiry";
-import Departments from "views/Departments/Departments";
-import Admin from "views/Admin/Admin";
-import Admission from "views/Admission/Admission";
+
 import Clubs from "views/Clubs/Clubs";
 import Facilities from "views/Facilities/Facilities";
 import Management from "views/Management/Management";
-import Staffs from "views/Sfatts/Staffs";
 // core components/views for RTL layout
 
 const dashboardRoutes = [
@@ -49,34 +42,6 @@ const dashboardRoutes = [
     name: "Dashboard",
     icon: Dashboard,
     component: DashboardPage,
-    layout: "/admin",
-  },
-  {
-    path: "/admission",
-    name: "Admission",
-    icon: "content_paste",
-    component: Admission,
-    layout: "/admin",
-  },
-  {
-    path: "/departments",
-    name: "Departments",
-    icon: ClearAllIcon,
-    component: Departments,
-    layout: "/admin",
-  },
-  {
-    path: "/admin",
-    name: "Manage Admins",
-    icon: LockIcon,
-    component: Admin,
-    layout: "/admin",
-  },
-  {
-    path: "/staffs",
-    name: "Manage Staffs",
-    icon: PeopleIcon,
-    component: Staffs,
     layout: "/admin",
   },
   {
@@ -107,7 +72,6 @@ const dashboardRoutes = [
     component: Gallery,
     layout: "/admin",
   },
-
   {
     path: "/courses",
     name: "Courses",
@@ -183,13 +147,6 @@ const dashboardRoutes = [
     name: "Placements",
     icon: AssignmentIcon,
     component: Placements,
-    layout: "/admin",
-  },
-  {
-    path: "/enquiry",
-    name: "Enquiry",
-    icon: EmailIcon,
-    component: Enquiry,
     layout: "/admin",
   },
 ];

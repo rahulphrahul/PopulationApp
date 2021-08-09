@@ -20,6 +20,7 @@ import LoadingOverlay from "react-loading-overlay";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
+import EmptyTable from "components/EmptyTable";
 
 // import { data } from "./data.json";
 const styles = {
@@ -67,6 +68,7 @@ export default function Clubs() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
+  const [saving, setSaving] = React.useState(false);
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -148,6 +150,7 @@ export default function Clubs() {
   function UploadImage() {
     if (files != null) {
       setValidated(true);
+      setSaving(true);
       let form_data = new FormData();
       form_data.append("File", files[0]);
       let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
@@ -205,6 +208,7 @@ export default function Clubs() {
             });
             setEmpty(false);
             showSavedNotification();
+            setSaving(false);
           } else {
             console.log("Error in insertion");
           }
@@ -305,111 +309,113 @@ export default function Clubs() {
         closeNotification={() => setDeleted(false)}
         close
       />
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <form>
-              <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Club</h4>
-                <p className={classes.cardCategoryWhite}>
-                  Enter the Club details below and hit Save
-                </p>
-              </CardHeader>
+      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <form>
+                <CardHeader color="info">
+                  <h4 className={classes.cardTitleWhite}>Add New Club</h4>
+                  <p className={classes.cardCategoryWhite}>
+                    Enter the Club details below and hit Save
+                  </p>
+                </CardHeader>
 
-              <CardBody>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Name}
-                      labelText="Name"
-                      id="Name"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Link}
-                      labelText="Link"
-                      id="Link"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.StaffId}
-                      labelText="Staff Id"
-                      id="StaffId"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                </GridContainer>
+                <CardBody>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Name}
+                        labelText="Name"
+                        id="Name"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Link}
+                        labelText="Link"
+                        id="Link"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.StaffId}
+                        labelText="Staff Id"
+                        id="StaffId"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                  </GridContainer>
 
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the club.."
-                      id="Description"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={5} md={5}>
-                    {" "}
-                    <CustomFileInput
-                      setFiles={setFiles}
-                      saved={uploaded}
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        placeholder: "Click here to upload an image",
-                      }}
-                      endButton={{
-                        buttonProps: {
-                          round: true,
-                          color: "info",
-                          justIcon: true,
-                          filebutton: true,
-                        },
-                        icon: <AttachFile />,
-                      }}
-                    />
-                    {validated ? (
-                      <></>
-                    ) : (
-                      <Danger>Please enter all the details to save</Danger>
-                    )}
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter>
-                <Button onClick={HandleClear} color="defualt">
-                  Clear
-                </Button>
-                <Button onClick={UploadImage} color="info">
-                  Save
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </GridItem>
-      </GridContainer>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Description}
+                        labelText="Enter a description about the club.."
+                        id="Description"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          multiline: true,
+                          rows: 5,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={5} md={5}>
+                      {" "}
+                      <CustomFileInput
+                        setFiles={setFiles}
+                        saved={uploaded}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          placeholder: "Click here to upload an image",
+                        }}
+                        endButton={{
+                          buttonProps: {
+                            round: true,
+                            color: "info",
+                            justIcon: true,
+                            filebutton: true,
+                          },
+                          icon: <AttachFile />,
+                        }}
+                      />
+                      {validated ? (
+                        <></>
+                      ) : (
+                        <Danger>Please enter all the details to save</Danger>
+                      )}
+                    </GridItem>
+                  </GridContainer>
+                </CardBody>
+                <CardFooter>
+                  <Button onClick={HandleClear} color="defualt">
+                    Clear
+                  </Button>
+                  <Button onClick={UploadImage} color="info">
+                    Save
+                  </Button>
+                </CardFooter>
+              </form>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </LoadingOverlay>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -422,7 +428,7 @@ export default function Clubs() {
             <CardBody>
               <LoadingOverlay active={deleting} spinner text="Please Wait..">
                 {empty ? (
-                  <p>empty</p>
+                  <EmptyTable />
                 ) : (
                   <Table
                     tableHeaderColor="info"

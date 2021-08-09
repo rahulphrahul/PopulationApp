@@ -54,7 +54,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Events() {
+export default function Publications() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -67,6 +67,7 @@ export default function Events() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
+  const [saving, setSaving] = React.useState(false);
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -90,8 +91,8 @@ export default function Events() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Venue: "",
-    Date: "",
+    Pub_By: "",
+    Pub_Date: "",
     Status: "Created",
     Image: "",
     Description: "",
@@ -123,8 +124,8 @@ export default function Events() {
     setData({
       Id: 0,
       Name: "",
-      Venue: "",
-      Date: "",
+      Pub_By: "",
+      Pub_Date: "",
       Status: "Created",
       Image: "",
       Description: "",
@@ -134,9 +135,9 @@ export default function Events() {
   function ValidateFields() {
     if (data.Name == "") {
       return false;
-    } else if (data.Venue == "") {
+    } else if (data.Pub_By == "") {
       return false;
-    } else if (data.Date == "") {
+    } else if (data.Pub_Date == "") {
       return false;
     } else if (data.Image == "") {
       return false;
@@ -148,6 +149,7 @@ export default function Events() {
   function UploadImage() {
     if (files != null) {
       setValidated(true);
+      setSaving(true);
       let form_data = new FormData();
       form_data.append("File", files[0]);
       let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
@@ -197,14 +199,15 @@ export default function Events() {
             setData({
               Id: 0,
               Name: "",
-              Venue: "",
-              Date: "",
+              Pub_By: "",
+              Pub_Date: "",
               Status: "Created",
               Image: "",
               Description: "",
             });
             setEmpty(false);
             showSavedNotification();
+            setSaving(false);
           } else {
             console.log("Error in insertion");
           }
@@ -308,107 +311,123 @@ export default function Events() {
         closeNotification={() => setDeleted(false)}
         close
       />
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <form>
-              <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Add New Publications</h4>
-                <p className={classes.cardCategoryWhite}>
-                  Enter the Publication details below and hit Save
-                </p>
-              </CardHeader>
+      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <form>
+                <CardHeader color="info">
+                  <h4 className={classes.cardTitleWhite}>
+                    Add New Publications
+                  </h4>
+                  <p className={classes.cardCategoryWhite}>
+                    Enter the Publication details below and hit Save
+                  </p>
+                </CardHeader>
 
-              <CardBody>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Name}
-                      labelText="Name"
-                      id="Name"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Date}
-                      labelText="Date"
-                      id="Date"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the event.."
-                      id="Description"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={5} md={6}>
-                    {" "}
-                    <CustomFileInput
-                      setFiles={setFiles}
-                      saved={uploaded}
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        placeholder: "Click here to upload an image",
-                      }}
-                      endButton={{
-                        buttonProps: {
-                          round: true,
-                          color: "info",
-                          justIcon: true,
-                          filebutton: true,
-                        },
-                        icon: <AttachFile />,
-                      }}
-                    />
-                    {validated ? (
-                      <></>
-                    ) : (
-                      <Danger>Please enter all the details to save</Danger>
-                    )}
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter>
-                <Button onClick={HandleClear} color="defualt">
-                  Clear
-                </Button>
-                <Button onClick={UploadImage} color="info">
-                  Save
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </GridItem>
-      </GridContainer>
+                <CardBody>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={5}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Name}
+                        labelText="Name"
+                        id="Name"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Pub_By}
+                        labelText="Published By"
+                        id="Pub_By"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Pub_Date}
+                        labelText="Published Date"
+                        id="Pub_Date"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                  </GridContainer>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Description}
+                        labelText="Enter a description about the event.."
+                        id="Description"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          multiline: true,
+                          rows: 5,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={5} md={6}>
+                      {" "}
+                      <CustomFileInput
+                        setFiles={setFiles}
+                        saved={uploaded}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          placeholder: "Click here to upload an image",
+                        }}
+                        endButton={{
+                          buttonProps: {
+                            round: true,
+                            color: "info",
+                            justIcon: true,
+                            filebutton: true,
+                          },
+                          icon: <AttachFile />,
+                        }}
+                      />
+                      {validated ? (
+                        <></>
+                      ) : (
+                        <Danger>Please enter all the details to save</Danger>
+                      )}
+                    </GridItem>
+                  </GridContainer>
+                </CardBody>
+                <CardFooter>
+                  <Button onClick={HandleClear} color="defualt">
+                    Clear
+                  </Button>
+                  <Button onClick={UploadImage} color="info">
+                    Save
+                  </Button>
+                </CardFooter>
+              </form>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </LoadingOverlay>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Events</h4>
+              <h4 className={classes.cardTitleWhite}>
+                List Of All Publications
+              </h4>
               <p className={classes.cardCategoryWhite}>
-                All events are listed below, you can delete or edit them.
+                All Publications are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>

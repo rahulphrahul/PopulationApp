@@ -52,7 +52,11 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function LoginPage({ setLoggedin, setNotification }) {
+export default function LoginPage({
+  setLoggedin,
+  setNotification,
+  setUserType,
+}) {
   const classes = useStyles();
 
   const [data, setData] = React.useState({
@@ -89,15 +93,8 @@ export default function LoginPage({ setLoggedin, setNotification }) {
             Password: "",
           });
           if (json.Success) {
-            // if (json.Data.Usertype == "Admin") {
-            //   setUserType("Admin");
-            // }
-            // if (json.Data.Usertype == "HOD") {
-            //   setUserType("HOD");
-            // }
-            // if (json.Data.Usertype == "Admin") {
-            //   setUserType("Staff");
-            // }
+            if (json.Data.Usertype == "Admin") setUserType(json.Data.Usertype);
+            else setUserType(json.Data.UserType);
             setInvalid(false);
             setLoggedin(true);
             setNotification(true);
@@ -210,5 +207,5 @@ export default function LoginPage({ setLoggedin, setNotification }) {
 LoginPage.propTypes = {
   setLoggedin: PropTypes.func,
   setNotification: PropTypes.func,
-  setUserType: PropTypes.func,
+  setUserType: PropTypes.any,
 };

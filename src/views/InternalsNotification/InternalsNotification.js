@@ -67,6 +67,7 @@ export default function InternalsNotification() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
+  const [saving, setSaving] = React.useState(false);
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -160,6 +161,7 @@ export default function InternalsNotification() {
   function UploadImage() {
     if (files != null) {
       setValidated(true);
+      setSaving(true);
       let form_data = new FormData();
       form_data.append("File", files[0]);
       let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
@@ -220,6 +222,7 @@ export default function InternalsNotification() {
             });
             setEmpty(false);
             showSavedNotification();
+            setSaving(false);
           } else {
             console.log(json);
           }
@@ -323,146 +326,148 @@ export default function InternalsNotification() {
         closeNotification={() => setDeleted(false)}
         close
       />
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <form>
-              <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>
-                  Add New InternalNotification
-                </h4>
-                <p className={classes.cardCategoryWhite}>
-                  Enter the InternalNotification details below and hit Save
-                </p>
-              </CardHeader>
+      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <form>
+                <CardHeader color="info">
+                  <h4 className={classes.cardTitleWhite}>
+                    Add New InternalNotification
+                  </h4>
+                  <p className={classes.cardCategoryWhite}>
+                    Enter the InternalNotification details below and hit Save
+                  </p>
+                </CardHeader>
 
-              <CardBody>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.CourseId}
-                      labelText="Course Id"
-                      id="CourseId"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.SemesterId}
-                      labelText="Semester Id"
-                      id="SemesterId"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.CourseCode}
-                      labelText="Course Code"
-                      id="CourseCode"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.SemesterNo}
-                      labelText="Semester No"
-                      id="SemesterNo"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Note}
-                      labelText="Note"
-                      id="Note"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Date}
-                      labelText="Date"
-                      id="Date"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                </GridContainer>
+                <CardBody>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.CourseId}
+                        labelText="Course Id"
+                        id="CourseId"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.SemesterId}
+                        labelText="Semester Id"
+                        id="SemesterId"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.CourseCode}
+                        labelText="Course Code"
+                        id="CourseCode"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.SemesterNo}
+                        labelText="Semester No"
+                        id="SemesterNo"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Note}
+                        labelText="Note"
+                        id="Note"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Date}
+                        labelText="Date"
+                        id="Date"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                  </GridContainer>
 
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Description}
-                      labelText="Enter a description about the event.."
-                      id="Description"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 5,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={5} md={6}>
-                    {" "}
-                    <CustomFileInput
-                      setFiles={setFiles}
-                      saved={uploaded}
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        placeholder: "Click here to upload an image",
-                      }}
-                      endButton={{
-                        buttonProps: {
-                          round: true,
-                          color: "info",
-                          justIcon: true,
-                          filebutton: true,
-                        },
-                        icon: <AttachFile />,
-                      }}
-                    />
-                    {validated ? (
-                      <></>
-                    ) : (
-                      <Danger>Please enter all the details to save</Danger>
-                    )}
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter>
-                <Button onClick={HandleClear} color="defualt">
-                  Clear
-                </Button>
-                <Button onClick={UploadImage} color="info">
-                  Save
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </GridItem>
-      </GridContainer>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={6}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Description}
+                        labelText="Enter a description about the event.."
+                        id="Description"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          multiline: true,
+                          rows: 5,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={5} md={6}>
+                      {" "}
+                      <CustomFileInput
+                        setFiles={setFiles}
+                        saved={uploaded}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          placeholder: "Click here to upload an image",
+                        }}
+                        endButton={{
+                          buttonProps: {
+                            round: true,
+                            color: "info",
+                            justIcon: true,
+                            filebutton: true,
+                          },
+                          icon: <AttachFile />,
+                        }}
+                      />
+                      {validated ? (
+                        <></>
+                      ) : (
+                        <Danger>Please enter all the details to save</Danger>
+                      )}
+                    </GridItem>
+                  </GridContainer>
+                </CardBody>
+                <CardFooter>
+                  <Button onClick={HandleClear} color="defualt">
+                    Clear
+                  </Button>
+                  <Button onClick={UploadImage} color="info">
+                    Save
+                  </Button>
+                </CardFooter>
+              </form>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </LoadingOverlay>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
