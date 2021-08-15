@@ -410,6 +410,9 @@ export default function Subjects() {
                         placeholder="Select Course"
                         Options={CourseList}
                         setValue={setCourseValues}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
                       />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={5}>
@@ -418,6 +421,9 @@ export default function Subjects() {
                         placeholder="Select Semester"
                         Options={SemesterList}
                         setValue={setSemesterValues}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
                       />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={5}>

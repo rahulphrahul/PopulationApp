@@ -13,15 +13,7 @@ import Button from "components/CustomButtons/Button.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-import axios from "axios";
-import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
-// import ImageUpload from "components/CustomUpload/ImageUpload.js";
-
-import AttachFile from "@material-ui/icons/AttachFile";
-import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
-
-// import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -61,23 +53,25 @@ export default function Enquiry() {
   const [edit, setEdit] = React.useState([]);
   const [deletee, setDelete] = React.useState([]);
   const [events, setEvents] = React.useState([]);
-  const [files, setFiles] = React.useState(null);
-  const [validated, setValidated] = React.useState(true);
-  const [uploaded, setUploaded] = React.useState(false);
+  // const [validated, setValidated] = React.useState(true);
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
-  const [saving, setSaving] = React.useState(false);
-
+  // const [saving, setSaving] = React.useState(false);
+  const [viewEnquiry, setViewEnquiry] = React.useState(false);
+  function HandleView() {
+    if (viewEnquiry) setViewEnquiry(false);
+    else setViewEnquiry(true);
+  }
   //Saved Notification trigger
-  const showSavedNotification = () => {
-    if (!saved) {
-      setSaved(true);
-      setTimeout(function () {
-        setSaved(false);
-      }, 3000);
-    }
-  };
+  // const showSavedNotification = () => {
+  //   if (!saved) {
+  //     setSaved(true);
+  //     setTimeout(function () {
+  //       setSaved(false);
+  //     }, 3000);
+  //   }
+  // };
   //Deleted Notification Trigger
   const showDeletedNotification = () => {
     if (!deleted) {
@@ -91,9 +85,8 @@ export default function Enquiry() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Email: "",
-    Message: "",
-    Date: "",
+    Mobile: "",
+    Description: "",
     Status: "Created",
   });
 
@@ -119,103 +112,64 @@ export default function Enquiry() {
     setData(newData);
     console.log(newData);
   }
-  function HandleClear() {
-    setData({
-      Id: 0,
-      Name: "",
-      Email: "",
-      Message: "",
-      Date: "",
-      Status: "Created",
-    });
-  }
+  // function HandleClear() {
+  //   setData({
+  //     Id: 0,
+  //     Name: "",
+  //     Mobile: "",
+  //     Description: "",
+  //     Status: "Created",
+  //   });
+  // }
   //Function for Validating fields
-  function ValidateFields() {
-    if (data.Name == "") {
-      return false;
-    } else if (data.Email == "") {
-      return false;
-    } else if (data.Date == "") {
-      return false;
-    } else if (data.Message == "") {
-      return false;
-    } else return true;
-  }
-  //function to upload
-  function UploadImage() {
-    if (files != null) {
-      setValidated(true);
-      setSaving(true);
-      let form_data = new FormData();
-      form_data.append("File", files[0]);
-      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
-      axios
-        .post(url, form_data, {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.Success) {
-            data.Image = res.data.Data[0];
-            setUploaded(true);
-            HandleSave();
-          } else {
-            setUploaded(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setUploaded(false);
-        });
-    } else {
-      setValidated(false);
-    }
-  }
+  // function ValidateFields() {
+  //   if (data.Name == "") {
+  //     return false;
+  //   } else if (data.Mobile == "") {
+  //     return false;
+  //   } else if (data.Description == "") {
+  //     return false;
+  //   } else return true;
+  // }
 
-  //Function to save Data
-  function HandleSave() {
-    if (ValidateFields()) {
-      setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEnquiry/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
-        .then((response) => response.json())
+  // //Function to save Data
+  // function HandleSave() {
+  //   if (ValidateFields()) {
+  //     setValidated(true);
+  //     fetch(
+  //       "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateEnquiry/",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(data),
+  //       }
+  //     )
+  //       .then((response) => response.json())
 
-        .then((json) => {
-          if (json.Success) {
-            setData({
-              Id: 0,
-              Name: "",
-              Email: "",
-              Message: "",
-              Date: "",
-              Status: "Created",
-            });
-            setEmpty(false);
-            showSavedNotification();
-            setSaving(false);
-          } else {
-            console.log("Error in insertion");
-          }
-        });
-    } else {
-      setValidated(false);
-    }
-    setUploaded(false);
-  }
+  //       .then((json) => {
+  //         if (json.Success) {
+  //           setData({
+  //             Id: 0,
+  //             Name: "",
+  //             Mobile: "",
+  //             Description: "",
+  //             Status: "Created",
+  //           });
+  //           setEmpty(false);
+  //           showSavedNotification();
+  //           setSaving(false);
+  //         } else {
+  //           console.log("Error in insertion");
+  //         }
+  //       });
+  //   } else {
+  //     setValidated(false);
+  //   }
+  // }
   useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
-
     //API call for get latest 10 elements
     fetch(
       "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllEnquiry/",
@@ -231,6 +185,7 @@ export default function Enquiry() {
       .then((response) => response.json())
 
       .then((json) => {
+        console.log(json);
         setEvents(json.Data);
         if (json.Data.length == 0) setEmpty(true);
         setLoading(false);
@@ -280,7 +235,7 @@ export default function Enquiry() {
           if (json.Success) {
             setEdit([]);
             setData(json.Data);
-            console.log(json.Data);
+            HandleView();
           }
         });
     }
@@ -306,15 +261,16 @@ export default function Enquiry() {
         closeNotification={() => setDeleted(false)}
         close
       />
-      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
+
+      {viewEnquiry ? (
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
               <form>
                 <CardHeader color="info">
-                  <h4 className={classes.cardTitleWhite}>Add New Enquiry</h4>
+                  <h4 className={classes.cardTitleWhite}>View Enquiry</h4>
                   <p className={classes.cardCategoryWhite}>
-                    Enter the Enquiry details below and hit Save
+                    View the Message below
                   </p>
                 </CardHeader>
 
@@ -322,6 +278,7 @@ export default function Enquiry() {
                   <GridContainer>
                     <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
+                        disabled
                         onChange={(e) => HandleData(e)}
                         value={data.Name}
                         labelText="Student Name"
@@ -331,24 +288,26 @@ export default function Enquiry() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
+                        disabled
                         onChange={(e) => HandleData(e)}
-                        value={data.Email}
-                        labelText="Email"
-                        id="Email"
+                        value={data.Mobile}
+                        labelText="Mobile"
+                        id="Mobile"
                         formControlProps={{
                           fullWidth: true,
                         }}
                       />
                     </GridItem>
 
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem xs={12} sm={12} md={12}>
                       <CustomInput
+                        disabled
                         onChange={(e) => HandleData(e)}
-                        value={data.Message}
-                        labelText="Enter the Message.."
-                        id="Message"
+                        value={data.Description}
+                        labelText="Message"
+                        id="Description"
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -358,61 +317,20 @@ export default function Enquiry() {
                         }}
                       />
                     </GridItem>
-
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Date}
-                        labelText="Date"
-                        id="Date"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-
-                    <GridItem xs={12} sm={5} md={5}>
-                      {" "}
-                      <CustomFileInput
-                        setFiles={setFiles}
-                        saved={uploaded}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          placeholder: "Click here to upload an image",
-                        }}
-                        endButton={{
-                          buttonProps: {
-                            round: true,
-                            color: "info",
-                            justIcon: true,
-                            filebutton: true,
-                          },
-                          icon: <AttachFile />,
-                        }}
-                      />
-                      {validated ? (
-                        <></>
-                      ) : (
-                        <Danger>Please enter all the details to save</Danger>
-                      )}
-                    </GridItem>
                   </GridContainer>
                 </CardBody>
                 <CardFooter>
-                  <Button onClick={HandleClear} color="defualt">
-                    Clear
-                  </Button>
-                  <Button onClick={UploadImage} color="info">
-                    Save
+                  <Button onClick={HandleView} color="danger">
+                    Close
                   </Button>
                 </CardFooter>
               </form>
             </Card>
           </GridItem>
         </GridContainer>
-      </LoadingOverlay>
+      ) : (
+        <></>
+      )}
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>

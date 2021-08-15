@@ -78,7 +78,10 @@ export default function Semester() {
     value: d.Id,
     label: d.CourseName,
   }));
-
+  const [CourseValues, setCourseValues] = React.useState({
+    Id: null,
+    label: "",
+  });
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -234,6 +237,11 @@ export default function Semester() {
     setUploaded(false);
   }
   useEffect(() => {
+    setData((data) => ({
+      ...data,
+      CourseId: CourseValues.Id,
+      CourseName: CourseValues.Label,
+    }));
     //API call for get all course names to dropedown
     fetch(
       "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/",
@@ -320,7 +328,7 @@ export default function Semester() {
           }
         });
     }
-  }, [deletee, edit, saved]);
+  }, [deletee, edit, saved, CourseValues.Id]);
 
   return (
     <>
@@ -372,8 +380,10 @@ export default function Semester() {
                         noOptionsMessage="Create any course first"
                         placeholder="Select Course"
                         Options={CourseList}
-                        setLabel={setData}
-                        setValue={setData}
+                        setValue={setCourseValues}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
                       />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={4}>

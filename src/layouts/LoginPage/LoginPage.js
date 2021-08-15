@@ -56,6 +56,7 @@ export default function LoginPage({
   setLoggedin,
   setNotification,
   setUserType,
+  setUserdetails,
 }) {
   const classes = useStyles();
 
@@ -86,7 +87,7 @@ export default function LoginPage({
         .then((response) => response.json())
 
         .then((json) => {
-          console.log(json);
+          setUserdetails(json.Data);
           setData({
             Id: 0,
             Username: "",
@@ -208,4 +209,5 @@ LoginPage.propTypes = {
   setLoggedin: PropTypes.func,
   setNotification: PropTypes.func,
   setUserType: PropTypes.any,
+  setUserdetails: PropTypes.any,
 };

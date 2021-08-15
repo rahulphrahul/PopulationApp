@@ -41,6 +41,7 @@ import Clubs from "views/Clubs/Clubs";
 import Facilities from "views/Facilities/Facilities";
 import Management from "views/Management/Management";
 import Staffs from "views/Sfatts/Staffs";
+
 // core components/views for RTL layout
 
 const dashboardRoutes = [

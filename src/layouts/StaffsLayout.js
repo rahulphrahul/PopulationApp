@@ -93,6 +93,7 @@ export default function StaffsLayout({ ...rest }) {
           {...rest}
         />
         <Navbar
+          setLoggedin={rest.setLoggedin}
           routes={routes}
           handleDrawerToggle={handleDrawerToggle}
           {...rest}

@@ -93,6 +93,7 @@ export default function HodLayout({ ...rest }) {
           {...rest}
         />
         <Navbar
+          setLoggedin={rest.setLoggedin}
           routes={routes}
           handleDrawerToggle={handleDrawerToggle}
           {...rest}

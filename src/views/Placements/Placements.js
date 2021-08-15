@@ -91,7 +91,7 @@ export default function Placements() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Batch: "",
+    Company: "",
     Status: "Created",
     Image: "",
     Description: "",
@@ -123,7 +123,7 @@ export default function Placements() {
     setData({
       Id: 0,
       Name: "",
-      Batch: "",
+      Company: "",
       Status: "Created",
       Image: "",
       Description: "",
@@ -133,7 +133,7 @@ export default function Placements() {
   function ValidateFields() {
     if (data.Name == "") {
       return false;
-    } else if (data.Batch == "") {
+    } else if (data.Company == "") {
       return false;
     } else if (data.Status == "") {
       return false;
@@ -197,7 +197,7 @@ export default function Placements() {
             setData({
               Id: 0,
               Name: "",
-              Batch: "",
+              Company: "",
               Status: "Created",
               Image: "",
               Description: "",
@@ -215,9 +215,6 @@ export default function Placements() {
     setUploaded(false);
   }
   useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
-
     //API call for get latest 10 elements
     fetch(
       "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllPlacements/",
@@ -336,9 +333,9 @@ export default function Placements() {
                     <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
-                        value={data.Batch}
-                        labelText="Batch"
-                        id="Batch"
+                        value={data.Company}
+                        labelText="Company"
+                        id="Company"
                         formControlProps={{
                           fullWidth: true,
                         }}

@@ -10,7 +10,7 @@ import Navbar from "components/Navbars/Navbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import routes from "routes.js";
+import routes from "userProfileRoutes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
@@ -21,7 +21,7 @@ let ps;
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/user") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -32,13 +32,13 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/admin" to="/admin/dashboard" />
+    <Redirect from="/user" to="/user/userprofile" />
   </Switch>
 );
 
 const useStyles = makeStyles(styles);
 
-export default function Admin({ ...rest }) {
+export default function UserProfileLayout({ ...rest }) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -81,6 +81,7 @@ export default function Admin({ ...rest }) {
         {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
 
         <Sidebar
+          userdetails={rest.userdetails}
           routes={routes}
           logoText={"Marygiri"}
           logo={logo}

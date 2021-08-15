@@ -22,6 +22,7 @@ import styles from "assets/jss/material-dashboard-react/components/headerStyle.j
 const useStyles = makeStyles(styles);
 
 export default function Header(props) {
+  console.log("setLoggedIn,navbar", props);
   const classes = useStyles();
   const routeName = useRouteName();
   const { color } = props;
@@ -38,7 +39,11 @@ export default function Header(props) {
           </Button>
         </div>
         <Hidden smDown implementation="css">
-          {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
+          {props.rtlActive ? (
+            <RTLNavbarLinks />
+          ) : (
+            <AdminNavbarLinks setLoggedin={props.setLoggedin} />
+          )}
         </Hidden>
         <Hidden mdUp implementation="css">
           <IconButton
@@ -59,4 +64,5 @@ Header.propTypes = {
   rtlActive: PropTypes.bool,
   handleDrawerToggle: PropTypes.func,
   routes: PropTypes.arrayOf(PropTypes.object),
+  setLoggedin: PropTypes.any,
 };

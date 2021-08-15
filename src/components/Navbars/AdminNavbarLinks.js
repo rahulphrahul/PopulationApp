@@ -16,12 +16,15 @@ import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
 // core components
 import Button from "components/CustomButtons/Button.js";
+import PropTypes from "prop-types";
 
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
+import { NavLink } from "react-router-dom";
 
 const useStyles = makeStyles(styles);
 
-export default function AdminNavbarLinks() {
+export default function AdminNavbarLinks({ setLoggedin }) {
+  console.log("setLoggedIn,navlinks", setLoggedin);
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
@@ -45,20 +48,26 @@ export default function AdminNavbarLinks() {
   const handleCloseProfile = () => {
     setOpenProfile(null);
   };
+  const handleLogout = () => {
+    setLoggedin(false);
+    setOpenProfile(null);
+  };
   return (
     <div>
-      <Button
-        color={window.innerWidth > 959 ? "transparent" : "white"}
-        justIcon={window.innerWidth > 959}
-        simple={!(window.innerWidth > 959)}
-        aria-label="Dashboard"
-        className={classes.buttonLink}
-      >
-        <Dashboard className={classes.icons} />
-        <Hidden mdUp implementation="css">
-          <p className={classes.linkText}>Dashboard</p>
-        </Hidden>
-      </Button>
+      <NavLink to="/admin" className={classes.item}>
+        <Button
+          color={window.innerWidth > 959 ? "transparent" : "white"}
+          justIcon={window.innerWidth > 959}
+          simple={!(window.innerWidth > 959)}
+          aria-label="Dashboard"
+          className={classes.buttonLink}
+        >
+          <Dashboard className={classes.icons} />
+          <Hidden mdUp implementation="css">
+            <p className={classes.linkText}>Dashboard</p>
+          </Hidden>
+        </Button>
+      </NavLink>
       <div className={classes.manager}>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
@@ -70,7 +79,7 @@ export default function AdminNavbarLinks() {
           className={classes.buttonLink}
         >
           <Notifications className={classes.icons} />
-          <span className={classes.notifications}>10</span>
+          <span className={classes.notifications}>1</span>
           <Hidden mdUp implementation="css">
             <p onClick={handleCloseNotification} className={classes.linkText}>
               Notification
@@ -104,31 +113,7 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseNotification}
                       className={classes.dropdownItem}
                     >
-                      Mike John responded to your email
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      You have 5 new tasks
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      You{"'"}re now friend with Andrew
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Another Notification
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Another One
+                      No notifications yet!
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
@@ -175,9 +160,12 @@ export default function AdminNavbarLinks() {
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
-                    <MenuItem onClick={handleCloseProfile}>Profile</MenuItem>
+                    <MenuItem onClick={handleCloseProfile}>
+                      {" "}
+                      <NavLink to="/user">Profile</NavLink>
+                    </MenuItem>
                     <Divider light />
-                    <MenuItem onClick={handleCloseProfile}>Logout</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -188,3 +176,7 @@ export default function AdminNavbarLinks() {
     </div>
   );
 }
+
+AdminNavbarLinks.propTypes = {
+  setLoggedin: PropTypes.any,
+};

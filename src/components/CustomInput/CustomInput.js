@@ -27,6 +27,7 @@ export default function CustomInput(props) {
     rtlActive,
     value,
     onChange,
+    disabled,
   } = props;
 
   const labelClasses = classNames({
@@ -64,6 +65,7 @@ export default function CustomInput(props) {
         </InputLabel>
       ) : null}
       <Input
+        disabled={disabled}
         onChange={onChange}
         value={value}
         classes={{
@@ -95,4 +97,5 @@ CustomInput.propTypes = {
   rtlActive: PropTypes.bool,
   value: PropTypes.string,
   onChange: PropTypes.any,
+  disabled: PropTypes.any,
 };

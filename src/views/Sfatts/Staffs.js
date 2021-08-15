@@ -464,6 +464,9 @@ export default function Staffs() {
                         placeholder="Select Department"
                         Options={departmentList}
                         setValue={setDepartmentValues}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
                       />
                     </GridItem>
                   </GridContainer>

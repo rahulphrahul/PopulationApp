@@ -994,3 +994,103 @@ Result:
     "TotalCount": 1,
     "Data": {}
 }
+
+http://127.0.0.1:8000/api/Student/GetStudentsByCourseIdandDate/
+
+Passing:
+
+{
+    "PageIndex": 0,
+    "PageSize": 1,
+    "CourseId": 1,
+    "Year": 2021
+}
+
+
+Result:
+
+
+{
+    "Message": "Operation Successfull",
+    "Success": true,
+    "TotalCount": 6,
+    "Data": [
+        {
+            "Id": 9,
+            "FullName": "ABCD RAJ",
+            "RegistrationNo": "GTAQSCS0015",
+            "ClassNo": "MCAS21301",
+            "AdmissionNo": "ADMNO006",
+            "Mobile": "1234567896",
+            "Email": "ex2s@ex.com",
+            "Course": "BSC CS",
+            "CourseCode": "BCOM-CA",
+            "Gender": "Male",
+            "DOB": "01-08-2021",
+            "Password": "123",
+            "GuardianName": "Father",
+            "GuardianMobile": "1234567891",
+            "GuardianRelation": "Father",
+            "Status": "Admitted",
+            "GeneratedDate": "2021-08-09T23:03:20.239891",
+            "Image": "",
+            "CreateBy": null,
+            "CreateDate": "2021-08-09T19:59:56.355935",
+            "ModifiedBy": null,
+            "ModifiedDate": "2021-08-09T23:03:20.239890",
+            "DeletedBy": null,
+            "DeletedDate": null,
+            "CourseId": 1
+        }
+    ]
+}
+
+
+http://127.0.0.1:8000/api/Student/GetStudentsForAdmin/
+
+Passing:
+
+{
+    "PageIndex": 0,
+    "PageSize": 1,
+    "CourseId": "1",
+    "Year": "2021"
+}
+
+
+Result:
+
+{
+    "Message": "Operation Successfull",
+    "Success": true,
+    "TotalCount": 6,
+    "Data": [
+        {
+            "Id": 9,
+            "FullName": "ABCD RAJ",
+            "RegistrationNo": "GTAQSCS0015",
+            "ClassNo": "MCAS21301",
+            "AdmissionNo": "ADMNO006",
+            "Mobile": "1234567896",
+            "Email": "ex2s@ex.com",
+            "Course": "BSC CS",
+            "CourseCode": "BCOM-CA",
+            "Gender": "Male",
+            "DOB": "01-08-2021",
+            "Password": "123",
+            "GuardianName": "Father",
+            "GuardianMobile": "1234567891",
+            "GuardianRelation": "Father",
+            "Status": "Admitted",
+            "GeneratedDate": "2021-08-09T23:03:20.239891",
+            "Image": "",
+            "CreateBy": null,
+            "CreateDate": "2021-08-09T19:59:56.355935",
+            "ModifiedBy": null,
+            "ModifiedDate": "2021-08-09T23:03:20.239890",
+            "DeletedBy": null,
+            "DeletedDate": null,
+            "CourseId": 1
+        }
+    ]
+}

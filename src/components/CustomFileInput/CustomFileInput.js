@@ -62,7 +62,7 @@ export default function CustomFileInput(props) {
   let buttonStart;
   let buttonEnd;
   if (saved) {
-    console.log("saved: ", saved, "filename:", fileNames);
+    // console.log("saved: ", saved, "filename:", fileNames);
   }
   if (startButton) {
     buttonStart = (

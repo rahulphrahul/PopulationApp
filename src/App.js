@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // core components
 import Admin from "layouts/Admin.js";
@@ -10,6 +10,7 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 import StaffsLayout from "layouts/StaffsLayout";
 import HodLayout from "layouts/HodLayout";
+import UserProfileLayout from "layouts/UserProfileLayout";
 
 export default function App() {
   const [loggedIn, setLoggedin] = React.useState(false);
@@ -19,24 +20,24 @@ export default function App() {
   const [admin, setAdmin] = React.useState(false);
   const [staff, setStaff] = React.useState(false);
   const [hod, setHod] = React.useState(false);
+  const [userdetails, setUserdetails] = React.useState([]);
+  const showNotification = () => {
+    if (!bc) {
+      setBC(true);
+      setTimeout(function () {
+        setBC(false);
+      }, 3000);
+    }
+  };
   useEffect(() => {
     if (userType == "Admin") setAdmin(true);
     else if (userType == "Staff") setStaff(true);
     else if (userType == "HOD") setHod(true);
-    const showNotification = () => {
-      if (!bc) {
-        setBC(true);
-        setTimeout(function () {
-          setBC(false);
-        }, 3000);
-      }
-    };
 
     if (notify) {
       showNotification();
-      setNotification(false);
     }
-  });
+  }, [notify]);
   return (
     <>
       <Snackbar
@@ -48,7 +49,7 @@ export default function App() {
         closeNotification={() => setBC(false)}
         close
       />
-      <BrowserRouter>
+      <HashRouter>
         <>
           {loggedIn ? (
             <div>
@@ -56,21 +57,33 @@ export default function App() {
                 if (admin) {
                   return (
                     <Switch>
-                      <Route path="/admin" component={Admin}></Route>
+                      <Route path="/admin">
+                        <Admin setLoggedin={setLoggedin} />
+                      </Route>
+                      <Route path="/user">
+                        <UserProfileLayout
+                          usedetails={userdetails}
+                          setLoggedin={setLoggedin}
+                        />
+                      </Route>
                       <Redirect from="/" to="/admin/dashboard" />
                     </Switch>
                   );
                 } else if (staff) {
                   return (
                     <Switch>
-                      <Route path="/admin" component={StaffsLayout}></Route>
+                      <Route path="/admin">
+                        <StaffsLayout setLoggedin={setLoggedin} />
+                      </Route>
                       <Redirect from="/" to="/admin/dashboard" />
                     </Switch>
                   );
                 } else if (hod) {
                   return (
                     <Switch>
-                      <Route path="/admin" component={HodLayout}></Route>
+                      <Route path="/admin">
+                        <HodLayout setLoggedin={setLoggedin} />
+                      </Route>
                       <Redirect from="/" to="/admin/dashboard" />
                     </Switch>
                   );
@@ -84,6 +97,7 @@ export default function App() {
                   setLoggedin={setLoggedin}
                   setNotification={setNotification}
                   setUserType={setUserType}
+                  setUserdetails={setUserdetails}
                 />
               </Route>
 
@@ -91,7 +105,7 @@ export default function App() {
             </Switch>
           )}
         </>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 }

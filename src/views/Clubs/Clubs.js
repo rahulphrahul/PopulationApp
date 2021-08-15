@@ -219,9 +219,6 @@ export default function Clubs() {
     setUploaded(false);
   }
   useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
-
     //API call for get latest 10 elements
     fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllClubs/", {
       method: "POST",
