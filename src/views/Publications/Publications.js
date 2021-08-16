@@ -69,6 +69,15 @@ export default function Publications() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Publicdata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    PublishedBy: d.PublishedBy,
+    PublishedDate: d.PublishedDate,
+    Image: d.Image,
+    Description: d.Description,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -91,8 +100,8 @@ export default function Publications() {
   const [data, setData] = React.useState({
     Id: 0,
     Name: "",
-    Pub_By: "",
-    Pub_Date: "",
+    PublishedBy: "",
+    PublishedDate: "",
     Status: "Created",
     Image: "",
     Description: "",
@@ -124,8 +133,8 @@ export default function Publications() {
     setData({
       Id: 0,
       Name: "",
-      Pub_By: "",
-      Pub_Date: "",
+      PublishedBy: "",
+      PublishedDate: "",
       Status: "Created",
       Image: "",
       Description: "",
@@ -135,9 +144,9 @@ export default function Publications() {
   function ValidateFields() {
     if (data.Name == "") {
       return false;
-    } else if (data.Pub_By == "") {
+    } else if (data.PublishedBy == "") {
       return false;
-    } else if (data.Pub_Date == "") {
+    } else if (data.PublishedDate == "") {
       return false;
     } else if (data.Image == "") {
       return false;
@@ -199,8 +208,8 @@ export default function Publications() {
             setData({
               Id: 0,
               Name: "",
-              Pub_By: "",
-              Pub_Date: "",
+              PublishedBy: "",
+              PublishedDate: "",
               Status: "Created",
               Image: "",
               Description: "",
@@ -341,9 +350,9 @@ export default function Publications() {
                     <GridItem xs={12} sm={12} md={3}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
-                        value={data.Pub_By}
+                        value={data.PublishedBy}
                         labelText="Published By"
-                        id="Pub_By"
+                        id="PublishedBy"
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -352,9 +361,9 @@ export default function Publications() {
                     <GridItem xs={12} sm={12} md={3}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
-                        value={data.Pub_Date}
+                        value={data.PublishedDate}
                         labelText="Published Date"
-                        id="Pub_Date"
+                        id="PublishedDate"
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -442,18 +451,17 @@ export default function Publications() {
                       "Name",
                       "Published By",
                       "Published Date",
-                      "Status",
                       "Image",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Publicdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

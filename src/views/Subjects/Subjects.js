@@ -13,13 +13,9 @@ import Button from "components/CustomButtons/Button.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
-// import ImageUpload from "components/CustomUpload/ImageUpload.js";
 import SingleSelect from "components/SingleSelect";
-import AttachFile from "@material-ui/icons/AttachFile";
-import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 
 // import { data } from "./data.json";
 const styles = {
@@ -61,9 +57,7 @@ export default function Subjects() {
   const [edit, setEdit] = React.useState([]);
   const [deletee, setDelete] = React.useState([]);
   const [events, setEvents] = React.useState([]);
-  const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
-  const [uploaded, setUploaded] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
@@ -86,6 +80,16 @@ export default function Subjects() {
   const SemesterList = semesters.map((d) => ({
     value: d.Id,
     label: d.SemesterNo,
+  }));
+  const Subjectdata = events.map((d) => ({
+    Id: d.Id,
+    CourseId: d.CourseId,
+    CourseName: d.CourseName,
+    SemesterId: d.SemesterId,
+    SemesterNo: d.SemesterNo,
+    SubjectName: d.SubjectName,
+    SubjectCode: d.SubjectCode,
+    Description: d.Description,
   }));
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -159,7 +163,6 @@ export default function Subjects() {
       SubjectName: "",
       SubjectCode: "",
       Status: "Created",
-      Image: "",
       Description: "",
     });
   }
@@ -181,37 +184,7 @@ export default function Subjects() {
       return false;
     } else return true;
   }
-  //function to upload
-  function UploadImage() {
-    if (files != null) {
-      setValidated(true);
-      setSaving(true);
-      let form_data = new FormData();
-      form_data.append("File", files[0]);
-      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
-      axios
-        .post(url, form_data, {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.Success) {
-            data.Image = res.data.Data[0];
-            setUploaded(true);
-            HandleSave();
-          } else {
-            setUploaded(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setUploaded(false);
-        });
-    } else {
-      setValidated(false);
-    }
-  }
+
   //API call to get all semesters from the database to dropdown list
   fetch(
     "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetSemesterByCourseId/",
@@ -271,7 +244,6 @@ export default function Subjects() {
     } else {
       setValidated(false);
     }
-    setUploaded(false);
   }
   //==============================UseEffect======================================
   useEffect(() => {
@@ -404,7 +376,7 @@ export default function Subjects() {
 
                 <CardBody>
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <SingleSelect
                         noOptionMessage="Create any Course first"
                         placeholder="Select Course"
@@ -415,7 +387,7 @@ export default function Subjects() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={5}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <SingleSelect
                         noOptionMessage="Select Course First"
                         placeholder="Select Semester"
@@ -426,7 +398,7 @@ export default function Subjects() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={5}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.SubjectName}
@@ -437,7 +409,7 @@ export default function Subjects() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.SubjectCode}
@@ -468,26 +440,6 @@ export default function Subjects() {
                     </GridItem>
 
                     <GridItem xs={12} sm={5} md={5}>
-                      {" "}
-                      <CustomFileInput
-                        setFiles={setFiles}
-                        saved={uploaded}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          placeholder: "Click here to upload an image",
-                        }}
-                        endButton={{
-                          buttonProps: {
-                            round: true,
-                            color: "info",
-                            justIcon: true,
-                            filebutton: true,
-                          },
-                          icon: <AttachFile />,
-                        }}
-                      />
                       {validated ? (
                         <></>
                       ) : (
@@ -500,7 +452,7 @@ export default function Subjects() {
                   <Button onClick={HandleClear} color="defualt">
                     Clear
                   </Button>
-                  <Button onClick={UploadImage} color="info">
+                  <Button onClick={HandleSave} color="info">
                     Save
                   </Button>
                 </CardFooter>
@@ -527,24 +479,16 @@ export default function Subjects() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "Corse Name",
+                      "Course Id",
+                      "Coursename",
+                      "Semester Id",
                       "Semester No",
-                      "Subject Name",
-                      "SubjectCode",
-                      "Status",
-                      "Image",
+                      "SubjectName",
+                      "CourseCode",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
-                      "Course ID",
-                      "Semester ID",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Subjectdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

@@ -70,6 +70,15 @@ export default function Facilities() {
   const [saving, setSaving] = React.useState(false);
   const [errors, setError] = React.useState(false);
 
+  const Facilitiesdata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    Link: d.Link,
+    StaffId: d.StaffId,
+    Image: d.Image,
+    Description: d.Description,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -173,6 +182,7 @@ export default function Facilities() {
           if (res.data.Success) {
             data.Image = res.data.Data[0];
             setUploaded(true);
+            console.log(data);
             HandleSave();
           } else {
             setUploaded(false);
@@ -460,18 +470,18 @@ export default function Facilities() {
                       "Name",
                       "Link",
                       "StaffId",
-                      "Status",
+                      // "Status",
                       "Image",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Facilitiesdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

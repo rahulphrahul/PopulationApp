@@ -87,6 +87,26 @@ export default function Students() {
     Id: null,
     label: "",
   });
+  const Studentdata = events.map((d) => ({
+    Id: d.Id,
+    FullName: d.FullName,
+    RegistrationNo: d.RegistrationNo,
+    ClassNo: d.ClassNo,
+    AdmissionNo: d.AdmissionNo,
+    Mobile: d.Mobile,
+    Email: d.Email,
+    Course: d.Course,
+    CourseCode: d.CourseCode,
+    Gender: d.Gender,
+    DOB: d.DOB,
+    Password: d.Password,
+    GuardianName: d.GuardianName,
+    GuardianMobile: d.GuardianMobile,
+    GuardianRelation: d.GuardianRelation,
+    Image: d.Image,
+    CourseId: d.CourseId,
+  }));
+
   //PassData for get all semesters and courses for dropdown
   let passData1 = {
     PageIndex: 0,
@@ -130,7 +150,7 @@ export default function Students() {
     GuardianName: "",
     GuardianMobile: "",
     RegistrationNo: "",
-    Class_No: "",
+    ClassNo: "",
     AdmissionNo: "",
     CourseId: null,
     Course: "",
@@ -180,7 +200,7 @@ export default function Students() {
       GuardianName: "",
       GuardianMobile: "",
       RegistrationNo: "",
-      Class_No: "",
+      ClassNo: "",
       AdmissionNo: "",
       CourseId: "",
       Course: "",
@@ -283,7 +303,7 @@ export default function Students() {
               GuardianName: "",
               GuardianMobile: "",
               RegistrationNo: "",
-              Class_No: "",
+              ClassNo: "",
               AdmissionNo: "",
               CourseId: "",
               Course: "",
@@ -759,18 +779,17 @@ export default function Students() {
                       "Gur_Name",
                       "Gur_Mobile",
                       "Gur_Relation",
-                      "Status",
                       "Image",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
                       "CourseId",
                       "Actions",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                     ]}
-                    tableData={events}
+                    tableData={Studentdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

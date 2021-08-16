@@ -69,6 +69,15 @@ export default function Events() {
   const [empty, setEmpty] = React.useState(false);
   const [Saving, setSaving] = React.useState(false);
 
+  const Testdata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    Message: d.Message,
+    Date: d.Date,
+    Description: d.Description,
+    Image: d.Image,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -435,18 +444,17 @@ export default function Events() {
                       "Name",
                       "Message",
                       "Date",
-                      "Status",
-                      "Image",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      "Image",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Testdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

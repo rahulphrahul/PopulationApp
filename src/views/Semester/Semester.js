@@ -13,13 +13,10 @@ import Button from "components/CustomButtons/Button.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
-import AttachFile from "@material-ui/icons/AttachFile";
-import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 import SingleSelect from "components/SingleSelect";
 
 // import { data } from "./data.json";
@@ -62,9 +59,7 @@ export default function Semester() {
   const [edit, setEdit] = React.useState([]);
   const [deletee, setDelete] = React.useState([]);
   const [events, setEvents] = React.useState([]);
-  const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
-  const [uploaded, setUploaded] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
@@ -82,6 +77,13 @@ export default function Semester() {
     Id: null,
     label: "",
   });
+  const Semesterdata = events.map((d) => ({
+    Id: d.Id,
+    CourseId: d.CourseId,
+    CourseName: d.CourseName,
+    SemesterDuration: d.SemesterDuration,
+    SemesterNo: d.SemesterNo,
+  }));
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -146,7 +148,6 @@ export default function Semester() {
       CourseName: "",
       SemesterDuration: "",
       Status: "Created",
-      Image: "",
     });
   }
   //Function for Validating fields
@@ -155,43 +156,9 @@ export default function Semester() {
       return false;
     } else if (data.CourseDuration == "") {
       return false;
-    } else if (data.Image == "") {
-      return false;
     } else if (data.CourseName == "") {
       return false;
     } else return true;
-  }
-  //function to upload
-  function UploadImage() {
-    if (files != null) {
-      setValidated(true);
-      setSaving(true);
-      let form_data = new FormData();
-      form_data.append("File", files[0]);
-      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
-      axios
-        .post(url, form_data, {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.Success) {
-            data.Image = res.data.Data[0];
-            setUploaded(true);
-            console.log(data);
-            HandleSave();
-          } else {
-            setUploaded(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setUploaded(false);
-        });
-    } else {
-      setValidated(false);
-    }
   }
 
   //Function to save Data
@@ -222,7 +189,6 @@ export default function Semester() {
               CourseName: "",
               SemesterDuration: "",
               Status: "Created",
-              Image: "",
             });
             setEmpty(false);
             showSavedNotification();
@@ -234,7 +200,6 @@ export default function Semester() {
     } else {
       setValidated(false);
     }
-    setUploaded(false);
   }
   useEffect(() => {
     setData((data) => ({
@@ -399,26 +364,6 @@ export default function Semester() {
                     </GridItem>
 
                     <GridItem xs={12} sm={5} md={5}>
-                      {" "}
-                      <CustomFileInput
-                        setFiles={setFiles}
-                        saved={uploaded}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          placeholder: "Click here to upload an image",
-                        }}
-                        endButton={{
-                          buttonProps: {
-                            round: true,
-                            color: "info",
-                            justIcon: true,
-                            filebutton: true,
-                          },
-                          icon: <AttachFile />,
-                        }}
-                      />
                       {validated ? (
                         <></>
                       ) : (
@@ -431,7 +376,7 @@ export default function Semester() {
                   <Button onClick={HandleClear} color="defualt">
                     Clear
                   </Button>
-                  <Button onClick={UploadImage} color="info">
+                  <Button onClick={HandleSave} color="info">
                     Save
                   </Button>
                 </CardFooter>
@@ -458,21 +403,13 @@ export default function Semester() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "SemesterNo",
+                      "Course ID",
                       "CourseName",
                       "SemesterDuration",
-                      "Status",
-                      "Image",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
-                      "CourseId",
+                      "Semester Number",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Semesterdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

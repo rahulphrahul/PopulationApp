@@ -69,6 +69,12 @@ export default function Gallery() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Gallerydata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    Image: d.Image,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -383,17 +389,17 @@ export default function Gallery() {
                     tableHead={[
                       "ID",
                       "Name",
-                      "Status",
+                      // "Status",
                       "Image",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Gallerydata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

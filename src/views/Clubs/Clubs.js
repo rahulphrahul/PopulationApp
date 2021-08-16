@@ -70,6 +70,15 @@ export default function Clubs() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Clubsdata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    Link: d.Link,
+    StaffId: d.StaffId,
+    Image: d.Image,
+    Description: d.Description,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -434,18 +443,18 @@ export default function Clubs() {
                       "Name",
                       "Link",
                       "StaffId",
-                      "Status",
+                      // "Status",
                       "Image",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Clubsdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

@@ -69,6 +69,14 @@ export default function Management() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Managedata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    Post: d.Post,
+    Image: d.Image,
+    Description: d.Description,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -423,18 +431,18 @@ export default function Management() {
                       "Id",
                       "Name",
                       "Post",
-                      "Status",
+                      // "Status",
                       "Image",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Managedata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

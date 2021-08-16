@@ -69,6 +69,15 @@ export default function Slideshow() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Sildedata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    Quote: d.Quote,
+    ButtonLink: d.ButtonLink,
+    ButtonText: d.ButtonText,
+    Image: d.Image,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -431,19 +440,19 @@ export default function Slideshow() {
                       "ID",
                       "Name",
                       "Quote",
-                      "Status",
-                      "Image",
+                      // "Status",
                       "ButtonLink",
                       "ButtonText",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      "Image",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Sildedata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

@@ -69,6 +69,18 @@ export default function InternalsNotification() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const InternalNotedata = events.map((d) => ({
+    Id: d.Id,
+    CourseCode: d.CourseId,
+    CourseId: d.CourseId,
+    Date: d.Date,
+    Description: d.Description,
+    Files: d.Files,
+    Note: d.Note,
+    SemesterId: d.SemesterId,
+    SemesterNo: d.SemesterNo,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -493,20 +505,20 @@ export default function InternalsNotification() {
                       "Coursecode",
                       "SemesterNo",
                       "Note",
-                      "Status",
+                      // "Status",
                       "Files",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "CourseId",
                       "SemesterId",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={InternalNotedata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

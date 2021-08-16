@@ -69,6 +69,18 @@ export default function Courses() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Coursedata = events.map((d) => ({
+    Id: d.Id,
+    CourseCode: d.CourseCode,
+    CourseDuration: d.CourseDuration,
+    CourseName: d.CourseName,
+    Description: d.Description,
+    Eligibility: d.Eligibility,
+    Image: d.Image,
+    Semesters: d.Semesters,
+    Syllabus: d.Syllabus,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -478,24 +490,24 @@ export default function Courses() {
                     tableHeaderColor="info"
                     tableHead={[
                       "ID",
-                      "CourseName",
                       "CourseCode",
-                      "CourseCourseDuration",
-                      "Status",
-                      "Image",
+                      "CourseDuration",
+                      "CourseName",
                       "Description",
                       "Eligibility",
-                      "Syllabus",
+                      "Image",
                       "Semesters",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      "Syllabus",
+                      // "Status",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Coursedata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

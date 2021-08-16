@@ -69,6 +69,13 @@ export default function Departments() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Departdata = events.map((d) => ({
+    Id: d.Id,
+    DepartmentName: d.DepartmentName,
+    HeadName: d.HeadName,
+    Image: d.Image,
+    Description: d.Description,
+  }));
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -90,8 +97,8 @@ export default function Departments() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    Name: "",
-    HOD: "",
+    DepartmentName: "",
+    HeadName: "",
     Status: "Created",
     Image: "",
     Description: "",
@@ -122,8 +129,8 @@ export default function Departments() {
   function HandleClear() {
     setData({
       Id: 0,
-      Name: "",
-      HOD: "",
+      DepartmentName: "",
+      HeadName: "",
       Status: "Created",
       Image: "",
       Description: "",
@@ -131,13 +138,9 @@ export default function Departments() {
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
+    if (data.DepartmentName == "") {
       return false;
-    } else if (data.HOD == "") {
-      return false;
-    } else if (data.Status == "") {
-      return false;
-    } else if (data.Image == "") {
+    } else if (data.HeadName == "") {
       return false;
     } else if (data.Description == "") {
       return false;
@@ -171,13 +174,14 @@ export default function Departments() {
           setUploaded(false);
         });
     } else {
-      setValidated(false);
+      HandleSave();
     }
   }
 
   //Function to save Data
   function HandleSave() {
     if (ValidateFields()) {
+      setSaving(true);
       setValidated(true);
       fetch(
         "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateDepartments/",
@@ -196,8 +200,8 @@ export default function Departments() {
           if (json.Success) {
             setData({
               Id: 0,
-              Name: "",
-              HOD: "",
+              DepartmentName: "",
+              HeadName: "",
               Status: "Created",
               Image: "",
               Description: "",
@@ -327,9 +331,9 @@ export default function Departments() {
                     <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
-                        value={data.Name}
+                        value={data.DepartmentName}
                         labelText="Department Name"
-                        id="Name"
+                        id="DepartmentName"
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -338,9 +342,9 @@ export default function Departments() {
                     <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
-                        value={data.HOD}
-                        labelText="HOD Name"
-                        id="HOD"
+                        value={data.HeadName}
+                        labelText="Head of Department"
+                        id="HeadName"
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -427,19 +431,19 @@ export default function Departments() {
                     tableHead={[
                       "ID",
                       "DepartmentName",
-                      "HeadName",
-                      "Status",
+                      "HODName",
+                      // "Status",
                       "Image",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Departdata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

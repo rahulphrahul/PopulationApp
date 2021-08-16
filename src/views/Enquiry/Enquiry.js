@@ -63,6 +63,13 @@ export default function Enquiry() {
     if (viewEnquiry) setViewEnquiry(false);
     else setViewEnquiry(true);
   }
+  const Enquirydata = events.map((d) => ({
+    Id: d.Id,
+    Name: d.Name,
+    Mobile: d.Mobile,
+    // Image: d.Image,
+    Description: d.Description,
+  }));
   //Saved Notification trigger
   // const showSavedNotification = () => {
   //   if (!saved) {
@@ -351,18 +358,18 @@ export default function Enquiry() {
                       "ID",
                       "Name",
                       "Mobile",
-                      "Status",
-                      "Image",
+                      // "Status",
+                      // "Image",
                       "Description",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Enquirydata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

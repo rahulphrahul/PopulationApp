@@ -69,6 +69,14 @@ export default function Admin() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const Admindata = events.map((d) => ({
+    Id: d.Id,
+    FullName: d.FullName,
+    Image: d.Image,
+    Email: d.Email,
+    Password: d.Password,
+  }));
+
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -414,25 +422,24 @@ export default function Admin() {
                     tableHead={[
                       "Id",
                       "FullName",
-                      "Mobile",
-                      "Email",
-                      "Gender",
-                      "DOB",
-                      "Address",
-                      "Usertype",
-                      "AreaOfInterest",
-                      "Password",
-                      "Status",
                       "Image",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
+                      "Email",
+                      "Password",
+                      // "Gender",
+                      // "DOB",
+                      // "Address",
+                      // "Usertype",
+                      // "AreaOfInterest",
+                      // "Status",
+                      // "Created By",
+                      // "Created Date",
+                      // "Modified By",
+                      // "Modified Date",
+                      // "Deteled By",
+                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={Admindata}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}
