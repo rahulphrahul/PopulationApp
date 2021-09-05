@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { Domain } from "Domain";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -208,17 +210,14 @@ export default function Semester() {
       CourseName: CourseValues.Label,
     }));
     //API call for get all course names to dropedown
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllCourses/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData1),
-      }
-    )
+    fetch(Domain + "/api/Admin/GetAllCourses/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData1),
+    })
       .then((response) => response.json())
 
       .then((json) => {
@@ -226,17 +225,14 @@ export default function Semester() {
       });
 
     //API call for get latest 10 elements
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllSemester/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData),
-      }
-    )
+    fetch(Domain + "/api/Admin/GetAllSemester/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
       .then((response) => response.json())
 
       .then((json) => {

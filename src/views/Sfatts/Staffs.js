@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { Domain } from "Domain";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -249,7 +251,7 @@ export default function Staffs() {
       setValidated(true);
       let form_data = new FormData();
       form_data.append("File", files[0]);
-      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
+      let url = Domain + "/api/Uploads/File/";
       axios
         .post(url, form_data, {
           headers: {
@@ -339,17 +341,14 @@ export default function Staffs() {
       DepartmentName: departmentValues.Label,
     }));
     //API call for get latest 10 elements
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllDepartments/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData1),
-      }
-    )
+    fetch(Domain + "/api/Admin/GetAllDepartments/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData1),
+    })
       .then((response) => response.json())
 
       .then((json) => {

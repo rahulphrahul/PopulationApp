@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { Domain } from "Domain";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -159,7 +161,7 @@ export default function Events() {
       setSaving(true);
       let form_data = new FormData();
       form_data.append("File", files[0]);
-      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
+      let url = Domain + "/api/Uploads/File/";
       axios
         .post(url, form_data, {
           headers: {
@@ -222,17 +224,14 @@ export default function Events() {
   }
   useEffect(() => {
     //API call for get latest 10 elements
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllTestimonials/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData),
-      }
-    )
+    fetch(Domain + "/api/Admin/GetAllTestimonials/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
       .then((response) => response.json())
 
       .then((json) => {

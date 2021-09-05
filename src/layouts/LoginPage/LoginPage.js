@@ -10,7 +10,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import { Domain } from "Domain";
 import PropTypes from "prop-types";
 
 const styles = {
@@ -59,7 +59,6 @@ export default function LoginPage({
   setUserdetails,
 }) {
   const classes = useStyles();
-
   const [data, setData] = React.useState({
     Username: "",
     Password: "",
@@ -76,7 +75,7 @@ export default function LoginPage({
       setInvalid(true);
       setLoggedin(false);
     } else {
-      fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/AdminLogin/", {
+      fetch(Domain + "/api/Admin/AdminLogin/", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -156,6 +155,7 @@ export default function LoginPage({
                         {invalid ? (
                           <div>
                             <CustomInput
+                              type="password"
                               error
                               onChange={(e) => HandleData(e)}
                               value={data.Password}
@@ -169,6 +169,7 @@ export default function LoginPage({
                         ) : (
                           <div>
                             <CustomInput
+                              type="password"
                               onChange={(e) => HandleData(e)}
                               value={data.Password}
                               labelText="Password"

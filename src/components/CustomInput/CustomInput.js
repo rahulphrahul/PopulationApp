@@ -28,6 +28,7 @@ export default function CustomInput(props) {
     value,
     onChange,
     disabled,
+    type,
   } = props;
 
   const labelClasses = classNames({
@@ -65,6 +66,7 @@ export default function CustomInput(props) {
         </InputLabel>
       ) : null}
       <Input
+        type={type}
         disabled={disabled}
         onChange={onChange}
         value={value}
@@ -98,4 +100,5 @@ CustomInput.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.any,
   disabled: PropTypes.any,
+  type: PropTypes.any,
 };

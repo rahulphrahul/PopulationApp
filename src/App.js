@@ -17,9 +17,7 @@ export default function App() {
   const [notify, setNotification] = React.useState(false);
   const [bc, setBC] = React.useState(false);
   const [userType, setUserType] = React.useState("");
-  const [admin, setAdmin] = React.useState(false);
-  const [staff, setStaff] = React.useState(false);
-  const [hod, setHod] = React.useState(false);
+
   const [userdetails, setUserdetails] = React.useState([]);
   const showNotification = () => {
     if (!bc) {
@@ -30,14 +28,11 @@ export default function App() {
     }
   };
   useEffect(() => {
-    if (userType == "Admin") setAdmin(true);
-    else if (userType == "Staff") setStaff(true);
-    else if (userType == "HOD") setHod(true);
-
+    console.log(userType);
     if (notify) {
       showNotification();
     }
-  }, [notify]);
+  }, [notify, userType]);
   return (
     <>
       <Snackbar
@@ -54,7 +49,7 @@ export default function App() {
           {loggedIn ? (
             <div>
               {(() => {
-                if (admin) {
+                if (userType == "Admin") {
                   return (
                     <Switch>
                       <Route path="/admin">
@@ -69,7 +64,7 @@ export default function App() {
                       <Redirect from="/" to="/admin/dashboard" />
                     </Switch>
                   );
-                } else if (staff) {
+                } else if (userType == "Staff") {
                   return (
                     <Switch>
                       <Route path="/admin">
@@ -78,7 +73,7 @@ export default function App() {
                       <Redirect from="/" to="/admin/dashboard" />
                     </Switch>
                   );
-                } else if (hod) {
+                } else if (userType == "HOD") {
                   return (
                     <Switch>
                       <Route path="/admin">

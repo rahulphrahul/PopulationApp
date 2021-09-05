@@ -15,6 +15,7 @@ import TableCell from "@material-ui/core/TableCell";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/tableStyle.js";
 import Loader from "components/Loader/Loader";
+import { Domain } from "Domain";
 
 const useStyles = makeStyles(styles);
 
@@ -60,10 +61,11 @@ export default function CustomTable({
             {tableData.map((prop, key) => {
               return (
                 <TableRow key={key} className={classes.tableBodyRow}>
-                  {Object.values(prop).map((prop, key) => {
+                  <img width="50%" src={Domain + prop.Image} alt=".." />
+                  {Object.values(prop).map((props, key) => {
                     return (
                       <TableCell className={classes.tableCell} key={key}>
-                        {prop}
+                        {props}
                       </TableCell>
                     );
                   })}

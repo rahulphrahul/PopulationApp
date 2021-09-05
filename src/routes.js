@@ -19,6 +19,7 @@ import VerticalSplitIcon from "@material-ui/icons/VerticalSplit";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import EmailIcon from "@material-ui/icons/Email";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
+import MailIcon from "@material-ui/icons/Mail";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import Slideshow from "views/Slideshow/Slideshow";
@@ -41,9 +42,9 @@ import Clubs from "views/Clubs/Clubs";
 import Facilities from "views/Facilities/Facilities";
 import Management from "views/Management/Management";
 import Staffs from "views/Sfatts/Staffs";
+import SendSMS from "views/SendSMS/SendSMS";
 
 // core components/views for RTL layout
-
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -135,6 +136,13 @@ const dashboardRoutes = [
     name: "Students",
     icon: SupervisedUserCircleIcon,
     component: Students,
+    layout: "/admin",
+  },
+  {
+    path: "/sms",
+    name: "Send SMS",
+    icon: MailIcon,
+    component: SendSMS,
     layout: "/admin",
   },
   {

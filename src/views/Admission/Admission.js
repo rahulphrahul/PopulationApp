@@ -8,18 +8,22 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Button from "components/CustomButtons/Button.js";
-import CardFooter from "components/Card/CardFooter.js";
+// import CustomInput from "components/CustomInput/CustomInput.js";
+// import Button from "components/CustomButtons/Button.js";
+// import CardFooter from "components/Card/CardFooter.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
+import NavPills from "components/NavPills/NavPills.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-import axios from "axios";
-import Danger from "components/Typography/Danger";
+import Button from "components/CustomButtons/Button.js";
+import { Domain } from "Domain";
+// import axios from "axios";
+// import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
+import Accordion from "components/Accordion/Accordion";
 
-import AttachFile from "@material-ui/icons/AttachFile";
-import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
+// import AttachFile from "@material-ui/icons/AttachFile";
+// import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 
 // import { data } from "./data.json";
 const styles = {
@@ -59,25 +63,88 @@ export default function Admission() {
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
   const [edit, setEdit] = React.useState([]);
+  const [edit1, setEdit1] = React.useState([]);
+  const [edit2, setEdit2] = React.useState([]);
   const [deletee, setDelete] = React.useState([]);
-  const [events, setEvents] = React.useState([]);
-  const [files, setFiles] = React.useState(null);
-  const [validated, setValidated] = React.useState(true);
-  const [uploaded, setUploaded] = React.useState(false);
+  const [requested, setRequested] = React.useState([]);
+  const [waitingList, setWaitingList] = React.useState([]);
+  const [admitted, setAdmitted] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
-  const [saving, setSaving] = React.useState(false);
-
-  //Saved Notification trigger
-  const showSavedNotification = () => {
-    if (!saved) {
-      setSaved(true);
-      setTimeout(function () {
-        setSaved(false);
-      }, 3000);
+  const [empty1, setEmpty1] = React.useState(false);
+  const [empty2, setEmpty2] = React.useState(false);
+  const [viewData, Setview] = React.useState(false);
+  const [step, setStep] = React.useState(0);
+  const [stepChangeData, setStepChangeData] = React.useState();
+  const [stepChangeData1, setStepChangeData1] = React.useState();
+  const [stepChangeData2, setStepChangeData2] = React.useState();
+  function HandleView() {
+    if (viewData) {
+      Setview(false);
+      setStep(0);
+    } else {
+      setStep(1);
+      Setview(true);
     }
-  };
+  }
+  function HandleView1() {
+    if (viewData) {
+      Setview(false);
+      setStep(0);
+    } else {
+      setStep(2);
+      Setview(true);
+    }
+  }
+  function HandleView2() {
+    if (viewData) {
+      Setview(false);
+      setStep(0);
+    } else {
+      setStep(3);
+      Setview(true);
+    }
+  }
+  const ReqData = requested.map((d) => ({
+    Id: d.Id,
+    AdmissionNo: d.AdmissionNo,
+    FirstName: d.FirstName,
+    Gender: d.Gender,
+    DOB: d.DOB,
+    Course: d.Course,
+    FathersName: d.FathersName,
+    FatherMobile: d.FatherMobile,
+    District: d.District,
+    HouseName: d.HouseName,
+    Email: d.Email,
+  }));
+  const WaitData = waitingList.map((d) => ({
+    Id: d.Id,
+    AdmissionNo: d.AdmissionNo,
+    FirstName: d.FirstName,
+    Gender: d.Gender,
+    DOB: d.DOB,
+    Course: d.Course,
+    FathersName: d.FathersName,
+    FatherMobile: d.FatherMobile,
+    District: d.District,
+    HouseName: d.HouseName,
+    Email: d.Email,
+  }));
+  const AdmData = admitted.map((d) => ({
+    Id: d.Id,
+    AdmissionNo: d.AdmissionNo,
+    FirstName: d.FirstName,
+    Gender: d.Gender,
+    DOB: d.DOB,
+    Course: d.Course,
+    FathersName: d.FathersName,
+    FatherMobile: d.FatherMobile,
+    District: d.District,
+    HouseName: d.HouseName,
+    Email: d.Email,
+  }));
   //Deleted Notification Trigger
   const showDeletedNotification = () => {
     if (!deleted) {
@@ -88,27 +155,31 @@ export default function Admission() {
     }
   };
   //Form Data
-  const [data, setData] = React.useState({
-    Id: 0,
-    FName: "",
-    LName: "",
-    Mobile: "",
-    Email: "",
-    Gender: "",
-    DOB: "",
-    Pwd: "",
-    Gur_Name: "",
-    Gur_Mobile: "",
-    Status: "Created",
-    Image: "",
-  });
+  const [data, setData] = React.useState();
 
+  // console.log(data);
   //PassData for getAll API
-  let passData = {
+  let passData1 = {
     PageIndex: 0,
     PageSize: 10,
+    CourseId: "",
+    Year: 2021,
+    Step: 1,
   };
-
+  let passData2 = {
+    PageIndex: 0,
+    PageSize: 10,
+    CourseId: "",
+    Year: 2021,
+    Step: 2,
+  };
+  let passData3 = {
+    PageIndex: 0,
+    PageSize: 10,
+    CourseId: "",
+    Year: 2021,
+    Step: 3,
+  };
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -118,153 +189,75 @@ export default function Admission() {
   let passEdit = {
     Id: edit,
   };
-  //Function to handle Data input
-  function HandleData(e) {
-    const newData = { ...data };
-    newData[e.target.id] = e.target.value;
-    setData(newData);
-    console.log(newData);
-  }
-  function HandleClear() {
-    setData({
-      Id: 0,
-      FName: "",
-      LName: "",
-      Mobile: "",
-      Email: "",
-      Gender: "",
-      DOB: "",
-      Pwd: "",
-      Gur_Name: "",
-      Gur_Mobile: "",
-      Status: "Created",
-      Image: "",
-    });
-  }
-  //Function for Validating fields
-  function ValidateFields() {
-    if (data.FName == "") {
-      return false;
-    } else if (data.LName == "") {
-      return false;
-    } else if (data.Mobile == "") {
-      return false;
-    } else if (data.Email == "") {
-      return false;
-    } else if (data.Gender == "") {
-      return false;
-    } else if (data.DOB == "") {
-      return false;
-    } else if (data.Pwd == "") {
-      return false;
-    } else if (data.Gur_Name == "") {
-      return false;
-    } else if (data.Gur_Mobile == "") {
-      return false;
-    } else if (data.Image == "") {
-      return false;
-    } else return true;
-  }
-  //function to upload
-  function UploadImage() {
-    if (files != null) {
-      setValidated(true);
-      setSaving(true);
-      let form_data = new FormData();
-      form_data.append("File", files[0]);
-      let url = "https://rahulrajrahu33.pythonanywhere.com/api/Uploads/File/";
-      axios
-        .post(url, form_data, {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.Success) {
-            data.Image = res.data.Data[0];
-            setUploaded(true);
-            return true;
-          } else {
-            setUploaded(false);
-            return false;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setUploaded(false);
-          return false;
-        });
-    } else {
-      setValidated(false);
-      return false;
-    }
-  }
+  let passEdit1 = {
+    Id: edit1,
+  };
+  let passEdit2 = {
+    Id: edit2,
+  };
 
-  //Function to save Data
-  function HandleSave() {
-    if (UploadImage()) {
-      if (ValidateFields()) {
-        setValidated(true);
-        fetch(
-          "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
-
-          .then((json) => {
-            if (json.Success) {
-              setData({
-                Id: 0,
-                FName: "",
-                LName: "",
-                Mobile: "",
-                Email: "",
-                Gender: "",
-                DOB: "",
-                Pwd: "",
-                Gur_Name: "",
-                Gur_Mobile: "",
-                Status: "Created",
-                Image: "",
-              });
-              setEmpty(false);
-              showSavedNotification();
-              setSaving(false);
-            } else {
-              console.log("Error in insertion");
-            }
-          });
-      } else {
-        setValidated(false);
-      }
-      setUploaded(false);
-    }
-  }
   useEffect(() => {
-    //API call for get latest 10 elements
+    //API call for get latest 10 elements step is requested
     fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAllAdmissionDetails/",
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsForAdmin/",
       {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(passData),
+        body: JSON.stringify(passData1),
       }
     )
       .then((response) => response.json())
 
       .then((json) => {
-        setEvents(json.Data);
+        // console.log("requested data", json.Data);
+        setRequested(json.Data);
         if (json.Data.length == 0) setEmpty(true);
+        else setEmpty(false);
+
+        setLoading(false);
+      });
+    //API call for get latest 10 elements step is waiting glist
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsForAdmin/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData2),
+      }
+    )
+      .then((response) => response.json())
+
+      .then((json) => {
+        setWaitingList(json.Data);
+        if (json.Data.length == 0) setEmpty1(true);
+        else setEmpty1(false);
+
+        setLoading(false);
+      });
+    //API call for get latest 10 elements step is accepted
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsForAdmin/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passData3),
+      }
+    )
+      .then((response) => response.json())
+
+      .then((json) => {
+        setAdmitted(json.Data);
+        if (json.Data.length == 0) setEmpty2(true);
+        else setEmpty2(false);
         setLoading(false);
       });
 
@@ -312,12 +305,131 @@ export default function Admission() {
           if (json.Success) {
             setEdit([]);
             setData(json.Data);
+            HandleView();
             console.log(json.Data);
           }
         });
     }
-  }, [deletee, edit, saved]);
+    if (edit1.length != 0) {
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsById/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(passEdit1),
+        }
+      )
+        .then((response) => response.json())
 
+        .then((json) => {
+          if (json.Success) {
+            setEdit1([]);
+            setData(json.Data);
+            HandleView1();
+            console.log(json.Data);
+          }
+        });
+    }
+    if (edit2.length != 0) {
+      fetch(
+        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsById/",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(passEdit2),
+        }
+      )
+        .then((response) => response.json())
+
+        .then((json) => {
+          if (json.Success) {
+            setEdit2([]);
+            setData(json.Data);
+            HandleView2();
+            console.log(json.Data);
+          }
+        });
+    }
+  }, [deletee, edit, edit1, edit2, saved, viewData]);
+
+  useEffect(() => {
+    setLoading(true);
+    //console.log("Data:", data.Id);
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(stepChangeData),
+      }
+    )
+      .then((response) => response.json())
+
+      .then((json) => {
+        console.log("status update:", json.Data);
+        // setRequested(json.Data);
+        // if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
+        Setview(false);
+      });
+  }, [stepChangeData]);
+  useEffect(() => {
+    setLoading(true);
+    //console.log("Data:", data.Id);
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(stepChangeData1),
+      }
+    )
+      .then((response) => response.json())
+
+      .then((json) => {
+        console.log("status update:", json.Data);
+        // setRequested(json.Data);
+        // if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
+        Setview(false);
+      });
+  }, [stepChangeData1]);
+  useEffect(() => {
+    setLoading(true);
+    //console.log("Data:", data.Id);
+    fetch(
+      "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(stepChangeData2),
+      }
+    )
+      .then((response) => response.json())
+
+      .then((json) => {
+        console.log("status update:", json.Data);
+        // setRequested(json.Data);
+        // if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
+        Setview(false);
+      });
+  }, [stepChangeData2]);
   return (
     <>
       <Snackbar
@@ -338,216 +450,334 @@ export default function Admission() {
         closeNotification={() => setDeleted(false)}
         close
       />
-      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
+
+      {viewData ? (
+        <LoadingOverlay active={loading} spinner text="Please Wait..">
+          <Card>
+            <GridContainer>
+              <GridItem md={12} sm={12} lg={4}>
+                <img src={Domain + data.Image} alt=".." />
+              </GridItem>
+              <GridItem md={12} sm={12} lg={6}>
+                <h2 className={classes.title}>{data.FirstName}</h2>
+                <h3 className={classes.mainPrice}>{data.Course}</h3>
+                <Accordion
+                  active={0}
+                  activeColor="info"
+                  collapses={[
+                    {
+                      title: "Personel Info",
+                      content: (
+                        <>
+                          <b>Date Of Birth : </b>
+                          {data.DOB}
+                          <br />
+                          <b> Gender : </b>
+                          {data.Gender}
+                          <br />
+                          <b> Guardians Name :</b> {data.FathersName}
+                          <br />
+                          <b> Guardians Mobile :</b> {data.FatherMobile}
+                          <br />
+                          <b> Contact : </b>
+                          {data.StudentMobile}
+                          <br />
+                          <b> Email : </b>
+                          {data.Email}
+                          <br />
+                        </>
+                      ),
+                    },
+                    {
+                      title: "Educational Details",
+                      content: (
+                        <>
+                          <b> Course : </b>
+                          {data.Course}
+                          <br />
+                          <b> Course Code : </b>
+                          {data.CourseCode}
+                          <br />
+                          <b> Admission Number : </b>
+                          {data.AdmissionNo}
+                          <br />
+                          <b> Registration Number: </b>
+                          {data.RegistrationNo}
+                        </>
+                      ),
+                    },
+                    {
+                      title: "Academic Details",
+                      content: (
+                        <p>
+                          Here comes the internal marks and university
+                          marklists.
+                        </p>
+                      ),
+                    },
+                  ]}
+                />
+
+                <GridContainer className={classes.pullRight}>
+                  <Button round onClick={HandleView}>
+                    Go back
+                  </Button>
+                  {step == 1 ? (
+                    <>
+                      <Button
+                        round
+                        color="info"
+                        onClick={() => {
+                          setStepChangeData1({
+                            Id: data.Id,
+                            LastStatus: "Processing",
+                            Step: 2,
+                            StatusList: "",
+                          });
+                        }}
+                      >
+                        Add to Waiting list
+                      </Button>
+                      <Button
+                        round
+                        color="danger"
+                        onClick={() => {
+                          setStepChangeData2({
+                            Id: data.Id,
+                            LastStatus: "Rejected",
+                            Step: 4,
+                            StatusList: "",
+                          });
+                        }}
+                      >
+                        Reject Application
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      {step == 2 ? (
+                        <>
+                          <Button
+                            round
+                            color="success"
+                            onClick={() => {
+                              setStepChangeData({
+                                Id: data.Id,
+                                LastStatus: "Admitted",
+                                Step: 3,
+                                StatusList: "",
+                              });
+                            }}
+                          >
+                            Admit
+                          </Button>
+                          <Button
+                            round
+                            color="danger"
+                            onClick={() => {
+                              setStepChangeData2({
+                                Id: data.Id,
+                                LastStatus: "Rejected",
+                                Step: 4,
+                                StatusList: "",
+                              });
+                            }}
+                          >
+                            Reject Application
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          {" "}
+                          <Button round color="success">
+                            Admitted
+                          </Button>
+                        </>
+                      )}
+                    </>
+                  )}
+                </GridContainer>
+              </GridItem>
+            </GridContainer>
+          </Card>
+        </LoadingOverlay>
+      ) : (
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <form>
-                <CardHeader color="info">
-                  <h4 className={classes.cardTitleWhite}>Add New Admission</h4>
-                  <p className={classes.cardCategoryWhite}>
-                    Enter the Admission details below and hit Save
-                  </p>
-                </CardHeader>
-
-                <CardBody>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.FName}
-                        labelText="First Name"
-                        id="FName"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.LName}
-                        labelText="Last Name"
-                        id="LName"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Mobile}
-                        labelText="Mobile"
-                        id="Mobile"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                  </GridContainer>
-
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Email}
-                        labelText="Email ID"
-                        id="Email"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Gender}
-                        labelText="Gender"
-                        id="Gender"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.DOB}
-                        labelText="DOB"
-                        id="DOB"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Pwd}
-                        labelText="Pwd"
-                        id="Pwd"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                  </GridContainer>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Gur_Name}
-                        labelText="Guardian Name"
-                        id="Gur_Name"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-
-                    <GridItem xs={12} sm={12} md={6}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Gur_Mobile}
-                        labelText="Guardian Mobile"
-                        id="Gur_Mobile"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-
-                    <GridItem xs={12} sm={5} md={5}>
-                      {" "}
-                      <CustomFileInput
-                        setFiles={setFiles}
-                        saved={uploaded}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          placeholder: "Click here to upload an image",
-                        }}
-                        endButton={{
-                          buttonProps: {
-                            round: true,
-                            color: "info",
-                            justIcon: true,
-                            filebutton: true,
-                          },
-                          icon: <AttachFile />,
-                        }}
-                      />
-                      {validated ? (
-                        <></>
-                      ) : (
-                        <Danger>Please enter all the details to save</Danger>
-                      )}
-                    </GridItem>
-                  </GridContainer>
-                </CardBody>
-                <CardFooter>
-                  <Button onClick={HandleClear} color="defualt">
-                    Clear
-                  </Button>
-                  <Button onClick={HandleSave} color="info">
-                    Save
-                  </Button>
-                </CardFooter>
-              </form>
-            </Card>
+            <h3>
+              <small>Select Admission status to view entries</small>
+            </h3>
+            <NavPills
+              color="info"
+              tabs={[
+                {
+                  tabButton: "Requested",
+                  tabContent: (
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <Card>
+                          <CardHeader color="info">
+                            <h4 className={classes.cardTitleWhite}>
+                              List Requested Admission entries
+                            </h4>
+                            <p className={classes.cardCategoryWhite}>
+                              Admissions with status requested will be listed
+                              below
+                            </p>
+                          </CardHeader>
+                          <CardBody>
+                            <LoadingOverlay
+                              active={deleting}
+                              spinner
+                              text="Please Wait.."
+                            >
+                              {empty ? (
+                                <p>empty</p>
+                              ) : (
+                                <Table
+                                  tableHeaderColor="info"
+                                  tableHead={[
+                                    "Id",
+                                    "AdmissionNo",
+                                    "First Name",
+                                    "Gender",
+                                    "DOB",
+                                    "Course",
+                                    "Father's Name",
+                                    "Father's Mobile",
+                                    "District",
+                                    "House Name",
+                                    "Email",
+                                    "Actions",
+                                  ]}
+                                  tableData={ReqData}
+                                  setEdit={setEdit}
+                                  setDelete={setDelete}
+                                  loading={loading}
+                                />
+                              )}
+                            </LoadingOverlay>
+                          </CardBody>
+                        </Card>
+                      </GridItem>
+                    </GridContainer>
+                  ),
+                },
+                {
+                  tabButton: "Waiting List",
+                  tabContent: (
+                    <span>
+                      <GridContainer>
+                        <GridItem xs={12} sm={12} md={12}>
+                          <Card>
+                            <CardHeader color="info">
+                              <h4 className={classes.cardTitleWhite}>
+                                List Of Admissions in Waiting List
+                              </h4>
+                              <p className={classes.cardCategoryWhite}>
+                                Admissions with status Waiting list will be
+                                listed below
+                              </p>
+                            </CardHeader>
+                            <CardBody>
+                              <LoadingOverlay
+                                active={deleting}
+                                spinner
+                                text="Please Wait.."
+                              >
+                                {empty1 ? (
+                                  <p>empty</p>
+                                ) : (
+                                  <Table
+                                    tableHeaderColor="info"
+                                    tableHead={[
+                                      "Id",
+                                      "AdmissionNo",
+                                      "First Name",
+                                      "Gender",
+                                      "DOB",
+                                      "Course",
+                                      "Father's Name",
+                                      "Father's Mobile",
+                                      "District",
+                                      "House Name",
+                                      "Email",
+                                      "Actions",
+                                    ]}
+                                    tableData={WaitData}
+                                    setEdit={setEdit1}
+                                    setDelete={setDelete}
+                                    loading={loading}
+                                  />
+                                )}
+                              </LoadingOverlay>
+                            </CardBody>
+                          </Card>
+                        </GridItem>
+                      </GridContainer>
+                    </span>
+                  ),
+                },
+                {
+                  tabButton: "Accepted",
+                  tabContent: (
+                    <span>
+                      <GridContainer>
+                        <GridItem xs={12} sm={12} md={12}>
+                          <Card>
+                            <CardHeader color="info">
+                              <h4 className={classes.cardTitleWhite}>
+                                List Of Admitted entries
+                              </h4>
+                              <p className={classes.cardCategoryWhite}>
+                                Admissions with status Admitted will be listed
+                                below
+                              </p>
+                            </CardHeader>
+                            <CardBody>
+                              <LoadingOverlay
+                                active={deleting}
+                                spinner
+                                text="Please Wait.."
+                              >
+                                {empty2 ? (
+                                  <p>empty</p>
+                                ) : (
+                                  <Table
+                                    tableHeaderColor="info"
+                                    tableHead={[
+                                      "Id",
+                                      "AdmissionNo",
+                                      "First Name",
+                                      "Gender",
+                                      "DOB",
+                                      "Course",
+                                      "Father's Name",
+                                      "Father's Mobile",
+                                      "District",
+                                      "House Name",
+                                      "Email",
+                                      "Actions",
+                                    ]}
+                                    tableData={AdmData}
+                                    setEdit={setEdit2}
+                                    setDelete={setDelete}
+                                    loading={loading}
+                                  />
+                                )}
+                              </LoadingOverlay>
+                            </CardBody>
+                          </Card>
+                        </GridItem>
+                      </GridContainer>
+                    </span>
+                  ),
+                },
+              ]}
+            />
           </GridItem>
         </GridContainer>
-      </LoadingOverlay>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Admission</h4>
-              <p className={classes.cardCategoryWhite}>
-                All Admissions are listed below, you can delete or edit them.
-              </p>
-            </CardHeader>
-            <CardBody>
-              <LoadingOverlay active={deleting} spinner text="Please Wait..">
-                {empty ? (
-                  <p>empty</p>
-                ) : (
-                  <Table
-                    tableHeaderColor="info"
-                    tableHead={[
-                      "Id",
-                      "FName",
-                      "LName",
-                      "Mobile",
-                      "Email",
-                      "Gender",
-                      "DOB",
-                      "Pwd",
-                      "Gur_Name",
-                      "Gur_Mobile",
-                      "Status",
-                      "Image",
-                      "Created By",
-                      "Created Date",
-                      "Modified By",
-                      "Modified Date",
-                      "Deteled By",
-                      "Deleted Date",
-                      "Actions",
-                    ]}
-                    tableData={events}
-                    setEdit={setEdit}
-                    setDelete={setDelete}
-                    loading={loading}
-                  />
-                )}
-              </LoadingOverlay>
-            </CardBody>
-          </Card>
-        </GridItem>
-      </GridContainer>
+      )}
     </>
   );
 }
