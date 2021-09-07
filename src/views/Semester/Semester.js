@@ -167,17 +167,14 @@ export default function Semester() {
   function HandleSave() {
     if (ValidateFields()) {
       setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateSemester/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
+      fetch(Domain + "/api/Admin/CreateSemester/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -244,17 +241,14 @@ export default function Semester() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteSemester/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Admin/DeleteSemester/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -268,17 +262,14 @@ export default function Semester() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetSemesterById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Admin/GetSemesterById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -398,6 +389,7 @@ export default function Semester() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
+                      "",
                       "ID",
                       "Course ID",
                       "CourseName",

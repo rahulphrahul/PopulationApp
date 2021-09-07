@@ -242,17 +242,14 @@ export default function Admin() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteAdminDetails/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Admin/DeleteAdminDetails/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -266,17 +263,14 @@ export default function Admin() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAdminDetailsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Admin/GetAdminDetailsById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -416,6 +410,7 @@ export default function Admin() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
+                      "",
                       "Id",
                       "FullName",
                       "Image",

@@ -86,9 +86,9 @@ export default function LoginPage({
         .then((response) => response.json())
 
         .then((json) => {
+          console.log(json.Data);
           setUserdetails(json.Data);
           setData({
-            Id: 0,
             Username: "",
             Password: "",
           });

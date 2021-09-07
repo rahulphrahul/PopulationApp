@@ -278,17 +278,14 @@ export default function Students() {
   function HandleSave() {
     if (ValidateFields()) {
       setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateStudent/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
+      fetch(Domain + "/api/Student/CreateStudent/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -369,17 +366,14 @@ export default function Students() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/DeleteStudent/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Student/DeleteStudent/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -393,17 +387,14 @@ export default function Students() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetStudentById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Student/GetStudentById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -429,17 +420,14 @@ export default function Students() {
       setValidateFilter(true);
 
       //API call for get latest 10 elements
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetStudentsByCourseIdandDate/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(filterData),
-        }
-      )
+      fetch(Domain + "/api/Student/GetStudentsByCourseIdandDate/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(filterData),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -760,6 +748,7 @@ export default function Students() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
+                      "",
                       "Id",
                       "FullName",
                       "Registration No",

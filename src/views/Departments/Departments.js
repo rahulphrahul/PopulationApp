@@ -185,17 +185,14 @@ export default function Departments() {
     if (ValidateFields()) {
       setSaving(true);
       setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateDepartments/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
+      fetch(Domain + "/api/Admin/CreateDepartments/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -244,17 +241,14 @@ export default function Departments() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteDepartments/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Admin/DeleteDepartments/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -268,17 +262,14 @@ export default function Departments() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetDepartmentsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Admin/GetDepartmentsById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -428,6 +419,7 @@ export default function Departments() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
+                      "",
                       "ID",
                       "DepartmentName",
                       "HODName",

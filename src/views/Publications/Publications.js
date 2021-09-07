@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Domain } from "Domain";
 
 // @material-ui/core components
@@ -19,6 +19,7 @@ import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
+import Pagination from "components/Pagination/Pagination";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
@@ -71,6 +72,9 @@ export default function Publications() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
   const Publicdata = events.map((d) => ({
     Id: d.Id,
     Name: d.Name,
@@ -109,12 +113,6 @@ export default function Publications() {
     Description: "",
   });
 
-  //PassData for getAll API
-  let passData = {
-    PageIndex: 0,
-    PageSize: 10,
-  };
-
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -124,6 +122,7 @@ export default function Publications() {
   let passEdit = {
     Id: edit,
   };
+
   //Function to handle Data input
   function HandleData(e) {
     const newData = { ...data };
@@ -142,6 +141,7 @@ export default function Publications() {
       Description: "",
     });
   }
+
   //Function for Validating fields
   function ValidateFields() {
     if (data.Name == "") {
@@ -192,17 +192,14 @@ export default function Publications() {
   function HandleSave() {
     if (ValidateFields()) {
       setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreatePublications/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
+      fetch(Domain + "/api/Admin/CreatePublications/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -232,6 +229,12 @@ export default function Publications() {
     console.log("componentDidMount");
     console.log("Detele" + deletee + " edit" + edit);
 
+    // useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+
     //API call for get latest 10 elements
     fetch(Domain + "/api/Admin/GetAllPublications/", {
       method: "POST",
@@ -247,22 +250,21 @@ export default function Publications() {
         setEvents(json.Data);
         if (json.Data.length == 0) setEmpty(true);
         setLoading(false);
+        if (json.Data.length > 2) setPagination(true);
       });
+    // }, [pageIndex]);
 
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeletePublications/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Admin/DeletePublications/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -276,17 +278,14 @@ export default function Publications() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetPublicationsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Admin/GetPublicationsById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -374,7 +373,7 @@ export default function Publications() {
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Description}
-                        labelText="Enter a description about the event.."
+                        labelText="Enter a description about the publication.."
                         id="Description"
                         formControlProps={{
                           fullWidth: true,
@@ -446,6 +445,7 @@ export default function Publications() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
+                      "",
                       "ID",
                       "Name",
                       "Published By",
@@ -471,6 +471,22 @@ export default function Publications() {
           </Card>
         </GridItem>
       </GridContainer>
+      {pagination ? (
+        <Pagination
+          setPageIndex={setPageIndex}
+          pageIndex={pageIndex}
+          className={classes.textCenter + " " + classes.justifyContentCenter}
+          pages={[
+            { text: "Previous" },
+            { active: true, text: "1" },
+
+            { text: "Next" },
+          ]}
+          color="primary"
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 }

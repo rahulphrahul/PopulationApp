@@ -193,17 +193,14 @@ export default function Clubs() {
   function HandleSave() {
     if (ValidateFields()) {
       setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/CreateClubs/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
+      fetch(Domain + "/api/Admin/CreateClubs/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -231,7 +228,7 @@ export default function Clubs() {
   }
   useEffect(() => {
     //API call for get latest 10 elements
-    fetch("https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetAllClubs/", {
+    fetch(Domain + "/api/Admin/GetAllClubs/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -250,17 +247,14 @@ export default function Clubs() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/DeleteClubs/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Admin/DeleteClubs/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -274,17 +268,14 @@ export default function Clubs() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Admin/GetClubsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Admin/GetClubsById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -441,6 +432,7 @@ export default function Clubs() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
+                      "",
                       "ID",
                       "Name",
                       "Link",

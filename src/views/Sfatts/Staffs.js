@@ -280,17 +280,14 @@ export default function Staffs() {
   function HandleSave() {
     if (ValidateFields()) {
       setValidated(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Staff/CreateStaff/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      )
+      fetch(Domain + "/api/Staff/CreateStaff/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -357,7 +354,7 @@ export default function Staffs() {
         setLoading(false);
       });
     //API call for get latest 10 elements
-    fetch("https://rahulrajrahu33.pythonanywhere.com/api/Staff/GetAllStaffs/", {
+    fetch(Domain + "/api/Staff/GetAllStaffs/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -376,17 +373,14 @@ export default function Staffs() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Staff/DeleteStaffs/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Staff/DeleteStaffs/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -400,17 +394,14 @@ export default function Staffs() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Staff/GetStaffById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Staff/GetStaffById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -745,6 +736,7 @@ export default function Staffs() {
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
+                      "",
                       "Id",
                       "Department",
                       "Name",

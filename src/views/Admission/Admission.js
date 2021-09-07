@@ -198,17 +198,14 @@ export default function Admission() {
 
   useEffect(() => {
     //API call for get latest 10 elements step is requested
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsForAdmin/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData1),
-      }
-    )
+    fetch(Domain + "/api/Student/GetAdmissionDetailsForAdmin/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData1),
+    })
       .then((response) => response.json())
 
       .then((json) => {
@@ -220,17 +217,14 @@ export default function Admission() {
         setLoading(false);
       });
     //API call for get latest 10 elements step is waiting glist
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsForAdmin/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData2),
-      }
-    )
+    fetch(Domain + "/api/Student/GetAdmissionDetailsForAdmin/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData2),
+    })
       .then((response) => response.json())
 
       .then((json) => {
@@ -241,17 +235,14 @@ export default function Admission() {
         setLoading(false);
       });
     //API call for get latest 10 elements step is accepted
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsForAdmin/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passData3),
-      }
-    )
+    fetch(Domain + "/api/Student/GetAdmissionDetailsForAdmin/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData3),
+    })
       .then((response) => response.json())
 
       .then((json) => {
@@ -264,17 +255,14 @@ export default function Admission() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/DeleteAdmissionDetails/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passDelete),
-        }
-      )
+      fetch(Domain + "/api/Student/DeleteAdmissionDetails/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passDelete),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -288,17 +276,14 @@ export default function Admission() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit),
-        }
-      )
+      fetch(Domain + "/api/Student/GetAdmissionDetailsById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -311,17 +296,14 @@ export default function Admission() {
         });
     }
     if (edit1.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit1),
-        }
-      )
+      fetch(Domain + "/api/Student/GetAdmissionDetailsById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit1),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -334,17 +316,14 @@ export default function Admission() {
         });
     }
     if (edit2.length != 0) {
-      fetch(
-        "https://rahulrajrahu33.pythonanywhere.com/api/Student/GetAdmissionDetailsById/",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(passEdit2),
-        }
-      )
+      fetch(Domain + "/api/Student/GetAdmissionDetailsById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(passEdit2),
+      })
         .then((response) => response.json())
 
         .then((json) => {
@@ -361,17 +340,14 @@ export default function Admission() {
   useEffect(() => {
     setLoading(true);
     //console.log("Data:", data.Id);
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(stepChangeData),
-      }
-    )
+    fetch(Domain + "/api/Student/CreateAdmissionDetails/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(stepChangeData),
+    })
       .then((response) => response.json())
 
       .then((json) => {
@@ -385,17 +361,14 @@ export default function Admission() {
   useEffect(() => {
     setLoading(true);
     //console.log("Data:", data.Id);
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(stepChangeData1),
-      }
-    )
+    fetch(Domain + "/api/Student/CreateAdmissionDetails/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(stepChangeData1),
+    })
       .then((response) => response.json())
 
       .then((json) => {
@@ -409,17 +382,14 @@ export default function Admission() {
   useEffect(() => {
     setLoading(true);
     //console.log("Data:", data.Id);
-    fetch(
-      "https://rahulrajrahu33.pythonanywhere.com/api/Student/CreateAdmissionDetails/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(stepChangeData2),
-      }
-    )
+    fetch(Domain + "/api/Student/CreateAdmissionDetails/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(stepChangeData2),
+    })
       .then((response) => response.json())
 
       .then((json) => {
@@ -637,6 +607,7 @@ export default function Admission() {
                                 <Table
                                   tableHeaderColor="info"
                                   tableHead={[
+                                    "",
                                     "Id",
                                     "AdmissionNo",
                                     "First Name",
@@ -691,6 +662,7 @@ export default function Admission() {
                                   <Table
                                     tableHeaderColor="info"
                                     tableHead={[
+                                      "",
                                       "Id",
                                       "AdmissionNo",
                                       "First Name",
@@ -746,6 +718,7 @@ export default function Admission() {
                                   <Table
                                     tableHeaderColor="info"
                                     tableHead={[
+                                      "",
                                       "Id",
                                       "AdmissionNo",
                                       "First Name",
