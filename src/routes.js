@@ -69,7 +69,7 @@ const dashboardRoutes = [
   },
   {
     path: "/admin",
-    name: "Manage Admins",
+    name: "Admin Profile",
     icon: LockIcon,
     component: Admin,
     layout: "/admin",

@@ -61,7 +61,11 @@ export default function CustomTable({
             {tableData.map((prop, key) => {
               return (
                 <TableRow key={key} className={classes.tableBodyRow}>
-                  <img width="50%" src={Domain + prop.Image} alt=".." />
+                  <img
+                    className={classes.tableCellImage}
+                    src={Domain + prop.Image}
+                    alt=".."
+                  />
                   {Object.values(prop).map((props, key) => {
                     return (
                       <TableCell className={classes.tableCell} key={key}>

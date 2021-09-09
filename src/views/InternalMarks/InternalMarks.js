@@ -15,13 +15,13 @@ import Button from "components/CustomButtons/Button.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-import axios from "axios";
+// import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
-import AttachFile from "@material-ui/icons/AttachFile";
-import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
+// import AttachFile from "@material-ui/icons/AttachFile";
+// import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 
 // import { data } from "./data.json";
 const styles = {
@@ -63,9 +63,9 @@ export default function InternalMarks() {
   const [edit, setEdit] = React.useState([]);
   const [deletee, setDelete] = React.useState([]);
   const [events, setEvents] = React.useState([]);
-  const [files, setFiles] = React.useState(null);
+  // const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
-  const [uploaded, setUploaded] = React.useState(false);
+  // const [uploaded, setUploaded] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
@@ -130,6 +130,7 @@ export default function InternalMarks() {
     console.log(newData);
   }
   function HandleClear() {
+    setValidated(true);
     setData({
       Id: 0,
       CourseId: "",
@@ -153,8 +154,6 @@ export default function InternalMarks() {
       return false;
     } else if (data.Date == "") {
       return false;
-    } else if (data.Files == "") {
-      return false;
     } else if (data.Description == "") {
       return false;
     } else if (data.StudentId == "") {
@@ -175,42 +174,41 @@ export default function InternalMarks() {
       return false;
     } else return true;
   }
-  //function to upload
-  function UploadImage() {
-    if (files != null) {
-      setValidated(true);
-      setSaving(true);
-      let form_data = new FormData();
-      form_data.append("File", files[0]);
-      let url = Domain + "/api/Uploads/File/";
-      axios
-        .post(url, form_data, {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.Success) {
-            data.Files = res.data.Data[0];
-            setUploaded(true);
-            HandleSave();
-          } else {
-            setUploaded(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setUploaded(false);
-        });
-    } else {
-      setValidated(false);
-    }
-  }
+  // //function to upload
+  // function UploadImage() {
+  //   if (files != null) {
+  //     setValidated(true);
+  //     setSaving(true);
+  //     let form_data = new FormData();
+  //     form_data.append("File", files[0]);
+  //     let url = Domain + "/api/Uploads/File/";
+  //     axios
+  //       .post(url, form_data, {
+  //         headers: {
+  //           "content-type": "multipart/form-data",
+  //         },
+  //       })
+  //       .then((res) => {
+  //         if (res.data.Success) {
+  //           data.Files = res.data.Data[0];
+  //           setUploaded(true);
+  //           HandleSave();
+  //         } else {
+  //           setUploaded(false);
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         setUploaded(false);
+  //       });
+  //   } else {
+  //     setValidated(false);
+  //   }
+  // }
 
   //Function to save Data
   function HandleSave() {
     if (ValidateFields()) {
-      setValidated(true);
       fetch(Domain + "/api/Student/CreateInternal/", {
         method: "POST",
         headers: {
@@ -249,7 +247,6 @@ export default function InternalMarks() {
     } else {
       setValidated(false);
     }
-    setUploaded(false);
   }
   useEffect(() => {
     console.log("componentDidMount");
@@ -352,7 +349,7 @@ export default function InternalMarks() {
 
                 <CardBody>
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Date}
@@ -421,9 +418,9 @@ export default function InternalMarks() {
                     <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
-                        value={data.Notes}
+                        value={data.Note}
                         labelText="Notes"
-                        id="Notes"
+                        id="Note"
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -462,14 +459,12 @@ export default function InternalMarks() {
                         }}
                       />
                     </GridItem>
-                  </GridContainer>
 
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem xs={12} sm={12} md={8}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Description}
-                        labelText="Enter a description ..."
+                        labelText="Enter Marks seperated by comma"
                         id="Description"
                         formControlProps={{
                           fullWidth: true,
@@ -481,26 +476,6 @@ export default function InternalMarks() {
                       />
                     </GridItem>
                     <GridItem xs={12} sm={5} md={5}>
-                      {" "}
-                      <CustomFileInput
-                        setFiles={setFiles}
-                        saved={uploaded}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          placeholder: "Click here to upload an image",
-                        }}
-                        endButton={{
-                          buttonProps: {
-                            round: true,
-                            color: "info",
-                            justIcon: true,
-                            filebutton: true,
-                          },
-                          icon: <AttachFile />,
-                        }}
-                      />
                       {validated ? (
                         <></>
                       ) : (
@@ -513,7 +488,7 @@ export default function InternalMarks() {
                   <Button onClick={HandleClear} color="defualt">
                     Clear
                   </Button>
-                  <Button onClick={UploadImage} color="info">
+                  <Button onClick={HandleSave} color="info">
                     Save
                   </Button>
                 </CardFooter>

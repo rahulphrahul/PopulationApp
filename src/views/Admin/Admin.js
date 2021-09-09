@@ -67,14 +67,13 @@ export default function Admin() {
   const [validated, setValidated] = React.useState(true);
   const [uploaded, setUploaded] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
-  const [deleting, setDeleting] = React.useState(false);
+  // const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
-
+  const [viewData, setViewData] = React.useState(false);
   const Admindata = events.map((d) => ({
     Id: d.Id,
     FullName: d.FullName,
-    Image: d.Image,
     Email: d.Email,
     Password: d.Password,
   }));
@@ -114,10 +113,10 @@ export default function Admin() {
   };
 
   //PaddData for Delete a Row
-  let passDelete = {
-    Id: deletee,
-    DeletedBy: 2,
-  };
+  // let passDelete = {
+  //   Id: deletee,
+  //   DeletedBy: 2,
+  // };
   //PassData for getting event by id
   let passEdit = {
     Id: edit,
@@ -138,6 +137,7 @@ export default function Admin() {
       Image: "",
       Password: "",
     });
+    setViewData(false);
   }
   //Function for Validating fields
   function ValidateFields() {
@@ -241,24 +241,25 @@ export default function Admin() {
 
     //API call for Delete a row
     if (deletee.length != 0) {
-      setDeleting(true);
-      fetch(Domain + "/api/Admin/DeleteAdminDetails/", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passDelete),
-      })
-        .then((response) => response.json())
+      // setDeleting(true);
+      // fetch(Domain + "/api/Admin/DeleteAdminDetails/", {
+      //   method: "POST",
+      //   headers: {
+      //     Accept: "application/json",
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(passDelete),
+      // })
+      //   .then((response) => response.json())
 
-        .then((json) => {
-          if (json.Success) {
-            setDelete([]);
-            showDeletedNotification();
-            setDeleting(false);
-          }
-        });
+      //   .then((json) => {
+      //     if (json.Success) {
+      //       setDelete([]);
+      //       showDeletedNotification();
+      //       setDeleting(false);
+      //     }
+      //   });
+      showDeletedNotification();
     }
 
     //API call to get event By ID to edit a row
@@ -275,6 +276,7 @@ export default function Admin() {
 
         .then((json) => {
           if (json.Success) {
+            setViewData(true);
             setEdit([]);
             setData(json.Data);
             console.log(json.Data);
@@ -298,101 +300,106 @@ export default function Admin() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Admin Deleted Successfully"
+        message="Cannot Delete the Super Admin"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
       />
-      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <form>
-                <CardHeader color="info">
-                  <h4 className={classes.cardTitleWhite}>Admin</h4>
-                  <p className={classes.cardCategoryWhite}>Details</p>
-                </CardHeader>
+      {viewData ? (
+        <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+              <Card>
+                <form>
+                  <CardHeader color="info">
+                    <h4 className={classes.cardTitleWhite}>Admin</h4>
+                    <p className={classes.cardCategoryWhite}>Details</p>
+                  </CardHeader>
 
-                <CardBody>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.FullName}
-                        labelText="FullName"
-                        id="FullName"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Email}
-                        labelText="Email"
-                        id="Email"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                  </GridContainer>
+                  <CardBody>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <CustomInput
+                          onChange={(e) => HandleData(e)}
+                          value={data.FullName}
+                          labelText="FullName"
+                          id="FullName"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <CustomInput
+                          onChange={(e) => HandleData(e)}
+                          value={data.Email}
+                          labelText="Email"
+                          id="Email"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                    </GridContainer>
 
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Password}
-                        labelText="Password"
-                        id="Password"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={5} md={5}>
-                      {" "}
-                      <CustomFileInput
-                        setFiles={setFiles}
-                        saved={uploaded}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          placeholder: "Click here to upload an image",
-                        }}
-                        endButton={{
-                          buttonProps: {
-                            round: true,
-                            color: "info",
-                            justIcon: true,
-                            filebutton: true,
-                          },
-                          icon: <AttachFile />,
-                        }}
-                      />
-                      {validated ? (
-                        <></>
-                      ) : (
-                        <Danger>Please enter all the details to save</Danger>
-                      )}
-                    </GridItem>
-                  </GridContainer>
-                </CardBody>
-                <CardFooter>
-                  <Button onClick={HandleClear} color="defualt">
-                    Clear
-                  </Button>
-                  <Button onClick={UploadImage} color="info">
-                    Save
-                  </Button>
-                </CardFooter>
-              </form>
-            </Card>
-          </GridItem>
-        </GridContainer>
-      </LoadingOverlay>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={5}>
+                        <CustomInput
+                          onChange={(e) => HandleData(e)}
+                          value={data.Password}
+                          labelText="Password"
+                          id="Password"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={5} md={5}>
+                        {" "}
+                        <CustomFileInput
+                          setFiles={setFiles}
+                          saved={uploaded}
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                          inputProps={{
+                            placeholder: "Click here to upload an image",
+                          }}
+                          endButton={{
+                            buttonProps: {
+                              round: true,
+                              color: "info",
+                              justIcon: true,
+                              filebutton: true,
+                            },
+                            icon: <AttachFile />,
+                          }}
+                        />
+                        {validated ? (
+                          <></>
+                        ) : (
+                          <Danger>Please enter all the details to save</Danger>
+                        )}
+                      </GridItem>
+                    </GridContainer>
+                  </CardBody>
+                  <CardFooter>
+                    <Button onClick={HandleClear} color="defualt">
+                      Cansel
+                    </Button>
+                    <Button onClick={UploadImage} color="info">
+                      Save
+                    </Button>
+                  </CardFooter>
+                </form>
+              </Card>
+            </GridItem>
+          </GridContainer>
+        </LoadingOverlay>
+      ) : (
+        <></>
+      )}
+
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -403,40 +410,37 @@ export default function Admin() {
               </p>
             </CardHeader>
             <CardBody>
-              <LoadingOverlay active={deleting} spinner text="Please Wait..">
-                {empty ? (
-                  <p>empty</p>
-                ) : (
-                  <Table
-                    tableHeaderColor="info"
-                    tableHead={[
-                      "",
-                      "Id",
-                      "FullName",
-                      "Image",
-                      "Email",
-                      "Password",
-                      // "Gender",
-                      // "DOB",
-                      // "Address",
-                      // "Usertype",
-                      // "AreaOfInterest",
-                      // "Status",
-                      // "Created By",
-                      // "Created Date",
-                      // "Modified By",
-                      // "Modified Date",
-                      // "Deteled By",
-                      // "Deleted Date",
-                      "Actions",
-                    ]}
-                    tableData={Admindata}
-                    setEdit={setEdit}
-                    setDelete={setDelete}
-                    loading={loading}
-                  />
-                )}
-              </LoadingOverlay>
+              {empty ? (
+                <p>empty</p>
+              ) : (
+                <Table
+                  tableHeaderColor="info"
+                  tableHead={[
+                    "",
+                    "Id",
+                    "FullName",
+                    "Email",
+                    "Password",
+                    // "Gender",
+                    // "DOB",
+                    // "Address",
+                    // "Usertype",
+                    // "AreaOfInterest",
+                    // "Status",
+                    // "Created By",
+                    // "Created Date",
+                    // "Modified By",
+                    // "Modified Date",
+                    // "Deteled By",
+                    // "Deleted Date",
+                    "Actions",
+                  ]}
+                  tableData={Admindata}
+                  setEdit={setEdit}
+                  setDelete={setDelete}
+                  loading={loading}
+                />
+              )}
             </CardBody>
           </Card>
         </GridItem>

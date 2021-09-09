@@ -160,10 +160,10 @@ export default function AdminNavbarLinks({ setLoggedin }) {
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
-                    <MenuItem onClick={handleCloseProfile}>
+                    {/* <MenuItem onClick={handleCloseProfile}>
                       {" "}
                       <NavLink to="/user">Profile</NavLink>
-                    </MenuItem>
+                    </MenuItem> */}
                     <Divider light />
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                   </MenuList>

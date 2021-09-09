@@ -55,6 +55,14 @@ const tableStyle = (theme) => ({
     fontSize: "0.8125rem",
     maxWidth: "100%",
   },
+  tableCellImage: {
+    ...defaultFont,
+    lineHeight: "1.42857143",
+    padding: "12px 8px",
+    verticalAlign: "middle",
+    fontSize: "0.8125rem",
+    maxWidth: "150px",
+  },
   tableResponsive: {
     width: "100%",
     marginTop: theme.spacing(3),

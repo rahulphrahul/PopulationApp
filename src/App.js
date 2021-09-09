@@ -10,8 +10,7 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 import StaffsLayout from "layouts/StaffsLayout";
 import HodLayout from "layouts/HodLayout";
-import UserProfileLayout from "layouts/UserProfileLayout";
-
+import UserProfile from "views/UserProfile/UserProfile";
 export default function App() {
   const [loggedIn, setLoggedin] = React.useState(false);
   const [notify, setNotification] = React.useState(false);
@@ -56,8 +55,8 @@ export default function App() {
                         <Admin setLoggedin={setLoggedin} />
                       </Route>
                       <Route path="/user">
-                        <UserProfileLayout
-                          usedetails={userdetails}
+                        <UserProfile
+                          userdetails={userdetails}
                           setLoggedin={setLoggedin}
                         />
                       </Route>

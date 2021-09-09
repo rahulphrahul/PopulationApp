@@ -27,6 +27,7 @@ export default function Sidebar(props) {
     return location.pathname === routeName;
   }
   const { color, logo, image, logoText, routes, userdetails } = props;
+  console.log("user details:", userdetails);
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
@@ -49,6 +50,9 @@ export default function Sidebar(props) {
           <NavLink
             to={{
               pathname: prop.layout + prop.path,
+              aboutProps: {
+                name: userdetails,
+              },
             }}
             className={activePro + classes.item}
             activeClassName="active"

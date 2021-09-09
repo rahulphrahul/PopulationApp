@@ -1,7 +1,7 @@
 {
-  "name": "material-dashboard-react",
+  "name": "marygiri-admin",
   "version": "1.10.0",
-  "description": "Material Dashboard React. Coded by Creative Tim",
+  "description": "cms tool for marygiri webapp",
   "private": false,
   "main": "dist/index.js",
   "dependencies": {
