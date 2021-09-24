@@ -209,8 +209,10 @@ export default function Management() {
             });
             setEmpty(false);
             showSavedNotification();
+            setSaving(false);
           } else {
             console.log("Error in insertion");
+            setSaving(false);
           }
         });
     } else {

@@ -76,6 +76,10 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function Staffs() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+  });
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -91,12 +95,21 @@ export default function Staffs() {
   const [departments, setDepartments] = React.useState([]);
   const [departmentValues, setDepartmentValues] = React.useState({
     Id: null,
-    label: "",
+    Label: "",
+  });
+  const [usertype, setUsertype] = React.useState({
+    Id: null,
+    Label: "",
   });
   const departmentList = departments.map((d) => ({
     value: d.Id,
     label: d.DepartmentName,
   }));
+  const usertypeList = [
+    { value: 1, label: "HOD" },
+    { value: 2, label: "Staff" },
+  ];
+
   console.log(departments);
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -336,7 +349,9 @@ export default function Staffs() {
       ...data,
       DepartmentId: departmentValues.Id,
       DepartmentName: departmentValues.Label,
+      UserType: usertype.Label,
     }));
+    // console.log("data:", data);
     //API call for get latest 10 elements
     fetch(Domain + "/api/Admin/GetAllDepartments/", {
       method: "POST",
@@ -412,7 +427,7 @@ export default function Staffs() {
           }
         });
     }
-  }, [deletee, edit, saved, departmentValues.Id]);
+  }, [deletee, edit, saved, departmentValues.Id, usertype.Id]);
 
   return (
     <>
@@ -466,11 +481,10 @@ export default function Staffs() {
 
                   <GridContainer>
                     <GridItem xs={12} sm={12} md={6}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.UserType}
-                        labelText="UserType"
-                        id="UserType"
+                      <SingleSelect
+                        placeholder="Select UserType"
+                        Options={usertypeList}
+                        setValue={setUsertype}
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -511,6 +525,7 @@ export default function Staffs() {
                     </GridItem>
                     <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
+                        type="password"
                         onChange={(e) => HandleData(e)}
                         value={data.Password}
                         labelText="Password"
