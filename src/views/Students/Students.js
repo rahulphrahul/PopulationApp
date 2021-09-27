@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Domain } from "Domain";
 
 // @material-ui/core components
@@ -22,7 +22,7 @@ import LoadingOverlay from "react-loading-overlay";
 import SingleSelect from "components/SingleSelect";
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
-
+import Pagination from "components/Pagination/Pagination";
 // import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
@@ -108,6 +108,30 @@ export default function Students() {
     Image: d.Image,
     CourseId: d.CourseId,
   }));
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
+  useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+    fetch(Domain + "/api/Student/GetAllStudents/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        setEvents(json.Data);
+        if (json.Data.length > 2) setPagination(true);
+      });
+  }, [pageIndex]);
 
   //PassData for get all semesters and courses for dropdown
   let passData1 = {
@@ -346,6 +370,7 @@ export default function Students() {
       .then((json) => {
         if (json.Data.length != 0) setCourses(json.Data);
       });
+
     //API call for get latest 10 elements
     fetch(Domain + "/api/Student/GetAllStudents/", {
       method: "POST",
@@ -783,6 +808,24 @@ export default function Students() {
               </LoadingOverlay>
             </CardBody>
           </Card>
+          {pagination ? (
+            <Pagination
+              setPageIndex={setPageIndex}
+              pageIndex={pageIndex}
+              className={
+                classes.textCenter + " " + classes.justifyContentCenter
+              }
+              pages={[
+                { text: "Previous" },
+                { active: true, text: "1" },
+
+                { text: "Next" },
+              ]}
+              color="info"
+            />
+          ) : (
+            <></>
+          )}
         </GridItem>
       </GridContainer>
     </>

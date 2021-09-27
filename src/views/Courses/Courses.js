@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Domain } from "Domain";
 
 // @material-ui/core components
@@ -22,6 +22,7 @@ import LoadingOverlay from "react-loading-overlay";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
+import Pagination from "components/Pagination/Pagination";
 // import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
@@ -235,6 +236,31 @@ export default function Courses() {
     }
     setUploaded(false);
   }
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
+  useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+    fetch(Domain + "/api/Admin/GetAllCourses/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        setEvents(json.Data);
+        if (json.Data.length > 2) setPagination(true);
+      });
+  }, [pageIndex]);
+
   useEffect(() => {
     console.log("componentDidMount");
     console.log("Detele" + deletee + " edit" + edit);
@@ -506,6 +532,24 @@ export default function Courses() {
               </LoadingOverlay>
             </CardBody>
           </Card>
+          {pagination ? (
+            <Pagination
+              setPageIndex={setPageIndex}
+              pageIndex={pageIndex}
+              className={
+                classes.textCenter + " " + classes.justifyContentCenter
+              }
+              pages={[
+                { text: "Previous" },
+                { active: true, text: "1" },
+
+                { text: "Next" },
+              ]}
+              color="info"
+            />
+          ) : (
+            <></>
+          )}
         </GridItem>
       </GridContainer>
     </>

@@ -51,11 +51,7 @@ export default function Pagination(props) {
                     {prop.text}
                   </Button>
                 ) : (
-                  <Button
-                    onClick={() => alert("you've clicked " + prop.text)}
-                    className={paginationLink}
-                    disabled={prop.disabled}
-                  >
+                  <Button className={paginationLink} disabled={prop.disabled}>
                     {props.pageIndex + 1}
                   </Button>
                 )}

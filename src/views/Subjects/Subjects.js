@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Domain } from "Domain";
 
 // @material-ui/core components
@@ -18,6 +18,7 @@ import AddAlert from "@material-ui/icons/AddAlert";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 import SingleSelect from "components/SingleSelect";
+import Pagination from "components/Pagination/Pagination";
 
 // import { data } from "./data.json";
 const styles = {
@@ -93,6 +94,30 @@ export default function Subjects() {
     SubjectCode: d.SubjectCode,
     Description: d.Description,
   }));
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
+  useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+    fetch(Domain + "/api/Admin/GetAllSubjects/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        setEvents(json.Data);
+        if (json.Data.length > 2) setPagination(true);
+      });
+  }, [pageIndex]);
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -482,6 +507,24 @@ export default function Subjects() {
               </LoadingOverlay>
             </CardBody>
           </Card>
+          {pagination ? (
+            <Pagination
+              setPageIndex={setPageIndex}
+              pageIndex={pageIndex}
+              className={
+                classes.textCenter + " " + classes.justifyContentCenter
+              }
+              pages={[
+                { text: "Previous" },
+                { active: true, text: "1" },
+
+                { text: "Next" },
+              ]}
+              color="info"
+            />
+          ) : (
+            <></>
+          )}
         </GridItem>
       </GridContainer>
     </>

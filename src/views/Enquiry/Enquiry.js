@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Domain } from "Domain";
 
 // @material-ui/core components
@@ -16,6 +16,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
 import LoadingOverlay from "react-loading-overlay";
+import Pagination from "components/Pagination/Pagination";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -178,6 +179,31 @@ export default function Enquiry() {
   //     setValidated(false);
   //   }
   // }
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
+  useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+    fetch(Domain + "/api/Admin/GetAllEnquiry/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        console.log(json);
+        setEvents(json.Data);
+        if (json.Data.length > 2) setPagination(true);
+      });
+  }, [pageIndex]);
+
   useEffect(() => {
     //API call for get latest 10 elements
     fetch(Domain + "/api/Admin/GetAllEnquiry/", {
@@ -372,6 +398,24 @@ export default function Enquiry() {
               </LoadingOverlay>
             </CardBody>
           </Card>
+          {pagination ? (
+            <Pagination
+              setPageIndex={setPageIndex}
+              pageIndex={pageIndex}
+              className={
+                classes.textCenter + " " + classes.justifyContentCenter
+              }
+              pages={[
+                { text: "Previous" },
+                { active: true, text: "1" },
+
+                { text: "Next" },
+              ]}
+              color="info"
+            />
+          ) : (
+            <></>
+          )}
         </GridItem>
       </GridContainer>
     </>

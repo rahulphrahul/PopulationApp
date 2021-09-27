@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Domain } from "Domain";
 
 // @material-ui/core components
@@ -20,7 +20,7 @@ import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
 import SingleSelect from "components/SingleSelect";
-
+import Pagination from "components/Pagination/Pagination";
 // import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
@@ -200,6 +200,31 @@ export default function Semester() {
       setValidated(false);
     }
   }
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
+  useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+    fetch(Domain + "/api/Admin/GetAllSemester/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        setEvents(json.Data);
+        if (json.Data.length > 2) setPagination(true);
+      });
+  }, [pageIndex]);
+
   useEffect(() => {
     setData((data) => ({
       ...data,
@@ -406,6 +431,24 @@ export default function Semester() {
               </LoadingOverlay>
             </CardBody>
           </Card>
+          {pagination ? (
+            <Pagination
+              setPageIndex={setPageIndex}
+              pageIndex={pageIndex}
+              className={
+                classes.textCenter + " " + classes.justifyContentCenter
+              }
+              pages={[
+                { text: "Previous" },
+                { active: true, text: "1" },
+
+                { text: "Next" },
+              ]}
+              color="info"
+            />
+          ) : (
+            <></>
+          )}
         </GridItem>
       </GridContainer>
     </>

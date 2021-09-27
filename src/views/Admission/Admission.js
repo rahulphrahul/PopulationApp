@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -21,6 +21,7 @@ import { Domain } from "Domain";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 import Accordion from "components/Accordion/Accordion";
+import Pagination from "components/Pagination/Pagination";
 
 // import AttachFile from "@material-ui/icons/AttachFile";
 // import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
@@ -195,6 +196,34 @@ export default function Admission() {
   let passEdit2 = {
     Id: edit2,
   };
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
+  useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+
+    fetch(Domain + "/api/Student/GetAdmissionDetailsForAdmin/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        // console.log("requested data", json.Data);
+        setRequested(json.Data);
+        if (json.Data.length > 2) setPagination(true);
+        // if (json.Data.length == 0) setEmpty(true);
+        // setLoading(false);
+      });
+  }, [pageIndex]);
 
   useEffect(() => {
     //API call for get latest 10 elements step is requested
@@ -748,6 +777,24 @@ export default function Admission() {
                 },
               ]}
             />
+            {pagination ? (
+              <Pagination
+                setPageIndex={setPageIndex}
+                pageIndex={pageIndex}
+                className={
+                  classes.textCenter + " " + classes.justifyContentCenter
+                }
+                pages={[
+                  { text: "Previous" },
+                  { active: true, text: "1" },
+
+                  { text: "Next" },
+                ]}
+                color="primary"
+              />
+            ) : (
+              <></>
+            )}
           </GridItem>
         </GridContainer>
       )}

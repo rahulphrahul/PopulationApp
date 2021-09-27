@@ -72,9 +72,6 @@ export default function Publications() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
 
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pagination, setPagination] = useState(false);
-
   const Publicdata = events.map((d) => ({
     Id: d.Id,
     Name: d.Name,
@@ -225,17 +222,14 @@ export default function Publications() {
     }
     setUploaded(false);
   }
-  useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
 
-    // useEffect(() => {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+  useEffect(() => {
     let passData = {
       PageIndex: pageIndex,
       PageSize: 10,
     };
-
-    //API call for get latest 10 elements
     fetch(Domain + "/api/Admin/GetAllPublications/", {
       method: "POST",
       headers: {
@@ -248,9 +242,30 @@ export default function Publications() {
 
       .then((json) => {
         setEvents(json.Data);
+        if (json.Data.length > 2) setPagination(true);
+      });
+  }, [pageIndex]);
+
+  useEffect(() => {
+    console.log("componentDidMount");
+    console.log("Detele" + deletee + " edit" + edit);
+
+    //API call for get latest 10 elements
+    fetch(Domain + "/api/Admin/GetAllPublications/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      // body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        setEvents(json.Data);
         if (json.Data.length == 0) setEmpty(true);
         setLoading(false);
-        if (json.Data.length > 2) setPagination(true);
+        // if (json.Data.length > 2) setPagination(true);
       });
     // }, [pageIndex]);
 
@@ -469,24 +484,26 @@ export default function Publications() {
               </LoadingOverlay>
             </CardBody>
           </Card>
+          {pagination ? (
+            <Pagination
+              setPageIndex={setPageIndex}
+              pageIndex={pageIndex}
+              className={
+                classes.textCenter + " " + classes.justifyContentCenter
+              }
+              pages={[
+                { text: "Previous" },
+                { active: true, text: "1" },
+
+                { text: "Next" },
+              ]}
+              color="info"
+            />
+          ) : (
+            <></>
+          )}
         </GridItem>
       </GridContainer>
-      {pagination ? (
-        <Pagination
-          setPageIndex={setPageIndex}
-          pageIndex={pageIndex}
-          className={classes.textCenter + " " + classes.justifyContentCenter}
-          pages={[
-            { text: "Previous" },
-            { active: true, text: "1" },
-
-            { text: "Next" },
-          ]}
-          color="primary"
-        />
-      ) : (
-        <></>
-      )}
     </>
   );
 }
