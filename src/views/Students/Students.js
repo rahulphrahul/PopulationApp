@@ -129,7 +129,7 @@ export default function Students() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.Data.length > 2) setPagination(true);
+        if (json.TotalCount > 10) setPagination(true);
       });
   }, [pageIndex]);
 

@@ -242,7 +242,7 @@ export default function Publications() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.Data.length > 2) setPagination(true);
+        if (json.TotalCount > 10) setPagination(true);
       });
   }, [pageIndex]);
 
@@ -265,7 +265,7 @@ export default function Publications() {
         setEvents(json.Data);
         if (json.Data.length == 0) setEmpty(true);
         setLoading(false);
-        // if (json.Data.length > 2) setPagination(true);
+        // if (json.Data.length > 10) setPagination(true);
       });
     // }, [pageIndex]);
 

@@ -94,6 +94,8 @@ export default function Staffs() {
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
   const [departments, setDepartments] = React.useState([]);
+  const [TotalCount, setTotalCount] = React.useState();
+
   const [departmentValues, setDepartmentValues] = React.useState({
     Id: null,
     Label: "",
@@ -130,13 +132,15 @@ export default function Staffs() {
       .then((response) => response.json())
 
       .then((json) => {
+        console.log("faculties: ", json);
         setEvents(json.Data);
-        //   if (json.Data.length == 0) setEmpty(true);
-        //   setLoading(false);
-        // });
-        if (json.Data.length > 2) setPagination(true);
-        // if (json.Data.length == 0) setEmpty(true);
-        // setLoading(false);
+
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
 
@@ -421,7 +425,7 @@ export default function Staffs() {
         if (json.Data.length == 0) setEmpty(true);
         setLoading(false);
       });
-    // if (json.Data.length > 2) setPagination(true);
+    // if (json.Data.length > 10) setPagination(true);
     // // if (json.Data.length == 0) setEmpty(true);
     // setLoading(false);
     // });
@@ -837,6 +841,7 @@ export default function Staffs() {
           </Card>
           {pagination ? (
             <Pagination
+              TotalCount={TotalCount}
               setPageIndex={setPageIndex}
               pageIndex={pageIndex}
               className={

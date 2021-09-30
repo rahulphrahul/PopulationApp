@@ -15,13 +15,21 @@ const useStyles = makeStyles(styles);
 export default function Pagination(props) {
   const { pages, color, className } = props;
   const classes = useStyles();
+  const [count, setCount] = React.useState(props.TotalCount);
   const paginationClasses = classNames(classes.pagination, className);
   function HandlePrev() {
-    if (props.pageIndex !== 0) props.setPageIndex(props.pageIndex - 1);
+    if (props.pageIndex !== 0) {
+      setCount(count + 1);
+      props.setPageIndex(props.pageIndex - 1);
+    }
   }
   function HandleNext() {
-    props.setPageIndex(props.pageIndex + 1);
+    if (count > 1) {
+      setCount(count - 1);
+      props.setPageIndex(props.pageIndex + 1);
+    }
   }
+
   return (
     <ul className={paginationClasses}>
       {pages.map((prop, key) => {
@@ -69,6 +77,7 @@ Pagination.defaultProps = {
 };
 
 Pagination.propTypes = {
+  TotalCount: PropTypes.any,
   setPageIndex: PropTypes.any,
   pageIndex: PropTypes.any,
   pages: PropTypes.arrayOf(

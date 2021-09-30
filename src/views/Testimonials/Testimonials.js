@@ -70,6 +70,8 @@ export default function Events() {
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
   const [Saving, setSaving] = React.useState(false);
+  const [insertionError, setinsertionError] = React.useState(false);
+  const [TotalCount, setTotalCount] = React.useState();
 
   const Testdata = events.map((d) => ({
     Id: d.Id,
@@ -95,6 +97,15 @@ export default function Events() {
       setDeleted(true);
       setTimeout(function () {
         setDeleted(false);
+      }, 3000);
+    }
+  };
+  //Error Notification Trigger
+  const showErrorNotification = () => {
+    if (!deleted) {
+      setinsertionError(true);
+      setTimeout(function () {
+        setinsertionError(false);
       }, 3000);
     }
   };
@@ -211,7 +222,18 @@ export default function Events() {
             showSavedNotification();
             setSaving(false);
           } else {
-            console.log("Error in insertion");
+            setData({
+              Id: 0,
+              Name: "",
+              Message: "",
+              Date: "",
+              Status: "Created",
+              Image: "",
+              Description: "",
+            });
+            setSaving(false);
+            showErrorNotification();
+            console.log("Error in insertion", json);
           }
         });
     } else {
@@ -240,7 +262,11 @@ export default function Events() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.Data.length > 2) setPagination(true);
+        if (json.TotalCount > 10) {
+          console.log("not multiple of 10:", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
 
@@ -326,6 +352,15 @@ export default function Events() {
         closeNotification={() => setDeleted(false)}
         close
       />
+      <Snackbar
+        place="bc"
+        color="danger"
+        icon={AddAlert}
+        message="Something went wrong! Try again."
+        open={insertionError}
+        closeNotification={() => setinsertionError(false)}
+        close
+      />
       <LoadingOverlay active={Saving} spinner text="Saving Please wait...">
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
@@ -357,7 +392,7 @@ export default function Events() {
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Message}
-                        labelText="Message"
+                        labelText="Branch/Company"
                         id="Message"
                         formControlProps={{
                           fullWidth: true,
@@ -382,7 +417,7 @@ export default function Events() {
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Description}
-                        labelText="Description.."
+                        labelText="Message"
                         id="Description"
                         formControlProps={{
                           fullWidth: true,
@@ -458,16 +493,10 @@ export default function Events() {
                       "",
                       "ID",
                       "Name",
-                      "Message",
+                      "Branch/Company",
                       "Date",
-                      "Description",
+                      "Message",
                       "Image",
-                      // "Created By",
-                      // "Created Date",
-                      // "Modified By",
-                      // "Modified Date",
-                      // "Deteled By",
-                      // "Deleted Date",
                       "Actions",
                     ]}
                     tableData={Testdata}
@@ -481,6 +510,7 @@ export default function Events() {
           </Card>
           {pagination ? (
             <Pagination
+              TotalCount={TotalCount}
               setPageIndex={setPageIndex}
               pageIndex={pageIndex}
               className={

@@ -219,7 +219,7 @@ export default function Admission() {
       .then((json) => {
         // console.log("requested data", json.Data);
         setRequested(json.Data);
-        if (json.Data.length > 2) setPagination(true);
+        if (json.TotalCount > 10) setPagination(true);
         // if (json.Data.length == 0) setEmpty(true);
         // setLoading(false);
       });
