@@ -67,6 +67,8 @@ export default function Semester() {
   const [empty, setEmpty] = React.useState(false);
   const [Courses, setCourses] = React.useState([]);
   const [saving, setSaving] = React.useState(false);
+  const [TotalCount, setTotalCount] = React.useState();
+
   // const [courseName, setCourseName] = React.useState("");
   // const [courseId, setCourseId] = React.useState(null);
 
@@ -115,7 +117,7 @@ export default function Semester() {
     Image: "",
   });
 
-  console.log(data.CourseName, data.CourseId);
+  // console.log(data.CourseName, data.CourseId);
 
   //PassData for getAll API
   let passData = {
@@ -221,7 +223,12 @@ export default function Semester() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.TotalCount > 10) setPagination(true);
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
 
@@ -327,6 +334,7 @@ export default function Semester() {
         closeNotification={() => setDeleted(false)}
         close
       />
+
       <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
@@ -433,6 +441,7 @@ export default function Semester() {
           </Card>
           {pagination ? (
             <Pagination
+              TotalCount={TotalCount}
               setPageIndex={setPageIndex}
               pageIndex={pageIndex}
               className={

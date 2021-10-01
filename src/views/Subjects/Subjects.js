@@ -67,6 +67,7 @@ export default function Subjects() {
   const [Courses, setCourses] = React.useState([]);
   const [semesters, setSemesters] = React.useState([]);
   const [saving, setSaving] = React.useState(false);
+  // const [TotalCount, setTotalCount] = React.useState();
   const [CourseValues, setCourseValues] = React.useState({
     Id: null,
     label: "",
@@ -94,7 +95,7 @@ export default function Subjects() {
     SubjectCode: d.SubjectCode,
     Description: d.Description,
   }));
-
+  const [TotalCount, setTotalCount] = React.useState();
   const [pageIndex, setPageIndex] = useState(0);
   const [pagination, setPagination] = useState(false);
 
@@ -115,7 +116,12 @@ export default function Subjects() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.TotalCount > 10) setPagination(true);
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
   //Saved Notification trigger
@@ -509,6 +515,7 @@ export default function Subjects() {
           </Card>
           {pagination ? (
             <Pagination
+              TotalCount={TotalCount}
               setPageIndex={setPageIndex}
               pageIndex={pageIndex}
               className={

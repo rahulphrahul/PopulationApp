@@ -173,6 +173,7 @@ export default function SendSMS() {
     console.log(newData);
   }
 
+  const [TotalCount, setTotalCount] = React.useState();
   const [pageIndex, setPageIndex] = useState(0);
   const [pagination, setPagination] = useState(false);
 
@@ -193,7 +194,12 @@ export default function SendSMS() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.TotalCount > 10) setPagination(true);
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
 
@@ -441,10 +447,7 @@ export default function SendSMS() {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Students</h4>
-              <p className={classes.cardCategoryWhite}>
-                All students are listed below, you can delete or edit them.
-              </p>
+              <h4 className={classes.cardTitleWhite}>Recent Messages</h4>
             </CardHeader>
             <CardBody>
               <LoadingOverlay active={deleting} spinner text="Please Wait..">
@@ -491,6 +494,7 @@ export default function SendSMS() {
           </Card>
           {pagination ? (
             <Pagination
+              TotalCount={TotalCount}
               setPageIndex={setPageIndex}
               pageIndex={pageIndex}
               className={

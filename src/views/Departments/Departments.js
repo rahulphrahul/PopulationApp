@@ -218,6 +218,7 @@ export default function Departments() {
     setUploaded(false);
   }
 
+  const [TotalCount, setTotalCount] = React.useState();
   const [pageIndex, setPageIndex] = useState(0);
   const [pagination, setPagination] = useState(false);
 
@@ -238,7 +239,12 @@ export default function Departments() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.TotalCount > 10) setPagination(true);
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
 
@@ -470,6 +476,7 @@ export default function Departments() {
           </Card>
           {pagination ? (
             <Pagination
+              TotalCount={TotalCount}
               setPageIndex={setPageIndex}
               pageIndex={pageIndex}
               className={

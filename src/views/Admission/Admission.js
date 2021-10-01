@@ -197,6 +197,7 @@ export default function Admission() {
     Id: edit2,
   };
 
+  const [TotalCount, setTotalCount] = React.useState();
   const [pageIndex, setPageIndex] = useState(0);
   const [pagination, setPagination] = useState(false);
 
@@ -219,9 +220,12 @@ export default function Admission() {
       .then((json) => {
         // console.log("requested data", json.Data);
         setRequested(json.Data);
-        if (json.TotalCount > 10) setPagination(true);
-        // if (json.Data.length == 0) setEmpty(true);
-        // setLoading(false);
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
 
@@ -779,6 +783,7 @@ export default function Admission() {
             />
             {pagination ? (
               <Pagination
+                TotalCount={TotalCount}
                 setPageIndex={setPageIndex}
                 pageIndex={pageIndex}
                 className={

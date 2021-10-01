@@ -4,6 +4,7 @@ import { Domain } from "Domain";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
+
 import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
@@ -18,12 +19,10 @@ import AddAlert from "@material-ui/icons/AddAlert";
 import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
-// import ImageUpload from "components/CustomUpload/ImageUpload.js";
 import SingleSelect from "components/SingleSelect";
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 import Pagination from "components/Pagination/Pagination";
-// import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -73,7 +72,9 @@ export default function Students() {
   const [addStudent, setAddstudent] = React.useState(false);
   const [validateFilter, setValidateFilter] = React.useState(true);
   const [Courses, setCourses] = React.useState([]);
+  const [TotalCount, setTotalCount] = React.useState();
 
+  // const [startDate, setStartDate] = useState(new Date());
   const CourseList = Courses.map((d) => ({
     value: d.Id,
     label: d.CourseName,
@@ -86,6 +87,10 @@ export default function Students() {
     CourseId: "",
   });
   const [CourseValues, setCourseValues] = React.useState({
+    Id: null,
+    label: "",
+  });
+  const [CourseValues1, setCourseValues1] = React.useState({
     Id: null,
     label: "",
   });
@@ -129,7 +134,12 @@ export default function Students() {
 
       .then((json) => {
         setEvents(json.Data);
-        if (json.TotalCount > 10) setPagination(true);
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
       });
   }, [pageIndex]);
 
@@ -248,8 +258,6 @@ export default function Students() {
       return false;
     } else if (data.DOB == "") {
       return false;
-    } else if (data.Password == "") {
-      return false;
     } else if (data.GuardianName == "") {
       return false;
     } else if (data.GuardianMobile == "") {
@@ -355,6 +363,14 @@ export default function Students() {
       CourseId: CourseValues.Id,
     }));
   }, [CourseValues.Id]);
+  useEffect(() => {
+    console.log(CourseValues1);
+    setData((data) => ({
+      ...data,
+      CourseId: CourseValues1.Id,
+      Course: CourseValues1.Label,
+    }));
+  }, [CourseValues1.Id]);
   useEffect(() => {
     //API call for get all course names to dropedown
     fetch(Domain + "/api/Admin/GetAllCourses/", {
@@ -507,7 +523,7 @@ export default function Students() {
 
                 <CardBody>
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
+                    <GridItem xs={12} sm={12} md={3}>
                       <CustomInput
                         onChange={(e) => HandleFilterData(e)}
                         value={filterData.Year}
@@ -564,7 +580,7 @@ export default function Students() {
 
                     <CardBody>
                       <GridContainer>
-                        <GridItem xs={12} sm={12} md={6}>
+                        <GridItem xs={12} sm={12} md={4}>
                           <CustomInput
                             onChange={(e) => HandleData(e)}
                             value={data.FullName}
@@ -575,7 +591,7 @@ export default function Students() {
                             }}
                           />
                         </GridItem>
-                        <GridItem xs={12} sm={12} md={3}>
+                        <GridItem xs={12} sm={12} md={4}>
                           <CustomInput
                             onChange={(e) => HandleData(e)}
                             value={data.RegistrationNo}
@@ -586,12 +602,23 @@ export default function Students() {
                             }}
                           />
                         </GridItem>
-                        <GridItem xs={12} sm={12} md={3}>
+                        <GridItem xs={12} sm={12} md={4}>
+                          <SingleSelect
+                            noOptionsMessage="Create any course first"
+                            placeholder="Select Course"
+                            Options={CourseList}
+                            setValue={setCourseValues1}
+                            formControlProps={{
+                              fullWidth: true,
+                            }}
+                          />
+                        </GridItem>
+                        <GridItem xs={12} sm={12} md={4}>
                           <CustomInput
                             onChange={(e) => HandleData(e)}
-                            value={data.CourseId}
-                            labelText="Course"
-                            id="CourseId"
+                            value={data.CourseCode}
+                            labelText="Course Code"
+                            id="CourseCode"
                             formControlProps={{
                               fullWidth: true,
                             }}
@@ -608,10 +635,8 @@ export default function Students() {
                             }}
                           />
                         </GridItem>
-                      </GridContainer>
 
-                      <GridContainer>
-                        <GridItem xs={12} sm={12} md={6}>
+                        <GridItem xs={12} sm={12} md={4}>
                           <CustomInput
                             onChange={(e) => HandleData(e)}
                             value={data.Mobile}
@@ -623,7 +648,7 @@ export default function Students() {
                           />
                         </GridItem>
 
-                        <GridItem xs={12} sm={12} md={6}>
+                        <GridItem xs={12} sm={12} md={4}>
                           <CustomInput
                             onChange={(e) => HandleData(e)}
                             value={data.Email}
@@ -649,26 +674,14 @@ export default function Students() {
                           <CustomInput
                             onChange={(e) => HandleData(e)}
                             value={data.DOB}
-                            labelText="DOB"
+                            labelText="Date Of Birth (dd/mm/yyyy)"
                             id="DOB"
                             formControlProps={{
                               fullWidth: true,
                             }}
                           />
                         </GridItem>
-                        <GridItem xs={12} sm={12} md={4}>
-                          <CustomInput
-                            onChange={(e) => HandleData(e)}
-                            value={data.Password}
-                            labelText="Password"
-                            id="Password"
-                            formControlProps={{
-                              fullWidth: true,
-                            }}
-                          />
-                        </GridItem>
-                      </GridContainer>
-                      <GridContainer>
+
                         <GridItem xs={12} sm={12} md={4}>
                           <CustomInput
                             onChange={(e) => HandleData(e)}
@@ -703,7 +716,7 @@ export default function Students() {
                             }}
                           />
                         </GridItem>
-                        <GridItem xs={12} sm={5} md={5}>
+                        <GridItem xs={12} sm={5} md={4}>
                           {" "}
                           <CustomFileInput
                             setFiles={setFiles}
@@ -756,6 +769,7 @@ export default function Students() {
           Add Student
         </Button>
       )}
+
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -810,6 +824,7 @@ export default function Students() {
           </Card>
           {pagination ? (
             <Pagination
+              TotalCount={TotalCount}
               setPageIndex={setPageIndex}
               pageIndex={pageIndex}
               className={

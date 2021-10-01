@@ -18,11 +18,14 @@ import AddAlert from "@material-ui/icons/AddAlert";
 import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
+import Pagination from "components/Pagination/Pagination";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
-import Pagination from "components/Pagination/Pagination";
+import SingleSelect from "components/SingleSelect";
+import EmptyTable from "components/EmptyTable";
+
 // import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
@@ -36,6 +39,23 @@ const styles = {
     "& a,& a:hover,& a:focus": {
       color: "#FFFFFF",
     },
+  },
+  cardCategoryGrey: {
+    "&,& a,& a:hover,& a:focus": {
+      color: "rgb(128,128,128)",
+      margin: "0",
+      fontSize: "14px",
+      marginTop: "0",
+      marginBottom: "0",
+      fontWeight: "500",
+    },
+    "& a,& a:hover,& a:focus": {
+      color: "#FFFFFF",
+    },
+  },
+  cardStyle: {
+    padding: "10px",
+    paddingRight: "0",
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -56,7 +76,11 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Courses() {
+export default function AdministrationPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+  });
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -69,20 +93,53 @@ export default function Courses() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
-  const [saving, setSaving] = React.useState(false);
+  const [departments, setDepartments] = React.useState([]);
+  const [TotalCount, setTotalCount] = React.useState();
 
-  const Coursedata = events.map((d) => ({
-    Id: d.Id,
-    CourseCode: d.CourseCode,
-    CourseDuration: d.CourseDuration,
-    CourseName: d.CourseName,
-    Description: d.Description,
-    Eligibility: d.Eligibility,
-    Image: d.Image,
-    Semesters: d.Semesters,
-    Syllabus: d.Syllabus,
-  }));
+  const [admintypeValues, setadmintypeValues] = React.useState({
+    Id: null,
+    Label: "",
+  });
 
+  const admintypeList = [
+    { value: 1, label: "Provincial Administration" },
+    { value: 2, label: "Local Administration" },
+    { value: 3, label: "Academic Administration" },
+    { value: 4, label: "Counseling and health service" },
+  ];
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pagination, setPagination] = useState(false);
+
+  useEffect(() => {
+    let passData = {
+      PageIndex: pageIndex,
+      PageSize: 10,
+    };
+    fetch(Domain + "/api/Staff/GetAllAdministrations/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        console.log("faculties: ", json);
+        setEvents(json.Data);
+
+        if (json.TotalCount > 10) {
+          console.log("pages", Math.ceil(json.TotalCount / 10));
+          setTotalCount(Math.ceil(json.TotalCount / 10));
+
+          setPagination(true);
+        }
+      });
+  }, [pageIndex]);
+
+  console.log(departments);
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -104,15 +161,12 @@ export default function Courses() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    CourseName: "",
-    Description: "",
-    CourseDuration: "",
+    AdminTypeId: "",
+    AdminType: "",
+    Name: "",
+    Position: "",
+    Message: "",
     Image: "",
-    Semesters: "",
-    Eligibility: "",
-    Syllabus: "",
-    CourseCode: "",
-    Status: "Created",
   });
 
   //PassData for getAll API
@@ -120,7 +174,10 @@ export default function Courses() {
     PageIndex: 0,
     PageSize: 10,
   };
-
+  let passData1 = {
+    PageIndex: 0,
+    PageSize: 0,
+  };
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -140,26 +197,25 @@ export default function Courses() {
   function HandleClear() {
     setData({
       Id: 0,
-      CourseName: "",
-      Description: "",
-      CourseDuration: "",
+      AdminTypeId: "",
+      AdminType: "",
+      Name: "",
+      Position: "",
+      Message: "",
       Image: "",
-      Semesters: "",
-      Eligibility: "",
-      Syllabus: "",
-      CourseCode: "",
-      Status: "Created",
     });
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
+    if (data.AdminType == "") {
       return false;
-    } else if (data.Date == "") {
+    } else if (data.Name == "") {
+      return false;
+    } else if (data.Position == "") {
+      return false;
+    } else if (data.Message == "") {
       return false;
     } else if (data.Image == "") {
-      return false;
-    } else if (data.Description == "") {
       return false;
     } else return true;
   }
@@ -167,7 +223,6 @@ export default function Courses() {
   function UploadImage() {
     if (files != null) {
       setValidated(true);
-      setSaving(true);
       let form_data = new FormData();
       form_data.append("File", files[0]);
       let url = Domain + "/api/Uploads/File/";
@@ -199,7 +254,7 @@ export default function Courses() {
   function HandleSave() {
     if (ValidateFields()) {
       setValidated(true);
-      fetch(Domain + "/api/Admin/CreateCourses/", {
+      fetch(Domain + "/api/Staff/CreateAdministrations/", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -214,20 +269,25 @@ export default function Courses() {
           if (json.Success) {
             setData({
               Id: 0,
-              CourseName: "",
-              Description: "",
-              CourseDuration: "",
+              AdminTypeId: "",
+              AdminType: "",
+              Name: "",
+              Position: "",
+              Message: "",
               Image: "",
-              Semesters: "",
-              Eligibility: "",
-              Syllabus: "",
-              CourseCode: "",
-              Status: "Created",
             });
             setEmpty(false);
             showSavedNotification();
-            setSaving(false);
           } else {
+            setData({
+              Id: 0,
+              AdminTypeId: "",
+              AdminType: "",
+              Name: "",
+              Position: "",
+              Message: "",
+              Image: "",
+            });
             console.log("Error in insertion");
           }
         });
@@ -236,43 +296,39 @@ export default function Courses() {
     }
     setUploaded(false);
   }
-
-  const [TotalCount, setTotalCount] = React.useState();
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pagination, setPagination] = useState(false);
-
+  //==============================UseEffect=================================================
   useEffect(() => {
-    let passData = {
-      PageIndex: pageIndex,
-      PageSize: 10,
-    };
-    fetch(Domain + "/api/Admin/GetAllCourses/", {
+    setData((data) => ({
+      ...data,
+      AdminTypeId: admintypeValues.Id,
+      AdminType: admintypeValues.Label,
+    }));
+    // console.log("data:", data);
+    //API call for get latest 10 elements
+    fetch(Domain + "/api/Admin/GetAllDepartments/", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(passData),
+      body: JSON.stringify(passData1),
     })
       .then((response) => response.json())
 
       .then((json) => {
-        setEvents(json.Data);
-        if (json.TotalCount > 10) {
-          console.log("pages", Math.ceil(json.TotalCount / 10));
-          setTotalCount(Math.ceil(json.TotalCount / 10));
-
-          setPagination(true);
-        }
+        setDepartments(json.Data);
+        if (json.Data.length == 0) setEmpty(true);
+        setLoading(false);
       });
-  }, [pageIndex]);
 
-  useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
+    // useEffect(() => {
+    // let passData = {
+    //   PageIndex: pageIndex,
+    //   PageSize: 10,
+    // };
 
     //API call for get latest 10 elements
-    fetch(Domain + "/api/Admin/GetAllCourses/", {
+    fetch(Domain + "/api/Staff/GetAllAdministrationsById/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -287,11 +343,16 @@ export default function Courses() {
         if (json.Data.length == 0) setEmpty(true);
         setLoading(false);
       });
+    // if (json.Data.length > 10) setPagination(true);
+    // // if (json.Data.length == 0) setEmpty(true);
+    // setLoading(false);
+    // });
+    // }, [pageIndex]);
 
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(Domain + "/api/Admin/DeleteCourses/", {
+      fetch(Domain + "/api/Staff/DeleteAdministrations/", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -312,7 +373,7 @@ export default function Courses() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(Domain + "/api/Admin/GetCoursesById/", {
+      fetch(Domain + "/api/Staff/GetAllAdministrationsById/", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -330,7 +391,7 @@ export default function Courses() {
           }
         });
     }
-  }, [deletee, edit, saved]);
+  }, [deletee, edit, saved, admintypeValues.Id]);
 
   return (
     <>
@@ -338,7 +399,7 @@ export default function Courses() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Event Saved Successfully"
+        message="Staff Details Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -347,189 +408,149 @@ export default function Courses() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Event Deleted Successfully"
+        message="Staff Details Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
       />
-      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <form>
-                <CardHeader color="info">
-                  <h4 className={classes.cardTitleWhite}>Add New Course</h4>
-                  <p className={classes.cardCategoryWhite}>
-                    Enter the Courses details below and hit Save
-                  </p>
-                </CardHeader>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <Card>
+            <form>
+              <CardHeader color="info">
+                <h4 className={classes.cardTitleWhite}>Add Administrations</h4>
+                <p className={classes.cardCategoryWhite}>Enter the Details</p>
+              </CardHeader>
 
-                <CardBody>
+              <CardBody>
+                <Card className={classes.cardStyle}>
+                  <p className={classes.cardCategoryGrey}>
+                    Administration Type
+                  </p>
+                  <br />
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.CourseName}
-                        labelText="Course Name"
-                        id="CourseName"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.CourseDuration}
-                        labelText="CourseDuration"
-                        id="CourseDuration"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
                     <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Semesters}
-                        labelText="Semesters"
-                        id="Semesters"
+                      <SingleSelect
+                        noOptionMessage="Empty"
+                        placeholder="Select Type"
+                        Options={admintypeList}
+                        setValue={setadmintypeValues}
                         formControlProps={{
                           fullWidth: true,
                         }}
                       />
                     </GridItem>
                   </GridContainer>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Syllabus}
-                        labelText="Syllabus"
-                        id="Syllabus"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Eligibility}
-                        labelText="Eligibility"
-                        id="Eligibility"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.CourseCode}
-                        labelText="Course code"
-                        id="CourseCode"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                  </GridContainer>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Description}
-                        labelText="Enter a description about the Subject.."
-                        id="Description"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          multiline: true,
-                          rows: 5,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={5} md={5}>
-                      {" "}
-                      <CustomFileInput
-                        setFiles={setFiles}
-                        saved={uploaded}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          placeholder: "Click here to upload an image",
-                        }}
-                        endButton={{
-                          buttonProps: {
-                            round: true,
-                            color: "info",
-                            justIcon: true,
-                            filebutton: true,
-                          },
-                          icon: <AttachFile />,
-                        }}
-                      />
-                      {validated ? (
-                        <></>
-                      ) : (
-                        <Danger>Please enter all the details to save</Danger>
-                      )}
-                    </GridItem>
-                  </GridContainer>
-                </CardBody>
-                <CardFooter>
-                  <Button onClick={HandleClear} color="defualt">
-                    Clear
-                  </Button>
-                  <Button onClick={UploadImage} color="info">
-                    Save
-                  </Button>
-                </CardFooter>
-              </form>
-            </Card>
-          </GridItem>
-        </GridContainer>
-      </LoadingOverlay>
+                </Card>
+
+                <p className={classes.cardCategoryGrey}>Other Details</p>
+
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Name}
+                      labelText="Name"
+                      id="Name"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Position}
+                      labelText="Position"
+                      id="Position"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+                  </GridItem>
+
+                  <GridItem xs={12} sm={12} md={6}>
+                    <CustomInput
+                      onChange={(e) => HandleData(e)}
+                      value={data.Message}
+                      labelText="Message.."
+                      id="Message"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        multiline: true,
+                        rows: 5,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={5} md={6}>
+                    {" "}
+                    <CustomFileInput
+                      setFiles={setFiles}
+                      saved={uploaded}
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        placeholder: "Click here to upload an image",
+                      }}
+                      endButton={{
+                        buttonProps: {
+                          round: true,
+                          color: "info",
+                          justIcon: true,
+                        },
+                        icon: <AttachFile />,
+                      }}
+                    />
+                    {validated ? (
+                      <></>
+                    ) : (
+                      <Danger>Please enter all the details to save</Danger>
+                    )}
+                  </GridItem>
+                </GridContainer>
+              </CardBody>
+              <CardFooter>
+                <Button onClick={HandleClear}>Clear</Button>
+                <Button onClick={UploadImage} color="info">
+                  Save
+                </Button>
+              </CardFooter>
+            </form>
+          </Card>
+        </GridItem>
+      </GridContainer>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>List Of All Courses</h4>
+              <h4 className={classes.cardTitleWhite}>
+                List Of All Administration Members
+              </h4>
               <p className={classes.cardCategoryWhite}>
-                All courses are listed below, you can delete or edit them.
+                All Entries are listed below, you can delete or edit them.
               </p>
             </CardHeader>
             <CardBody>
               <LoadingOverlay active={deleting} spinner text="Please Wait..">
                 {empty ? (
-                  <p>empty</p>
+                  <EmptyTable />
                 ) : (
                   <Table
                     tableHeaderColor="info"
                     tableHead={[
                       "",
-                      "ID",
-                      "CourseCode",
-                      "CourseDuration",
-                      "CourseName",
-                      "Description",
-                      "Eligibility",
+                      "Id",
+                      "Name",
+                      "Administration Type",
+                      "Position",
+                      "Message",
                       "Image",
-                      "Semesters",
-                      "Syllabus",
-                      // "Status",
-                      // "Created By",
-                      // "Created Date",
-                      // "Modified By",
-                      // "Modified Date",
-                      // "Deteled By",
-                      // "Deleted Date",
                       "Actions",
                     ]}
-                    tableData={Coursedata}
+                    tableData={events}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

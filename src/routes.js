@@ -43,6 +43,7 @@ import Facilities from "views/Facilities/Facilities";
 import Management from "views/Management/Management";
 import Staffs from "views/Sfatts/Staffs";
 import SendSMS from "views/SendSMS/SendSMS";
+import AdministrationPage from "views/AdministrationPage/AdministrationPage";
 
 // core components/views for RTL layout
 const dashboardRoutes = [
@@ -157,6 +158,13 @@ const dashboardRoutes = [
     name: "Facilities",
     icon: BusinessIcon,
     component: Facilities,
+    layout: "/admin",
+  },
+  {
+    path: "/Administrations",
+    name: "Administrations",
+    icon: BusinessIcon,
+    component: AdministrationPage,
     layout: "/admin",
   },
   {
