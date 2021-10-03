@@ -44,6 +44,8 @@ import Management from "views/Management/Management";
 import Staffs from "views/Sfatts/Staffs";
 import SendSMS from "views/SendSMS/SendSMS";
 import AdministrationPage from "views/AdministrationPage/AdministrationPage";
+import Mail from "@material-ui/icons/Mail";
+import MessagesSection from "views/MessagesSection/MessagesSection";
 
 // core components/views for RTL layout
 const dashboardRoutes = [
@@ -165,6 +167,13 @@ const dashboardRoutes = [
     name: "Administrations",
     icon: BusinessIcon,
     component: AdministrationPage,
+    layout: "/admin",
+  },
+  {
+    path: "/Messages",
+    name: "Messages",
+    icon: Mail,
+    component: MessagesSection,
     layout: "/admin",
   },
   {

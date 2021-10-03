@@ -67,7 +67,7 @@ export default function LoginPage({
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
     setData(newData);
-    console.log(newData);
+    // console.log(newData);
   }
   const [invalid, setInvalid] = React.useState(false);
   function HandleSave() {
@@ -86,7 +86,7 @@ export default function LoginPage({
         .then((response) => response.json())
 
         .then((json) => {
-          console.log(json.Data);
+          // console.log(json.Data);
           setUserdetails(json.Data);
           setData({
             Username: "",

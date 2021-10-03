@@ -52,7 +52,7 @@ export default function Dashboard() {
   const userData = JSON.parse(window.localStorage.getItem("userdetails"));
   const [admin, setAdmin] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
-  console.log("userDetails:", userData);
+  // console.log("userDetails:", userData);
   useEffect(() => {
     if (userData.Usertype == "Admin") {
       setAdmin(true);

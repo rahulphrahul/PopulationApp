@@ -16,7 +16,7 @@ export default function App() {
   const [bc, setBC] = React.useState(false);
   const [userType, setUserType] = React.useState("");
   const [userdetails, setUserdetails] = React.useState([]);
-  console.log("fff:", loggedIn);
+  // console.log("fff:", loggedIn);
   useEffect(() => {
     if (loggedIn == undefined) {
       setLoggedin(JSON.parse(window.localStorage.getItem("LoggedIn")));
@@ -24,16 +24,16 @@ export default function App() {
       setUserdetails(JSON.parse(window.localStorage.getItem("userdetails")));
     }
   }, []);
-  console.log(
-    "loggedIn:",
-    loggedIn,
-    "userType:",
-    userType,
-    "userdetails:",
-    userdetails
-  );
+  // console.log(
+  //   "loggedIn:",
+  //   loggedIn,
+  //   "userType:",
+  //   userType,
+  //   "userdetails:",
+  //   userdetails
+  // );
   useEffect(() => {
-    console.log("logedin changed:", loggedIn);
+    // console.log("logedin changed:", loggedIn);
     if (loggedIn != undefined)
       window.localStorage.setItem("LoggedIn", JSON.stringify(loggedIn));
     else window.localStorage.setItem("LoggedIn", JSON.stringify(false));

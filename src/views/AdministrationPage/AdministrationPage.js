@@ -93,14 +93,21 @@ export default function AdministrationPage() {
   const [loading, setLoading] = React.useState(true);
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
-  const [departments, setDepartments] = React.useState([]);
+  // const [departments, setDepartments] = React.useState([]);
   const [TotalCount, setTotalCount] = React.useState();
 
   const [admintypeValues, setadmintypeValues] = React.useState({
     Id: null,
     Label: "",
   });
-
+  const AdministrationsList = events.map((d) => ({
+    Id: d.Id,
+    FullName: d.FullName,
+    AdminType: d.AdminType,
+    Position: d.Position,
+    Description: d.Description,
+    Image: d.Image,
+  }));
   const admintypeList = [
     { value: 1, label: "Provincial Administration" },
     { value: 2, label: "Local Administration" },
@@ -116,7 +123,7 @@ export default function AdministrationPage() {
       PageIndex: pageIndex,
       PageSize: 10,
     };
-    fetch(Domain + "/api/Staff/GetAllAdministrations/", {
+    fetch(Domain + "/api/Admin/GetAllAdministrations/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -127,11 +134,11 @@ export default function AdministrationPage() {
       .then((response) => response.json())
 
       .then((json) => {
-        console.log("faculties: ", json);
+        // console.log("Administrations: ", json);
         setEvents(json.Data);
 
         if (json.TotalCount > 10) {
-          console.log("pages", Math.ceil(json.TotalCount / 10));
+          // console.log("pages", Math.ceil(json.TotalCount / 10));
           setTotalCount(Math.ceil(json.TotalCount / 10));
 
           setPagination(true);
@@ -139,7 +146,7 @@ export default function AdministrationPage() {
       });
   }, [pageIndex]);
 
-  console.log(departments);
+  // console.log(departments);
   //Saved Notification trigger
   const showSavedNotification = () => {
     if (!saved) {
@@ -161,11 +168,11 @@ export default function AdministrationPage() {
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
-    AdminTypeId: "",
+    TypeId: "",
     AdminType: "",
-    Name: "",
+    FullName: "",
     Position: "",
-    Message: "",
+    Status: "Created",
     Image: "",
   });
 
@@ -174,10 +181,10 @@ export default function AdministrationPage() {
     PageIndex: 0,
     PageSize: 10,
   };
-  let passData1 = {
-    PageIndex: 0,
-    PageSize: 0,
-  };
+  // let passData1 = {
+  //   PageIndex: 0,
+  //   PageSize: 0,
+  // };
   //PaddData for Delete a Row
   let passDelete = {
     Id: deletee,
@@ -192,14 +199,14 @@ export default function AdministrationPage() {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
     setData(newData);
-    console.log(newData);
+    // console.log(newData);
   }
   function HandleClear() {
     setData({
       Id: 0,
-      AdminTypeId: "",
+      TypeId: "",
       AdminType: "",
-      Name: "",
+      FullName: "",
       Position: "",
       Message: "",
       Image: "",
@@ -209,7 +216,7 @@ export default function AdministrationPage() {
   function ValidateFields() {
     if (data.AdminType == "") {
       return false;
-    } else if (data.Name == "") {
+    } else if (data.FullName == "") {
       return false;
     } else if (data.Position == "") {
       return false;
@@ -253,7 +260,7 @@ export default function AdministrationPage() {
   function HandleSave() {
     if (ValidateFields()) {
       setValidated(true);
-      fetch(Domain + "/api/Staff/CreateAdministrations/", {
+      fetch(Domain + "/api/Admin/CreateAdministrations/", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -264,13 +271,13 @@ export default function AdministrationPage() {
         .then((response) => response.json())
 
         .then((json) => {
-          console.log(json);
+          // console.log(json);
           if (json.Success) {
             setData({
               Id: 0,
-              AdminTypeId: "",
+              TypeId: "",
               AdminType: "",
-              Name: "",
+              FullName: "",
               Position: "",
               Message: "",
               Image: "",
@@ -280,9 +287,9 @@ export default function AdministrationPage() {
           } else {
             setData({
               Id: 0,
-              AdminTypeId: "",
+              TypeId: "",
               AdminType: "",
-              Name: "",
+              FullName: "",
               Position: "",
               Message: "",
               Image: "",
@@ -299,26 +306,26 @@ export default function AdministrationPage() {
   useEffect(() => {
     setData((data) => ({
       ...data,
-      AdminTypeId: admintypeValues.Id,
+      TypeId: admintypeValues.Id,
       AdminType: admintypeValues.Label,
     }));
     // console.log("data:", data);
     //API call for get latest 10 elements
-    fetch(Domain + "/api/Admin/GetAllDepartments/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(passData1),
-    })
-      .then((response) => response.json())
+    // fetch(Domain + "/api/Admin/GetAllAdministrations/", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(passData1),
+    // })
+    //   .then((response) => response.json())
 
-      .then((json) => {
-        setDepartments(json.Data);
-        if (json.Data.length == 0) setEmpty(true);
-        setLoading(false);
-      });
+    //   .then((json) => {
+    //     setDepartments(json.Data);
+    //     if (json.Data.length == 0) setEmpty(true);
+    //     setLoading(false);
+    //   });
 
     // useEffect(() => {
     // let passData = {
@@ -327,7 +334,7 @@ export default function AdministrationPage() {
     // };
 
     //API call for get latest 10 elements
-    fetch(Domain + "/api/Staff/GetAllAdministrationsById/", {
+    fetch(Domain + "/api/Admin/GetAllAdministrations/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -351,7 +358,7 @@ export default function AdministrationPage() {
     //API call for Delete a row
     if (deletee.length != 0) {
       setDeleting(true);
-      fetch(Domain + "/api/Staff/DeleteAdministrations/", {
+      fetch(Domain + "/api/Admin/DeleteAdministrations/", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -372,7 +379,7 @@ export default function AdministrationPage() {
 
     //API call to get event By ID to edit a row
     if (edit.length != 0) {
-      fetch(Domain + "/api/Staff/GetAllAdministrationsById/", {
+      fetch(Domain + "/api/Admin/GetAdministrationsById/", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -386,7 +393,7 @@ export default function AdministrationPage() {
           if (json.Success) {
             setEdit([]);
             setData(json.Data);
-            console.log(json.Data);
+            // console.log(json.Data);
           }
         });
     }
@@ -398,7 +405,7 @@ export default function AdministrationPage() {
         place="bc"
         color="success"
         icon={AddAlert}
-        message="Staff Details Saved Successfully"
+        message="Details Saved Successfully"
         open={saved}
         closeNotification={() => setSaved(false)}
         close
@@ -407,7 +414,7 @@ export default function AdministrationPage() {
         place="bc"
         color="danger"
         icon={AddAlert}
-        message="Staff Details Deleted Successfully"
+        message="Details Deleted Successfully"
         open={deleted}
         closeNotification={() => setDeleted(false)}
         close
@@ -448,9 +455,9 @@ export default function AdministrationPage() {
                   <GridItem xs={12} sm={12} md={6}>
                     <CustomInput
                       onChange={(e) => HandleData(e)}
-                      value={data.Name}
+                      value={data.FullName}
                       labelText="Name"
-                      id="Name"
+                      id="FullName"
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -549,7 +556,7 @@ export default function AdministrationPage() {
                       "Image",
                       "Actions",
                     ]}
-                    tableData={events}
+                    tableData={AdministrationsList}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

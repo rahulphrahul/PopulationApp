@@ -119,7 +119,7 @@ export default function Admin({ id }) {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
     setData(newData);
-    console.log(newData);
+    // console.log(newData);
   }
   function HandleClear() {
     setData({
@@ -241,7 +241,7 @@ export default function Admin({ id }) {
           setViewData(true);
           // setEdit([]);
           setData(json.Data);
-          console.log(json.Data);
+          // console.log(json.Data);
         }
       });
   }, []);

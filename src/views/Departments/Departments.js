@@ -126,7 +126,7 @@ export default function Departments() {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
     setData(newData);
-    console.log(newData);
+    // console.log(newData);
   }
   function HandleClear() {
     setData({
@@ -240,7 +240,7 @@ export default function Departments() {
       .then((json) => {
         setEvents(json.Data);
         if (json.TotalCount > 10) {
-          console.log("pages", Math.ceil(json.TotalCount / 10));
+          // console.log("pages", Math.ceil(json.TotalCount / 10));
           setTotalCount(Math.ceil(json.TotalCount / 10));
 
           setPagination(true);
@@ -249,8 +249,8 @@ export default function Departments() {
   }, [pageIndex]);
 
   useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
+    // console.log("componentDidMount");
+    // console.log("Detele" + deletee + " edit" + edit);
 
     //API call for get latest 10 elements
     fetch(Domain + "/api/Admin/GetAllDepartments/", {
@@ -307,7 +307,7 @@ export default function Departments() {
           if (json.Success) {
             setEdit([]);
             setData(json.Data);
-            console.log(json.Data);
+            // console.log(json.Data);
           }
         });
     }

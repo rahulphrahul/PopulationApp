@@ -221,7 +221,7 @@ export default function Admission() {
         // console.log("requested data", json.Data);
         setRequested(json.Data);
         if (json.TotalCount > 10) {
-          console.log("pages", Math.ceil(json.TotalCount / 10));
+          // console.log("pages", Math.ceil(json.TotalCount / 10));
           setTotalCount(Math.ceil(json.TotalCount / 10));
 
           setPagination(true);

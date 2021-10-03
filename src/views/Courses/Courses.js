@@ -86,7 +86,7 @@ export default function Courses() {
       DepartmentId: DepartmentValues.Id,
       DepartmentName: DepartmentValues.Label,
     }));
-    console.log(DepartmentValues);
+    // console.log(DepartmentValues);
   }, [DepartmentValues.Id]);
 
   useEffect(() => {
@@ -175,7 +175,7 @@ export default function Courses() {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
     setData(newData);
-    console.log(newData);
+    // console.log(newData);
   }
   function HandleClear() {
     setData({
@@ -263,7 +263,7 @@ export default function Courses() {
         .then((response) => response.json())
 
         .then((json) => {
-          console.log(json);
+          // console.log(json);
           if (json.Success) {
             setData({
               Id: 0,
@@ -314,7 +314,7 @@ export default function Courses() {
       .then((json) => {
         setEvents(json.Data);
         if (json.TotalCount > 10) {
-          console.log("pages", Math.ceil(json.TotalCount / 10));
+          // console.log("pages", Math.ceil(json.TotalCount / 10));
           setTotalCount(Math.ceil(json.TotalCount / 10));
 
           setPagination(true);
@@ -381,7 +381,7 @@ export default function Courses() {
           if (json.Success) {
             setEdit([]);
             setData(json.Data);
-            console.log(json.Data);
+            // console.log(json.Data);
           }
         });
     }
