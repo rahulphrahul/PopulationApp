@@ -1,3 +1,4 @@
+import { infoColor } from "assets/jss/material-dashboard-react";
 import {
   successColor,
   whiteColor,
@@ -6,6 +7,20 @@ import {
 } from "assets/jss/material-dashboard-react.js";
 
 const dashboardStyle = {
+  proBadge: {
+    position: "relative",
+    fontSize: "10px",
+    textTransform: "uppercase",
+    fontWeight: "700",
+    right: "-10px",
+    padding: "8px 10px",
+    top: "-30px",
+    background: infoColor[0],
+    borderRadius: "3px",
+    color: whiteColor,
+    lineHeight: "22px",
+    boxShadow: "0 5px 5px -2px rgba(" + hexToRgb(grayColor[6]) + ",.4)",
+  },
   successText: {
     color: successColor[0],
   },

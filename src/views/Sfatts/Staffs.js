@@ -95,7 +95,32 @@ export default function Staffs() {
   const [empty, setEmpty] = React.useState(false);
   const [departments, setDepartments] = React.useState([]);
   const [TotalCount, setTotalCount] = React.useState();
+  const [Courses, setCourses] = React.useState([]);
+  const [AddStaff, setAddStaff] = React.useState(false);
+  // const [ViewStaff, setViewStaff] = React.useState(false);
+  const StaffData = events.map((d) => ({
+    Id: d.Id,
+    FullName: d.FullName,
+    Qualifications: d.Qualifications,
+    Mobile: d.Mobile,
+    UserType: d.UserType,
+    Email: d.Email,
+    Password: d.Password,
+    HouseName: d.HouseName,
+    City: d.City,
+    DepartmentName: d.DepartmentName,
+    CourseName: d.CourseName,
+    Image: d.Image,
+  }));
 
+  const CourseList = Courses.map((d) => ({
+    value: d.Id,
+    label: d.CourseName,
+  }));
+  const [CourseValues, setCourseValues] = React.useState({
+    Id: null,
+    label: "",
+  });
   const [departmentValues, setDepartmentValues] = React.useState({
     Id: null,
     Label: "",
@@ -116,6 +141,26 @@ export default function Staffs() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pagination, setPagination] = useState(false);
 
+  useEffect(() => {
+    let passData2 = {
+      PageIndex: 0,
+      PageSize: 0,
+    };
+    //API call for get all course names to dropedown
+    fetch(Domain + "/api/Admin/GetAllCourses/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData2),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        if (json.Data.length != 0) setCourses(json.Data);
+      });
+  }, []);
   useEffect(() => {
     let passData = {
       PageIndex: pageIndex,
@@ -168,6 +213,8 @@ export default function Staffs() {
     Id: 0,
     DepartmentId: "",
     DepartmentName: "",
+    CourseId: "",
+    CourseName: "",
     FullName: "",
     Mobile: "",
     Email: "",
@@ -250,6 +297,8 @@ export default function Staffs() {
       return false;
     } else if (data.DepartmentName == "") {
       return false;
+    } else if (data.CourseName == "") {
+      return false;
     } else if (data.FullName == "") {
       return false;
     } else if (data.Mobile == "") {
@@ -318,9 +367,8 @@ export default function Staffs() {
           console.log(err);
           setUploaded(false);
         });
-    } else {
-      setValidated(false);
-    }
+    } else if (data.Image != "") HandleSave();
+    else setValidated(false);
   }
 
   //Function to save Data
@@ -366,10 +414,11 @@ export default function Staffs() {
               UserType: "",
               Image: "",
             });
+            setAddStaff(false);
             setEmpty(false);
             showSavedNotification();
           } else {
-            console.log("Error in insertion");
+            console.log("Error in insertion", json);
           }
         });
     } else {
@@ -377,6 +426,13 @@ export default function Staffs() {
     }
     setUploaded(false);
   }
+  useEffect(() => {
+    setData((data) => ({
+      ...data,
+      CourseId: CourseValues.Id,
+      CourseName: CourseValues.Label,
+    }));
+  }, [CourseValues.Id]);
   //==============================UseEffect=================================================
   useEffect(() => {
     setData((data) => ({
@@ -422,6 +478,7 @@ export default function Staffs() {
 
       .then((json) => {
         setEvents(json.Data);
+        console.log("StaffData:", json.Data);
         if (json.Data.length == 0) setEmpty(true);
         setLoading(false);
       });
@@ -469,6 +526,7 @@ export default function Staffs() {
           if (json.Success) {
             setEdit([]);
             setData(json.Data);
+            setAddStaff(true);
             console.log(json.Data);
           }
         });
@@ -495,291 +553,316 @@ export default function Staffs() {
         closeNotification={() => setDeleted(false)}
         close
       />
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <form>
-              <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Staff Details</h4>
-                <p className={classes.cardCategoryWhite}>Details</p>
-              </CardHeader>
+      {AddStaff ? (
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <form>
+                <CardHeader color="info">
+                  <h4 className={classes.cardTitleWhite}>Staff Details</h4>
+                  <p className={classes.cardCategoryWhite}>Details</p>
+                </CardHeader>
 
-              <CardBody>
-                <Card className={classes.cardStyle}>
-                  <p className={classes.cardCategoryGrey}>Department Details</p>
-                  <br />
+                <CardBody>
+                  <Card className={classes.cardStyle}>
+                    <p className={classes.cardCategoryGrey}>
+                      Department Details
+                    </p>
+                    <br />
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <SingleSelect
+                          noOptionMessage="Create Department Details first"
+                          placeholder="Select Department"
+                          Options={departmentList}
+                          setValue={setDepartmentValues}
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <SingleSelect
+                          noOptionsMessage="Create any course first"
+                          placeholder="Select Course"
+                          Options={CourseList}
+                          setValue={setCourseValues}
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                    </GridContainer>
+                  </Card>
+                  <Card className={classes.cardStyle}>
+                    <p className={classes.cardCategoryGrey}>Login Details</p>
+
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <SingleSelect
+                          placeholder="Select UserType"
+                          Options={usertypeList}
+                          setValue={setUsertype}
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <CustomInput
+                          onChange={(e) => HandleData(e)}
+                          value={data.FullName}
+                          labelText="Full Name"
+                          id="FullName"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <CustomInput
+                          onChange={(e) => HandleData(e)}
+                          value={data.Mobile}
+                          labelText="Mobile"
+                          id="Mobile"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <CustomInput
+                          onChange={(e) => HandleData(e)}
+                          value={data.Email}
+                          labelText="Email"
+                          id="Email"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <CustomInput
+                          type="password"
+                          onChange={(e) => HandleData(e)}
+                          value={data.Password}
+                          labelText="Password"
+                          id="Password"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+                      </GridItem>
+                    </GridContainer>
+                  </Card>
+                  <p className={classes.cardCategoryGrey}>Personal Details</p>
+
                   <GridContainer>
                     <GridItem xs={12} sm={12} md={4}>
-                      <SingleSelect
-                        noOptionMessage="Create Department Details first"
-                        placeholder="Select Department"
-                        Options={departmentList}
-                        setValue={setDepartmentValues}
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Gender}
+                        labelText="Gender"
+                        id="Gender"
                         formControlProps={{
                           fullWidth: true,
                         }}
                       />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.DOB}
+                        labelText="DOB"
+                        id="DOB"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Qualifications}
+                        labelText="Qualifications"
+                        id="Qualifications"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.AreaOfInterest}
+                        labelText="AreaOfInterest"
+                        id="AreaOfInterest"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Achievements}
+                        labelText="Achievements"
+                        id="Achievements"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.AddressType}
+                        labelText="AddressType"
+                        id="AddressType"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Country}
+                        labelText="Country"
+                        id="Country"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.State}
+                        labelText="State"
+                        id="State"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.District}
+                        labelText="District"
+                        id="District"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.City}
+                        labelText="City"
+                        id="City"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.Street}
+                        labelText="Street"
+                        id="Street"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.HouseName}
+                        labelText="HouseName"
+                        id="HouseName"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.PostOffice}
+                        labelText="PostOffice"
+                        id="PostOffice"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <CustomInput
+                        onChange={(e) => HandleData(e)}
+                        value={data.PostalCode}
+                        labelText="PostalCode"
+                        id="PostalCode"
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+
+                    <GridItem xs={12} sm={5} md={4}>
+                      {" "}
+                      <CustomFileInput
+                        setFiles={setFiles}
+                        saved={uploaded}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                        inputProps={{
+                          placeholder: "Click here to upload an image",
+                        }}
+                        endButton={{
+                          buttonProps: {
+                            round: true,
+                            color: "info",
+                            justIcon: true,
+                          },
+                          icon: <AttachFile />,
+                        }}
+                      />
+                      {validated ? (
+                        <></>
+                      ) : (
+                        <Danger>Please enter all the details to save</Danger>
+                      )}
                     </GridItem>
                   </GridContainer>
-                </Card>
-                <Card className={classes.cardStyle}>
-                  <p className={classes.cardCategoryGrey}>Login Details</p>
+                </CardBody>
+                <CardFooter>
+                  <Button onClick={() => setAddStaff(false)} color="danger">
+                    Cancel
+                  </Button>
 
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={6}>
-                      <SingleSelect
-                        placeholder="Select UserType"
-                        Options={usertypeList}
-                        setValue={setUsertype}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={6}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.FullName}
-                        labelText="Full Name"
-                        id="FullName"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Mobile}
-                        labelText="Mobile"
-                        id="Mobile"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        onChange={(e) => HandleData(e)}
-                        value={data.Email}
-                        labelText="Email"
-                        id="Email"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        type="password"
-                        onChange={(e) => HandleData(e)}
-                        value={data.Password}
-                        labelText="Password"
-                        id="Password"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                  </GridContainer>
-                </Card>
-                <p className={classes.cardCategoryGrey}>Personal Details</p>
-
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Gender}
-                      labelText="Gender"
-                      id="Gender"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.DOB}
-                      labelText="DOB"
-                      id="DOB"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Qualifications}
-                      labelText="Qualifications"
-                      id="Qualifications"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.AreaOfInterest}
-                      labelText="AreaOfInterest"
-                      id="AreaOfInterest"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Achievements}
-                      labelText="Achievements"
-                      id="Achievements"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.AddressType}
-                      labelText="AddressType"
-                      id="AddressType"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Country}
-                      labelText="Country"
-                      id="Country"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.State}
-                      labelText="State"
-                      id="State"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.District}
-                      labelText="District"
-                      id="District"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.City}
-                      labelText="City"
-                      id="City"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.Street}
-                      labelText="Street"
-                      id="Street"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.HouseName}
-                      labelText="HouseName"
-                      id="HouseName"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.PostOffice}
-                      labelText="PostOffice"
-                      id="PostOffice"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      onChange={(e) => HandleData(e)}
-                      value={data.PostalCode}
-                      labelText="PostalCode"
-                      id="PostalCode"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                    />
-                  </GridItem>
-
-                  <GridItem xs={12} sm={5} md={4}>
-                    {" "}
-                    <CustomFileInput
-                      setFiles={setFiles}
-                      saved={uploaded}
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        placeholder: "Click here to upload an image",
-                      }}
-                      endButton={{
-                        buttonProps: {
-                          round: true,
-                          color: "info",
-                          justIcon: true,
-                        },
-                        icon: <AttachFile />,
-                      }}
-                    />
-                    {validated ? (
-                      <></>
-                    ) : (
-                      <Danger>Please enter all the details to save</Danger>
-                    )}
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter>
-                <Button onClick={HandleClear}>Clear</Button>
-                <Button onClick={UploadImage} color="info">
-                  Save
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </GridItem>
-      </GridContainer>
+                  <Button onClick={HandleClear}>Clear</Button>
+                  <Button onClick={UploadImage} color="info">
+                    Save
+                  </Button>
+                </CardFooter>
+              </form>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      ) : (
+        <>
+          <Button onClick={() => setAddStaff(true)} color="info">
+            Add New Staff
+          </Button>
+        </>
+      )}
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -799,38 +882,19 @@ export default function Staffs() {
                     tableHead={[
                       "",
                       "Id",
-                      "Department",
-                      "Name",
-                      "Mobile",
-                      "Email",
-                      "Gender",
-                      "DOB",
-                      "Password",
+                      "FullName",
                       "Qualifications",
-                      "AreaOfInterest",
-                      "Achievements",
-                      "Status",
-                      "Address",
-                      "Country",
-                      "State",
-                      "District",
-                      "City",
-                      "Street",
-                      "HouseName",
-                      "PostOffice",
-                      "PostalCode",
+                      "Mobile",
                       "UserType",
+                      "Email",
+                      "Password",
+                      "HouseName",
+                      "City",
+                      "DepartmentName",
+                      "CourseName",
                       "Image",
-                      "CreateBy",
-                      "CreateDate",
-                      "ModifiedBy",
-                      "ModifiedDate",
-                      "DeletedBy",
-                      "DeletedDate",
-                      "DepartmentId",
-                      "Actions",
                     ]}
-                    tableData={events}
+                    tableData={StaffData}
                     setEdit={setEdit}
                     setDelete={setDelete}
                     loading={loading}

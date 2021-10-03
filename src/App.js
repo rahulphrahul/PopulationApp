@@ -3,7 +3,6 @@ import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // core components
 import Admin from "layouts/Admin.js";
-
 import "assets/css/material-dashboard-react.css?v=1.10.0";
 import LoginPage from "layouts/LoginPage/LoginPage";
 import Snackbar from "components/Snackbar/Snackbar.js";
@@ -12,12 +11,37 @@ import StaffsLayout from "layouts/StaffsLayout";
 import HodLayout from "layouts/HodLayout";
 import UserProfile from "views/UserProfile/UserProfile";
 export default function App() {
-  const [loggedIn, setLoggedin] = React.useState(false);
+  const [loggedIn, setLoggedin] = React.useState(undefined);
   const [notify, setNotification] = React.useState(false);
   const [bc, setBC] = React.useState(false);
   const [userType, setUserType] = React.useState("");
-
   const [userdetails, setUserdetails] = React.useState([]);
+  console.log("fff:", loggedIn);
+  useEffect(() => {
+    if (loggedIn == undefined) {
+      setLoggedin(JSON.parse(window.localStorage.getItem("LoggedIn")));
+      setUserType(window.localStorage.getItem("UserType"));
+      setUserdetails(JSON.parse(window.localStorage.getItem("userdetails")));
+    }
+  }, []);
+  console.log(
+    "loggedIn:",
+    loggedIn,
+    "userType:",
+    userType,
+    "userdetails:",
+    userdetails
+  );
+  useEffect(() => {
+    console.log("logedin changed:", loggedIn);
+    if (loggedIn != undefined)
+      window.localStorage.setItem("LoggedIn", JSON.stringify(loggedIn));
+    else window.localStorage.setItem("LoggedIn", JSON.stringify(false));
+
+    if (userType != "") window.localStorage.setItem("UserType", userType);
+    if (userdetails != [])
+      window.localStorage.setItem("userdetails", JSON.stringify(userdetails));
+  }, [loggedIn, userType, userdetails]);
   const showNotification = () => {
     if (!bc) {
       setBC(true);
@@ -27,7 +51,7 @@ export default function App() {
     }
   };
   useEffect(() => {
-    console.log(userType);
+    // console.log(userType);
     if (notify) {
       showNotification();
     }

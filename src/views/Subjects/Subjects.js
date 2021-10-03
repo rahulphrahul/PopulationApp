@@ -87,9 +87,7 @@ export default function Subjects() {
   }));
   const Subjectdata = events.map((d) => ({
     Id: d.Id,
-    CourseId: d.CourseId,
     CourseName: d.CourseName,
-    SemesterId: d.SemesterId,
     SemesterNo: d.SemesterNo,
     SubjectName: d.SubjectName,
     SubjectCode: d.SubjectCode,
@@ -495,12 +493,10 @@ export default function Subjects() {
                     tableHead={[
                       "",
                       "ID",
-                      "Course Id",
-                      "Coursename",
-                      "Semester Id",
-                      "Semester No",
-                      "SubjectName",
-                      "CourseCode",
+                      "Course name",
+                      "Semester Number",
+                      "Subject Name",
+                      "Course Code",
                       "Description",
                       "Actions",
                     ]}

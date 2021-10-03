@@ -23,6 +23,7 @@ import LoadingOverlay from "react-loading-overlay";
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 import Pagination from "components/Pagination/Pagination";
+import SingleSelect from "components/SingleSelect";
 // import { data } from "./data.json";
 const styles = {
   cardCategoryWhite: {
@@ -70,12 +71,49 @@ export default function Courses() {
   const [deleting, setDeleting] = React.useState(false);
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
+  const [departments, setDepartments] = React.useState([]);
+  const DepartmentList = departments.map((d) => ({
+    value: d.Id,
+    label: d.DepartmentName,
+  }));
+  const [DepartmentValues, setDepartmentValues] = React.useState({
+    Id: null,
+    label: "",
+  });
+  useEffect(() => {
+    setData((data) => ({
+      ...data,
+      DepartmentId: DepartmentValues.Id,
+      DepartmentName: DepartmentValues.Label,
+    }));
+    console.log(DepartmentValues);
+  }, [DepartmentValues.Id]);
 
+  useEffect(() => {
+    let passData = {
+      PageIndex: 0,
+      PageSize: 0,
+    };
+    fetch(Domain + "/api/Admin/GetAllDepartments/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passData),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        setDepartments(json.Data);
+      });
+  });
   const Coursedata = events.map((d) => ({
     Id: d.Id,
     CourseCode: d.CourseCode,
     CourseDuration: d.CourseDuration,
     CourseName: d.CourseName,
+    DepartmentName: d.DepartmentName,
     Description: d.Description,
     Eligibility: d.Eligibility,
     Image: d.Image,
@@ -105,6 +143,8 @@ export default function Courses() {
   const [data, setData] = React.useState({
     Id: 0,
     CourseName: "",
+    DepartmentId: "",
+    DepartmentName: "",
     Description: "",
     CourseDuration: "",
     Image: "",
@@ -141,6 +181,8 @@ export default function Courses() {
     setData({
       Id: 0,
       CourseName: "",
+      DepartmentId: "",
+      DepartmentName: "",
       Description: "",
       CourseDuration: "",
       Image: "",
@@ -153,11 +195,23 @@ export default function Courses() {
   }
   //Function for Validating fields
   function ValidateFields() {
-    if (data.Name == "") {
+    if (data.CourseName == "") {
       return false;
-    } else if (data.Date == "") {
+    } else if (data.CourseDuration == "") {
+      return false;
+    } else if (data.DepartmentId == "") {
       return false;
     } else if (data.Image == "") {
+      return false;
+    } else if (data.DepartmentName == "") {
+      return false;
+    } else if (data.Eligibility == "") {
+      return false;
+    } else if (data.Semesters == "") {
+      return false;
+    } else if (data.Syllabus == "") {
+      return false;
+    } else if (data.CourseCode == "") {
       return false;
     } else if (data.Description == "") {
       return false;
@@ -190,9 +244,8 @@ export default function Courses() {
           console.log(err);
           setUploaded(false);
         });
-    } else {
-      setValidated(false);
-    }
+    } else if (data.Image != "") HandleSave();
+    else setValidated(false);
   }
 
   //Function to save Data
@@ -216,6 +269,8 @@ export default function Courses() {
               Id: 0,
               CourseName: "",
               Description: "",
+              DepartmentId: "",
+              DepartmentName: "",
               CourseDuration: "",
               Image: "",
               Semesters: "",
@@ -268,8 +323,8 @@ export default function Courses() {
   }, [pageIndex]);
 
   useEffect(() => {
-    console.log("componentDidMount");
-    console.log("Detele" + deletee + " edit" + edit);
+    // console.log("componentDidMount");
+    // console.log("Detele" + deletee + " edit" + edit);
 
     //API call for get latest 10 elements
     fetch(Domain + "/api/Admin/GetAllCourses/", {
@@ -366,7 +421,18 @@ export default function Courses() {
 
                 <CardBody>
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
+                    <GridItem xs={12} sm={12} md={4}>
+                      <SingleSelect
+                        noOptionsMessage="Create Departments first"
+                        placeholder="Select Department"
+                        Options={DepartmentList}
+                        setValue={setDepartmentValues}
+                        formControlProps={{
+                          fullWidth: true,
+                        }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.CourseName}
@@ -377,7 +443,7 @@ export default function Courses() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
+                    <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.CourseDuration}
@@ -388,7 +454,7 @@ export default function Courses() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
+                    <GridItem xs={12} sm={12} md={3}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Semesters}
@@ -399,9 +465,8 @@ export default function Courses() {
                         }}
                       />
                     </GridItem>
-                  </GridContainer>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
+
+                    <GridItem xs={12} sm={12} md={3}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Syllabus}
@@ -434,13 +499,12 @@ export default function Courses() {
                         }}
                       />
                     </GridItem>
-                  </GridContainer>
-                  <GridContainer>
+
                     <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.Description}
-                        labelText="Enter a description about the Subject.."
+                        labelText="Enter a description about the Course.."
                         id="Description"
                         formControlProps={{
                           fullWidth: true,
@@ -451,7 +515,7 @@ export default function Courses() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={5} md={5}>
+                    <GridItem xs={12} sm={5} md={6}>
                       {" "}
                       <CustomFileInput
                         setFiles={setFiles}
@@ -515,6 +579,7 @@ export default function Courses() {
                       "CourseCode",
                       "CourseDuration",
                       "CourseName",
+                      "Department",
                       "Description",
                       "Eligibility",
                       "Image",

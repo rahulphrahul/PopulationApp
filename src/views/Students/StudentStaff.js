@@ -23,6 +23,8 @@ import SingleSelect from "components/SingleSelect";
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
 import Pagination from "components/Pagination/Pagination";
+import SnackbarContent from "components/Snackbar/SnackbarContent";
+import { Warning } from "@material-ui/icons";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -55,7 +57,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Students() {
+export default function StudentStaff() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -70,26 +72,29 @@ export default function Students() {
   const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
   const [addStudent, setAddstudent] = React.useState(false);
-  const [validateFilter, setValidateFilter] = React.useState(true);
+  // const [validateFilter, setValidateFilter] = React.useState(true);
   const [Courses, setCourses] = React.useState([]);
   const [TotalCount, setTotalCount] = React.useState();
-
+  const [validateEmpty, setvalidateEmpty] = React.useState(true);
+  const [generating, setGenerating] = React.useState(false);
+  const [classNumber, setClassNumber] = React.useState(false);
+  const [alreadygenerated, setAllreadyGenerated] = React.useState(false);
   // const [startDate, setStartDate] = useState(new Date());
   const CourseList = Courses.map((d) => ({
     value: d.Id,
     label: d.CourseName,
   }));
   //Filter Data
-  const [filterData, setFilterData] = React.useState({
+  let filterData = {
     PageIndex: 0,
     PageSize: 10,
-    Year: "",
-    CourseId: "",
-  });
-  const [CourseValues, setCourseValues] = React.useState({
-    Id: null,
-    label: "",
-  });
+    Year: 2021,
+    CourseId: JSON.parse(window.localStorage.getItem("userdetails")).CourseId,
+  };
+  // const [CourseValues, setCourseValues] = React.useState({
+  //   Id: null,
+  //   label: "",
+  // });
   const [CourseValues1, setCourseValues1] = React.useState({
     Id: null,
     label: "",
@@ -116,13 +121,13 @@ export default function Students() {
 
   const [pageIndex, setPageIndex] = useState(0);
   const [pagination, setPagination] = useState(false);
-
+  const [TotalStudents, setTotalStudents] = React.useState(0);
   useEffect(() => {
     let passData = {
       PageIndex: pageIndex,
       PageSize: 10,
     };
-    fetch(Domain + "/api/Student/GetAllStudents/", {
+    fetch(Domain + "/api/Student/GetStudentsByCourseIdandDate/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -134,8 +139,9 @@ export default function Students() {
 
       .then((json) => {
         setEvents(json.Data);
+
         if (json.TotalCount > 10) {
-          console.log("pages", Math.ceil(json.TotalCount / 10));
+          // console.log("pages", Math.ceil(json.TotalCount / 10));
           setTotalCount(Math.ceil(json.TotalCount / 10));
 
           setPagination(true);
@@ -148,7 +154,7 @@ export default function Students() {
     PageIndex: 0,
     PageSize: 0,
   };
-
+  const [generated, setGenerated] = React.useState(false);
   function AddStudent() {
     if (addStudent) {
       setAddstudent(false);
@@ -161,6 +167,15 @@ export default function Students() {
       setSaved(true);
       setTimeout(function () {
         setSaved(false);
+      }, 3000);
+    }
+  };
+  //Class Number Generated Notification
+  const ShowGeneratedNotification = () => {
+    if (!saved) {
+      setGenerated(true);
+      setTimeout(function () {
+        setGenerated(false);
       }, 3000);
     }
   };
@@ -196,10 +211,10 @@ export default function Students() {
   });
 
   //PassData for getAll API
-  let passData = {
-    PageIndex: 0,
-    PageSize: 10,
-  };
+  // let passData = {
+  //   PageIndex: 0,
+  //   PageSize: 10,
+  // };
 
   //PaddData for Delete a Row
   let passDelete = {
@@ -215,14 +230,14 @@ export default function Students() {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
     setData(newData);
-    console.log(newData);
+    // console.log(newData);
   }
-  function HandleFilterData(e) {
-    const newData = { ...filterData };
-    newData[e.target.id] = e.target.value;
-    setFilterData(newData);
-    console.log(newData);
-  }
+  // function HandleFilterData(e) {
+  //   const newData = { ...filterData };
+  //   newData[e.target.id] = e.target.value;
+  //   setFilterData(newData);
+  //   console.log(newData);
+  // }
   function HandleClear() {
     setData({
       Id: 0,
@@ -318,7 +333,7 @@ export default function Students() {
         .then((response) => response.json())
 
         .then((json) => {
-          console.log(json);
+          // console.log(json);
           if (json.Success) {
             setData({
               Id: 0,
@@ -344,6 +359,7 @@ export default function Students() {
             setSaving(false);
             setAddstudent(false);
           } else {
+            setSaving(false);
             console.log("Error in insertion");
           }
         });
@@ -353,43 +369,45 @@ export default function Students() {
     }
     setUploaded(false);
   }
-  useEffect(() => {
-    console.log(CourseValues);
-    setFilterData((data) => ({
-      ...data,
-      CourseId: CourseValues.Id,
-    }));
-  }, [CourseValues.Id]);
+  // useEffect(() => {
+  //   console.log(CourseValues);
+  //   setFilterData((data) => ({
+  //     ...data,
+  //     CourseId: CourseValues.Id,
+  //   }));
+  // }, [CourseValues.Id]);
 
   useEffect(() => {
-    let PassId = {
-      Id: CourseValues1.Id,
-    };
-    //API call to get event By ID to edit a row
+    if (CourseValues1.Id != null) {
+      let PassId = {
+        Id: CourseValues1.Id,
+      };
+      //API call to get event By ID to edit a row
 
-    fetch(Domain + "/api/Admin/GetCoursesById/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(PassId),
-    })
-      .then((response) => response.json())
+      fetch(Domain + "/api/Admin/GetCoursesById/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(PassId),
+      })
+        .then((response) => response.json())
 
-      .then((json) => {
-        console.log(json);
+        .then((json) => {
+          console.log(json);
 
-        if (json.Success) {
-          setData((data) => ({
-            ...data,
-            CourseCode: json.Data.CourseCode,
-            CourseId: CourseValues1.Id,
-            Course: CourseValues1.Label,
-          }));
-          // console.log(json.Data);
-        }
-      });
+          if (json.Success) {
+            setData((data) => ({
+              ...data,
+              CourseCode: json.Data.CourseCode,
+              CourseId: CourseValues1.Id,
+              Course: CourseValues1.Label,
+            }));
+            // console.log(json.Data);
+          }
+        });
+    }
 
     // console.log("CourseValues1: ", data, CourseValues1.Id);
   }, [CourseValues1.Id]);
@@ -411,19 +429,23 @@ export default function Students() {
       });
 
     //API call for get latest 10 elements
-    fetch(Domain + "/api/Student/GetAllStudents/", {
+    fetch(Domain + "/api/Student/GetStudentsByCourseIdandDate/", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(passData),
+      body: JSON.stringify(filterData),
     })
       .then((response) => response.json())
 
       .then((json) => {
+        setTotalStudents(json.TotalCount);
         setEvents(json.Data);
-        if (json.Data.length == 0) setEmpty(true);
+        if (json.Data.length == 0) {
+          setvalidateEmpty(false);
+          setEmpty(true);
+        }
         setLoading(false);
       });
 
@@ -466,50 +488,102 @@ export default function Students() {
             setEdit([]);
             setData(json.Data);
             setAddstudent(true);
-            console.log(json.Data);
+            // console.log(json.Data);
           }
         });
     }
   }, [deletee, edit, saved]);
 
-  function HandleFilter() {
-    console.log(filterData);
-    if (
-      filterData.CourseId == null ||
-      filterData.CourseId == "" ||
-      filterData.Year == ""
-    )
-      setValidateFilter(false);
-    else {
-      setDeleting(true);
-      setValidateFilter(true);
+  // function HandleFilter() {
+  //   console.log(filterData);
+  //   if (
+  //     filterData.CourseId == null ||
+  //     filterData.CourseId == "" ||
+  //     filterData.Year == ""
+  //   )
+  //     setValidateFilter(false);
+  //   else {
+  //     setDeleting(true);
+  //     setValidateFilter(true);
 
-      //API call for get latest 10 elements
-      fetch(Domain + "/api/Student/GetStudentsByCourseIdandDate/", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(filterData),
-      })
-        .then((response) => response.json())
+  //     //API call for get latest 10 elements
+  //     fetch(Domain + "/api/Student/GetStudentsByCourseIdandDate/", {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(filterData),
+  //     })
+  //       .then((response) => response.json())
 
-        .then((json) => {
-          console.log(json);
-          setEmpty(false);
-          setEvents(json.Data);
-          setFilterData({
-            PageIndex: 0,
-            PageSize: 10,
-            Year: "",
-            CourseId: "",
-          });
-          setDeleting(false);
-          if (json.Data.length == 0) setEmpty(true);
-          setLoading(false);
-        });
-    }
+  //       .then((json) => {
+  //         console.log(json);
+  //         setEmpty(false);
+  //         setEvents(json.Data);
+  //         setFilterData({
+  //           PageIndex: 0,
+  //           PageSize: 10,
+  //           Year: "",
+  //           CourseId: "",
+  //         });
+  //         setDeleting(false);
+  //         if (json.Data.length == 0) setEmpty(true);
+  //         setLoading(false);
+  //       });
+  //   }
+  // }
+  function GenerateClassNumber() {
+    setGenerating(true);
+    // console.log(
+    //   "Course ID from userDetails:",
+    //   JSON.parse(window.localStorage.getItem("userdetails")).CourseId
+    // );
+    let PassId = {
+      Id: JSON.parse(window.localStorage.getItem("userdetails")).CourseId,
+    };
+    //API call to get event By ID to edit a row
+
+    fetch(Domain + "/api/Admin/GetCoursesById/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(PassId),
+    })
+      .then((response) => response.json())
+
+      .then((json) => {
+        // console.log(json);
+
+        if (json.Success) {
+          // console.log("CourseCode from Server:", json.Data.CourseCode);
+          let passData3 = {
+            CourseCode: json.Data.CourseCode,
+          };
+          fetch(Domain + "/api/Staff/Generate/", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(passData3),
+          })
+            .then((response) => response.json())
+
+            .then((json) => {
+              console.log(json);
+              if (json.Success) {
+                setGenerating(false);
+                ShowGeneratedNotification();
+              } else {
+                setGenerating(false);
+                setAllreadyGenerated(true);
+              }
+            });
+        }
+      });
   }
   return (
     <>
@@ -524,6 +598,15 @@ export default function Students() {
       />
       <Snackbar
         place="bc"
+        color="success"
+        icon={AddAlert}
+        message="Class Number Generated Successfully"
+        open={generated}
+        closeNotification={() => setSaved(false)}
+        close
+      />
+      <Snackbar
+        place="bc"
         color="danger"
         icon={AddAlert}
         message="Student Deleted Successfully"
@@ -531,61 +614,6 @@ export default function Students() {
         closeNotification={() => setDeleted(false)}
         close
       />
-      <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <form>
-                <CardHeader color="info">
-                  <h4 className={classes.cardTitleWhite}>
-                    Filter Students Data
-                  </h4>
-                  <p className={classes.cardCategoryWhite}>
-                    Select the Year and Course then click search
-                  </p>
-                </CardHeader>
-
-                <CardBody>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <CustomInput
-                        onChange={(e) => HandleFilterData(e)}
-                        value={filterData.Year}
-                        labelText="Year"
-                        id="Year"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
-                      <SingleSelect
-                        noOptionsMessage="Create any course first"
-                        placeholder="Select Course"
-                        Options={CourseList}
-                        setValue={setCourseValues}
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                      />
-                    </GridItem>
-                  </GridContainer>
-                  {validateFilter ? (
-                    <></>
-                  ) : (
-                    <Danger>Please select Year and Course</Danger>
-                  )}
-                </CardBody>
-                <CardFooter>
-                  <Button onClick={HandleFilter} color="info">
-                    Search
-                  </Button>
-                </CardFooter>
-              </form>
-            </Card>
-          </GridItem>
-        </GridContainer>
-      </LoadingOverlay>
       {addStudent ? (
         <div>
           <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
@@ -793,6 +821,99 @@ export default function Students() {
         <Button onClick={AddStudent} color="info">
           Add Student
         </Button>
+      )}
+
+      {classNumber ? (
+        <LoadingOverlay
+          active={generating}
+          spinner
+          text="Generating class Numbers Please Wait."
+        >
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+              <Card>
+                <form>
+                  <CardHeader color="info">
+                    <h4 className={classes.cardTitleWhite}>
+                      Generate Class Number
+                    </h4>
+                  </CardHeader>
+
+                  <CardBody>
+                    {!alreadygenerated ? (
+                      <>
+                        {validateEmpty ? (
+                          <>
+                            <SnackbarContent
+                              message={
+                                <span>
+                                  <b>Attention! :</b>Class Number Generation is
+                                  a one-time process which you only do after
+                                  every student data is listed below.
+                                </span>
+                              }
+                              color="warning"
+                              icon={Warning}
+                            />
+
+                            <b>
+                              Clicking on the below Button will Generate Class
+                              Number for <u>{TotalStudents}</u> student(s)
+                            </b>
+                            <br />
+                            <Button
+                              onClick={GenerateClassNumber}
+                              color="success"
+                            >
+                              Generate Class Number
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                setClassNumber(false);
+                              }}
+                              color="danger"
+                            >
+                              Cancel
+                            </Button>
+                          </>
+                        ) : (
+                          <Danger>No Student Data found!</Danger>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <SnackbarContent
+                          message={
+                            <span>
+                              <b>Allready Generated! :</b>Class Number
+                              Generation is a one-time process which you already
+                              done once!
+                            </span>
+                          }
+                          color="warning"
+                          icon={Warning}
+                        />
+                      </>
+                    )}
+                  </CardBody>
+                  <CardFooter></CardFooter>
+                </form>
+              </Card>
+            </GridItem>
+          </GridContainer>
+        </LoadingOverlay>
+      ) : (
+        <>
+          {" "}
+          <Button
+            onClick={() => {
+              setClassNumber(true);
+            }}
+            color="info"
+          >
+            Generate Class Number
+          </Button>
+        </>
       )}
 
       <GridContainer>

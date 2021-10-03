@@ -178,9 +178,8 @@ export default function Management() {
           console.log(err);
           setUploaded(false);
         });
-    } else {
-      setValidated(false);
-    }
+    } else if (data.Image != "") HandleSave();
+    else setValidated(false);
   }
 
   //Function to save Data

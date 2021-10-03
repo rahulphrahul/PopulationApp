@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // react plugin for creating charts
 // import ChartistGraph from "react-chartist";
 // @material-ui/core
@@ -17,6 +17,7 @@ import Accessibility from "@material-ui/icons/Accessibility";
 // import Code from "@material-ui/icons/Code";
 // import Cloud from "@material-ui/icons/Cloud";
 // core components
+import Button from "components/CustomButtons/Button.js";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 // import Table from "components/Table/Table.js";
@@ -26,8 +27,10 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
-// import CardBody from "components/Card/CardBody.js";
+import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import CardAvatar from "components/Card/CardAvatar.js";
+// import avatar from "assets/img/placeholder.jpg";
 
 // import { bugs, website, server } from "variables/general.js";
 
@@ -38,11 +41,24 @@ import CardFooter from "components/Card/CardFooter.js";
 // } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+import { Domain } from "Domain";
+import Accordion from "components/Accordion/Accordion";
+import Admin from "views/Admin/Admin";
 
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
   const classes = useStyles();
+  const userData = JSON.parse(window.localStorage.getItem("userdetails"));
+  const [admin, setAdmin] = React.useState(false);
+  const [edit, setEdit] = React.useState(false);
+  console.log("userDetails:", userData);
+  useEffect(() => {
+    if (userData.Usertype == "Admin") {
+      setAdmin(true);
+    }
+  }, []);
+
   return (
     <div>
       <GridContainer>
@@ -115,6 +131,147 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
+
+      {/* profile============================================================================================= */}
+      {admin ? (
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={6}>
+            {edit ? <Admin id={userData.Id} /> : <></>}
+          </GridItem>
+          <GridItem xs={12} sm={12} md={6}>
+            <Card>
+              <CardAvatar profile>
+                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  <img src={Domain + userData.Image} alt="..." />
+                </a>
+              </CardAvatar>
+              <CardBody>
+                <span style={{ textAlign: "center" }}>
+                  <h3 className={classes.title}>
+                    {userData.FullName}{" "}
+                    <span className={classes.proBadge}>
+                      {userData.Usertype}
+                    </span>
+                  </h3>
+                  <h6 className={classes.cardCategory}>
+                    {userData.CourseName}
+                  </h6>
+                </span>
+
+                <Accordion
+                  active={0}
+                  activeColor="info"
+                  collapses={[
+                    {
+                      title: "Login Details",
+                      content: (
+                        <p>
+                          <b>Username :</b> {userData.Email}
+                          <br />
+                          <b>Password:</b> {userData.Password}
+                        </p>
+                      ),
+                    },
+                  ]}
+                />
+                <Button
+                  color="info"
+                  onClick={() => {
+                    setEdit(true);
+                  }}
+                >
+                  Edit Profile
+                </Button>
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      ) : (
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={6}></GridItem>
+          <GridItem xs={12} sm={12} md={6}>
+            <Card>
+              <CardAvatar profile>
+                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  <img src={Domain + userData.Image} alt="..." />
+                </a>
+              </CardAvatar>
+              <CardBody>
+                <span style={{ textAlign: "center" }}>
+                  <h3 className={classes.title}>
+                    {userData.FullName}{" "}
+                    <span className={classes.proBadge}>
+                      {userData.UserType}
+                    </span>
+                  </h3>
+                  <h6 className={classes.cardCategory}>
+                    {userData.CourseName}
+                  </h6>
+                </span>
+
+                <Accordion
+                  active={0}
+                  activeColor="info"
+                  collapses={[
+                    {
+                      title: "Personel Info",
+                      content: (
+                        <span>
+                          <b>Date Of Birth :</b> {userData.DOB}
+                          <br />
+                          <b>Gender : </b>
+                          {userData.Gender}
+                          <br />
+                          <b>House Name:</b> {userData.HouseName}
+                          <br />
+                          <b>Contact :</b> {userData.Mobile}
+                          <br />
+                          <b>Email :</b> {userData.Email}
+                          <br />
+                        </span>
+                      ),
+                    },
+                    {
+                      title: "Other Details",
+                      content: (
+                        <>
+                          <b>Qualifications:</b> {userData.Qualifications}
+                          <br />
+                          <b>Achievements :</b> {userData.Achievements}
+                          <br />
+                          <b>Area Of Interest :</b> {userData.AreaOfInterest}
+                          <br />
+                          <b>Address :</b> {userData.HouseName},{userData.City},
+                          {userData.District},{userData.State},
+                          {userData.Country},{userData.PostOffice},
+                          {userData.PostalCode}
+                          <br />
+                          <b>Department Name :</b> {userData.DepartmentName}
+                          <br />
+                        </>
+                      ),
+                    },
+                    {
+                      title: "Login Details",
+                      content: (
+                        <p>
+                          <b>Username :</b> {userData.Email}
+                          <br />
+                          <b>Password:</b> {userData.Password}
+                        </p>
+                      ),
+                    },
+                  ]}
+                />
+                <Button color="info" round>
+                  Edit Profile
+                </Button>
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      )}
+      {/* End Profile========================================================================================= */}
       {/* 
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>

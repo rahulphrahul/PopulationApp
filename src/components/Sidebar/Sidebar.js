@@ -27,7 +27,7 @@ export default function Sidebar(props) {
     return location.pathname === routeName;
   }
   const { color, logo, image, logoText, routes, userdetails } = props;
-  console.log("user details:", userdetails);
+  // console.log("user details:", userdetails);
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {

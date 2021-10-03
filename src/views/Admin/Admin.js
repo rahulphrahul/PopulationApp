@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Domain } from "Domain";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import Table from "components/Table/Table.js";
+// import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
@@ -19,10 +19,11 @@ import axios from "axios";
 import Danger from "components/Typography/Danger";
 import LoadingOverlay from "react-loading-overlay";
 // import ImageUpload from "components/CustomUpload/ImageUpload.js";
+import PropTypes from "prop-types";
 
 import AttachFile from "@material-ui/icons/AttachFile";
 import CustomFileInput from "components/CustomFileInput/CustomFileInput.js";
-import Pagination from "components/Pagination/Pagination";
+// import Pagination from "components/Pagination/Pagination";
 
 // import { data } from "./data.json";
 const styles = {
@@ -57,27 +58,26 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Admin() {
+export default function Admin({ id }) {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
-  const [deleted, setDeleted] = React.useState(false);
-  const [edit, setEdit] = React.useState([]);
-  const [deletee, setDelete] = React.useState([]);
-  const [events, setEvents] = React.useState([]);
+  // const [deleted, setDeleted] = React.useState(false);
+  // const [deletee, setDelete] = React.useState([]);
+  // const [events, setEvents] = React.useState([]);
   const [files, setFiles] = React.useState(null);
   const [validated, setValidated] = React.useState(true);
   const [uploaded, setUploaded] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  // const [loading, setLoading] = React.useState(true);
   // const [deleting, setDeleting] = React.useState(false);
-  const [empty, setEmpty] = React.useState(false);
+  // const [empty, setEmpty] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
-  const [viewData, setViewData] = React.useState(false);
-  const Admindata = events.map((d) => ({
-    Id: d.Id,
-    FullName: d.FullName,
-    Email: d.Email,
-    Password: d.Password,
-  }));
+  const [viewData, setViewData] = React.useState(true);
+  // const Admindata = events.map((d) => ({
+  //   Id: d.Id,
+  //   FullName: d.FullName,
+  //   Email: d.Email,
+  //   Password: d.Password,
+  // }));
 
   //Saved Notification trigger
   const showSavedNotification = () => {
@@ -88,15 +88,7 @@ export default function Admin() {
       }, 3000);
     }
   };
-  //Deleted Notification Trigger
-  const showDeletedNotification = () => {
-    if (!deleted) {
-      setDeleted(true);
-      setTimeout(function () {
-        setDeleted(false);
-      }, 3000);
-    }
-  };
+
   //Form Data
   const [data, setData] = React.useState({
     Id: 0,
@@ -108,10 +100,10 @@ export default function Admin() {
   });
 
   //PassData for getAll API
-  let passData = {
-    PageIndex: 0,
-    PageSize: 10,
-  };
+  // let passData = {
+  //   PageIndex: 0,
+  //   PageSize: 10,
+  // };
 
   //PaddData for Delete a Row
   // let passDelete = {
@@ -120,7 +112,7 @@ export default function Admin() {
   // };
   //PassData for getting event by id
   let passEdit = {
-    Id: edit,
+    Id: id,
   };
   //Function to handle Data input
   function HandleData(e) {
@@ -181,9 +173,8 @@ export default function Admin() {
           console.log(err);
           setUploaded(false);
         });
-    } else {
-      setValidated(false);
-    }
+    } else if (data.Image != "") HandleSave();
+    else setValidated(false);
   }
 
   //Function to save Data
@@ -210,9 +201,14 @@ export default function Admin() {
               Image: "",
               Password: "",
             });
-            setEmpty(false);
+            window.localStorage.setItem(
+              "userdetails",
+              JSON.stringify(json.Data)
+            );
+            // setEmpty(false);
             showSavedNotification();
             setSaving(false);
+            setViewData(false);
           } else {
             console.log("Error in insertion");
           }
@@ -223,99 +219,32 @@ export default function Admin() {
     setUploaded(false);
   }
 
-  const [TotalCount, setTotalCount] = React.useState();
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pagination, setPagination] = useState(false);
+  // const [TotalCount, setTotalCount] = React.useState();
+  // const [pageIndex, setPageIndex] = useState(0);
+  // const [pagination, setPagination] = useState(false);
 
   useEffect(() => {
-    let passData = {
-      PageIndex: pageIndex,
-      PageSize: 10,
-    };
-    fetch(Domain + "/api/Admin/GetAllAdminDetails/", {
+    //API call to get event By ID to edit a row
+
+    fetch(Domain + "/api/Admin/GetAdminDetailsById/", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(passData),
+      body: JSON.stringify(passEdit),
     })
       .then((response) => response.json())
 
       .then((json) => {
-        setEvents(json.Data);
-        if (json.TotalCount > 10) {
-          console.log("pages", Math.ceil(json.TotalCount / 10));
-          setTotalCount(Math.ceil(json.TotalCount / 10));
-
-          setPagination(true);
+        if (json.Success) {
+          setViewData(true);
+          // setEdit([]);
+          setData(json.Data);
+          console.log(json.Data);
         }
       });
-  }, [pageIndex]);
-
-  useEffect(() => {
-    //API call for get latest 10 elements
-    fetch(Domain + "/api/Admin/GetAllAdminDetails/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(passData),
-    })
-      .then((response) => response.json())
-
-      .then((json) => {
-        setEvents(json.Data);
-        if (json.Data.length == 0) setEmpty(true);
-        setLoading(false);
-      });
-
-    //API call for Delete a row
-    if (deletee.length != 0) {
-      // setDeleting(true);
-      // fetch(Domain + "/api/Admin/DeleteAdminDetails/", {
-      //   method: "POST",
-      //   headers: {
-      //     Accept: "application/json",
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(passDelete),
-      // })
-      //   .then((response) => response.json())
-
-      //   .then((json) => {
-      //     if (json.Success) {
-      //       setDelete([]);
-      //       showDeletedNotification();
-      //       setDeleting(false);
-      //     }
-      //   });
-      showDeletedNotification();
-    }
-
-    //API call to get event By ID to edit a row
-    if (edit.length != 0) {
-      fetch(Domain + "/api/Admin/GetAdminDetailsById/", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(passEdit),
-      })
-        .then((response) => response.json())
-
-        .then((json) => {
-          if (json.Success) {
-            setViewData(true);
-            setEdit([]);
-            setData(json.Data);
-            console.log(json.Data);
-          }
-        });
-    }
-  }, [deletee, edit, saved]);
+  }, []);
 
   return (
     <>
@@ -328,15 +257,7 @@ export default function Admin() {
         closeNotification={() => setSaved(false)}
         close
       />
-      <Snackbar
-        place="bc"
-        color="danger"
-        icon={AddAlert}
-        message="Cannot Delete the Super Admin"
-        open={deleted}
-        closeNotification={() => setDeleted(false)}
-        close
-      />
+
       {viewData ? (
         <LoadingOverlay active={saving} spinner text="Saving Please Wait..">
           <GridContainer>
@@ -432,7 +353,7 @@ export default function Admin() {
         <></>
       )}
 
-      <GridContainer>
+      {/* <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="info">
@@ -495,7 +416,11 @@ export default function Admin() {
             <></>
           )}
         </GridItem>
-      </GridContainer>
+      </GridContainer> */}
     </>
   );
 }
+
+Admin.propTypes = {
+  id: PropTypes.any,
+};

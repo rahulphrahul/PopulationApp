@@ -188,9 +188,8 @@ export default function Events() {
             setUploaded(false);
           }
         });
-    } else {
-      setValidated(false);
-    }
+    } else if (data.Image != "") HandleSave();
+    else setValidated(false);
   }
 
   //Function to save Data

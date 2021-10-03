@@ -73,7 +73,7 @@ export default function LoginPage({
   function HandleSave() {
     if (data.Username == "" && data.Password == "") {
       setInvalid(true);
-      setLoggedin(false);
+      setLoggedin(undefined);
     } else {
       fetch(Domain + "/api/Admin/AdminLogin/", {
         method: "POST",
@@ -100,7 +100,7 @@ export default function LoginPage({
             setNotification(true);
           } else {
             setInvalid(true);
-            setLoggedin(false);
+            setLoggedin(undefined);
           }
         });
     }

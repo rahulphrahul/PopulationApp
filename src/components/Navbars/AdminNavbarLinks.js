@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Hidden from "@material-ui/core/Hidden";
 import Poppers from "@material-ui/core/Popper";
-import Divider from "@material-ui/core/Divider";
+// import Divider from "@material-ui/core/Divider";
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
@@ -24,7 +24,7 @@ import { NavLink } from "react-router-dom";
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks({ setLoggedin }) {
-  console.log("setLoggedIn,navlinks", setLoggedin);
+  // console.log("setLoggedIn,navlinks", setLoggedin);
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
@@ -49,7 +49,7 @@ export default function AdminNavbarLinks({ setLoggedin }) {
     setOpenProfile(null);
   };
   const handleLogout = () => {
-    setLoggedin(false);
+    setLoggedin(undefined);
     setOpenProfile(null);
   };
   return (
@@ -164,7 +164,7 @@ export default function AdminNavbarLinks({ setLoggedin }) {
                       {" "}
                       <NavLink to="/user">Profile</NavLink>
                     </MenuItem> */}
-                    <Divider light />
+                    {/* <Divider light /> */}
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>

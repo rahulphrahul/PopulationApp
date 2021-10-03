@@ -83,7 +83,6 @@ export default function Semester() {
   });
   const Semesterdata = events.map((d) => ({
     Id: d.Id,
-    CourseId: d.CourseId,
     CourseName: d.CourseName,
     SemesterDuration: d.SemesterDuration,
     SemesterNo: d.SemesterNo,
@@ -349,7 +348,7 @@ export default function Semester() {
 
                 <CardBody>
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
+                    <GridItem xs={12} sm={12} md={4}>
                       <CustomInput
                         onChange={(e) => HandleData(e)}
                         value={data.SemesterNo}
@@ -360,7 +359,7 @@ export default function Semester() {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
+                    <GridItem xs={12} sm={12} md={4}>
                       <SingleSelect
                         noOptionsMessage="Create any course first"
                         placeholder="Select Course"
@@ -424,7 +423,6 @@ export default function Semester() {
                     tableHead={[
                       "",
                       "ID",
-                      "Course ID",
                       "CourseName",
                       "SemesterDuration",
                       "Semester Number",

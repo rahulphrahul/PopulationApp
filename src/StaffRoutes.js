@@ -23,11 +23,12 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 // import Gallery from "views/Gallery/Gallery";
 // import Courses from "views/Courses/Courses";
 // import Testimonials from "views/Testimonials/Testimonials";
-import Students from "views/Students/Students";
+// import Students from "views/Students/Students";
 // import Publications from "views/Publications/Publications";
 // import Subjects from "views/Subjects/Subjects";
 // import Semester from "views/Semester/Semester";
 import InternalMarks from "views/InternalMarks/InternalMarks";
+import StudentStaff from "views/Students/StudentStaff";
 // import InternalsNotification from "views/InternalsNotification/InternalsNotification";
 // import Placements from "views/Placements/Placements";
 
@@ -97,7 +98,7 @@ const dashboardRoutes = [
     path: "/students",
     name: "Students",
     icon: SupervisedUserCircleIcon,
-    component: Students,
+    component: StudentStaff,
     layout: "/admin",
   },
   // {

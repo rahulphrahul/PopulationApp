@@ -55,7 +55,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Students() {
+export default function StudentHOD() {
   const classes = useStyles();
   const [saved, setSaved] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
@@ -143,12 +143,6 @@ export default function Students() {
       });
   }, [pageIndex]);
 
-  //PassData for get all semesters and courses for dropdown
-  let passData1 = {
-    PageIndex: 0,
-    PageSize: 0,
-  };
-
   function AddStudent() {
     if (addStudent) {
       setAddstudent(false);
@@ -196,10 +190,10 @@ export default function Students() {
   });
 
   //PassData for getAll API
-  let passData = {
-    PageIndex: 0,
-    PageSize: 10,
-  };
+  // let passData = {
+  //   PageIndex: 0,
+  //   PageSize: 10,
+  // };
 
   //PaddData for Delete a Row
   let passDelete = {
@@ -344,7 +338,7 @@ export default function Students() {
             setSaving(false);
             setAddstudent(false);
           } else {
-            console.log("Error in insertion");
+            console.log("Error in insertion", json);
           }
         });
     } else {
@@ -395,8 +389,13 @@ export default function Students() {
   }, [CourseValues1.Id]);
 
   useEffect(() => {
+    //PassData for get all semesters and courses for dropdown
+    let passData1 = {
+      DepartmentId: JSON.parse(window.localStorage.getItem("userdetails"))
+        .DepartmentId,
+    };
     //API call for get all course names to dropedown
-    fetch(Domain + "/api/Admin/GetAllCourses/", {
+    fetch(Domain + "/api/Admin/GetCoursesByDepartmentId/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -409,23 +408,24 @@ export default function Students() {
       .then((json) => {
         if (json.Data.length != 0) setCourses(json.Data);
       });
-
+  });
+  useEffect(() => {
     //API call for get latest 10 elements
-    fetch(Domain + "/api/Student/GetAllStudents/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(passData),
-    })
-      .then((response) => response.json())
+    // fetch(Domain + "/api/Student/GetAllStudents/", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(passData),
+    // })
+    //   .then((response) => response.json())
 
-      .then((json) => {
-        setEvents(json.Data);
-        if (json.Data.length == 0) setEmpty(true);
-        setLoading(false);
-      });
+    //   .then((json) => {
+    //     setEvents(json.Data);
+    //     if (json.Data.length == 0) setEmpty(true);
+    //     setLoading(false);
+    //   });
 
     //API call for Delete a row
     if (deletee.length != 0) {
@@ -499,12 +499,6 @@ export default function Students() {
           console.log(json);
           setEmpty(false);
           setEvents(json.Data);
-          setFilterData({
-            PageIndex: 0,
-            PageSize: 10,
-            Year: "",
-            CourseId: "",
-          });
           setDeleting(false);
           if (json.Data.length == 0) setEmpty(true);
           setLoading(false);

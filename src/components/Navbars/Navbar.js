@@ -22,7 +22,7 @@ import styles from "assets/jss/material-dashboard-react/components/headerStyle.j
 const useStyles = makeStyles(styles);
 
 export default function Header(props) {
-  console.log("setLoggedIn,navbar", props);
+  // console.log("setLoggedIn,navbar", props);
   const classes = useStyles();
   const routeName = useRouteName();
   const { color } = props;
