@@ -7,8 +7,6 @@ import "assets/css/material-dashboard-react.css?v=1.10.0";
 import LoginPage from "layouts/LoginPage/LoginPage";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-import StaffsLayout from "layouts/StaffsLayout";
-import HodLayout from "layouts/HodLayout";
 import UserProfile from "views/UserProfile/UserProfile";
 export default function App() {
   const [loggedIn, setLoggedin] = React.useState(undefined);
@@ -24,14 +22,7 @@ export default function App() {
       setUserdetails(JSON.parse(window.localStorage.getItem("userdetails")));
     }
   }, []);
-  // console.log(
-  //   "loggedIn:",
-  //   loggedIn,
-  //   "userType:",
-  //   userType,
-  //   "userdetails:",
-  //   userdetails
-  // );
+  console.log("userdetails:", userdetails);
   useEffect(() => {
     // console.log("logedin changed:", loggedIn);
     if (loggedIn != undefined)
@@ -72,40 +63,20 @@ export default function App() {
           {loggedIn ? (
             <div>
               {(() => {
-                if (userType == "Admin") {
-                  return (
-                    <Switch>
-                      <Route path="/admin">
-                        <Admin setLoggedin={setLoggedin} />
-                      </Route>
-                      <Route path="/user">
-                        <UserProfile
-                          userdetails={userdetails}
-                          setLoggedin={setLoggedin}
-                        />
-                      </Route>
-                      <Redirect from="/" to="/admin/dashboard" />
-                    </Switch>
-                  );
-                } else if (userType == "Staff") {
-                  return (
-                    <Switch>
-                      <Route path="/admin">
-                        <StaffsLayout setLoggedin={setLoggedin} />
-                      </Route>
-                      <Redirect from="/" to="/admin/dashboard" />
-                    </Switch>
-                  );
-                } else if (userType == "HOD") {
-                  return (
-                    <Switch>
-                      <Route path="/admin">
-                        <HodLayout setLoggedin={setLoggedin} />
-                      </Route>
-                      <Redirect from="/" to="/admin/dashboard" />
-                    </Switch>
-                  );
-                }
+                return (
+                  <Switch>
+                    <Route path="/admin">
+                      <Admin setLoggedin={setLoggedin} />
+                    </Route>
+                    <Route path="/user">
+                      <UserProfile
+                        userdetails={userdetails}
+                        setLoggedin={setLoggedin}
+                      />
+                    </Route>
+                    <Redirect from="/" to="/admin/dashboard" />
+                  </Switch>
+                );
               })()}
             </div>
           ) : (

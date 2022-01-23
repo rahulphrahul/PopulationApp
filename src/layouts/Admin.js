@@ -14,8 +14,6 @@ import routes from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
-import logo from "assets/img/favicon.png";
-
 let ps;
 
 const switchRoutes = (
@@ -82,8 +80,6 @@ export default function Admin({ ...rest }) {
 
         <Sidebar
           routes={routes}
-          logoText={"Marygiri"}
-          logo={logo}
           image=""
           handleDrawerToggle={handleDrawerToggle}
           open={mobileOpen}

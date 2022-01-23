@@ -6,11 +6,9 @@ import { makeStyles } from "@material-ui/core/styles";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import { useLocation } from "react-router-dom";
 import avatar from "assets/img/placeholder.jpg";
 
 const styles = {
@@ -34,10 +32,11 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function UserProfile({ userdetails }) {
+export default function UserProfile() {
   const classes = useStyles();
-  let locations = useLocation();
-  console.log("user:", userdetails, locations);
+  const userData = JSON.parse(window.localStorage.getItem("userdetails"));
+
+  console.log("user:", userData);
   return (
     <div>
       <GridContainer>
@@ -49,16 +48,9 @@ export default function UserProfile({ userdetails }) {
               </a>
             </CardAvatar>
             <CardBody profile>
-              <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
-              <h4 className={classes.cardTitle}>Alec Thompson</h4>
-              <p className={classes.description}>
-                Don{"'"}t be scared of the truth because we need to restart the
-                human foundation in truth And I love you like Kanye loves Kanye
-                I love Rick Owens’ bed design but the back is...
-              </p>
-              <Button color="primary" round>
-                Follow
-              </Button>
+              <h6 className={classes.cardCategory}>{userData.UserType}</h6>
+              <h4 className={classes.cardTitle}>{userData.Name}</h4>
+              <p className={classes.description}>{userData.Email}</p>
             </CardBody>
           </Card>
         </GridItem>

@@ -10,7 +10,6 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import CardFooter from "components/Card/CardFooter.js";
-import { Domain } from "Domain";
 import PropTypes from "prop-types";
 
 const styles = {
@@ -63,6 +62,7 @@ export default function LoginPage({
     Username: "",
     Password: "",
   });
+
   function HandleData(e) {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
@@ -70,19 +70,22 @@ export default function LoginPage({
     // console.log(newData);
   }
   const [invalid, setInvalid] = React.useState(false);
+
   function HandleSave() {
     if (data.Username == "" && data.Password == "") {
       setInvalid(true);
       setLoggedin(undefined);
     } else {
-      fetch(Domain + "/api/Admin/AdminLogin/", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
+      fetch(
+        "https://6998bab9-6d84-4087-b84d-b4edf592c654.mock.pstmn.io/userLogin/",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      )
         .then((response) => response.json())
 
         .then((json) => {
@@ -113,7 +116,7 @@ export default function LoginPage({
           <Card>
             <form>
               <CardHeader color="info">
-                <h4 className={classes.cardTitleWhite}>Admin Login</h4>
+                <h4 className={classes.cardTitleWhite}>Login Form</h4>
                 <p className={classes.cardCategoryWhite}>
                   Enter the login Credentails below
                 </p>
@@ -124,62 +127,30 @@ export default function LoginPage({
                   <GridItem xs={12} sm={12} md={8}>
                     <GridContainer justify="center">
                       <GridItem xs={12} sm={12} md={12}>
-                        {invalid ? (
-                          <div>
-                            <CustomInput
-                              error
-                              onChange={(e) => HandleData(e)}
-                              value={data.Username}
-                              labelText="User Name"
-                              id="Username"
-                              formControlProps={{
-                                fullWidth: true,
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <div>
-                            <CustomInput
-                              onChange={(e) => HandleData(e)}
-                              value={data.Username}
-                              labelText="User Name"
-                              id="Username"
-                              formControlProps={{
-                                fullWidth: true,
-                              }}
-                            />
-                          </div>
-                        )}
+                        <CustomInput
+                          error={invalid}
+                          onChange={(e) => HandleData(e)}
+                          value={data.Username}
+                          labelText="User Name"
+                          id="Username"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={12}>
-                        {invalid ? (
-                          <div>
-                            <CustomInput
-                              type="password"
-                              error
-                              onChange={(e) => HandleData(e)}
-                              value={data.Password}
-                              labelText="Password"
-                              id="Password"
-                              formControlProps={{
-                                fullWidth: true,
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <div>
-                            <CustomInput
-                              type="password"
-                              onChange={(e) => HandleData(e)}
-                              value={data.Password}
-                              labelText="Password"
-                              id="Password"
-                              formControlProps={{
-                                fullWidth: true,
-                              }}
-                            />
-                          </div>
-                        )}
+                        <CustomInput
+                          type="password"
+                          error={invalid}
+                          onChange={(e) => HandleData(e)}
+                          value={data.Password}
+                          labelText="Password"
+                          id="Password"
+                          formControlProps={{
+                            fullWidth: true,
+                          }}
+                        />
+
                         {invalid ? (
                           <p className={classes.cardCategoryRed}>
                             Invalid Admin Credentials
